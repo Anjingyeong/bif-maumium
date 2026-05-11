@@ -1,13 +1,15 @@
 /**
  * Adult Self-Assessment Test Page
  * Design: Step-by-step question flow with progress indicator
+ * Fix: Removed duplicate disclaimer screen (consent handled by ConsentModal in Home.tsx)
+ * Fix: Score calculation uses functional update to avoid stale state bug
  */
-import { useState, useMemo } from "react";
+import { useState, useCallback } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { motion, AnimatePresence } from "framer-motion";
-import { Brain, ArrowLeft, ArrowRight, AlertCircle } from "lucide-react";
+import { Brain, ArrowLeft, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
 import { adultQuestions, AnswerValue } from "@/lib/questions";
 import QuestionCard from "@/components/QuestionCard";
@@ -16,83 +18,39 @@ export default function AdultTest() {
   const [, setLocation] = useLocation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, AnswerValue>>({});
-  const [showDisclaimer, setShowDisclaimer] = useState(true);
 
   const questions = adultQuestions.questions;
-  const progress = (Object.keys(answers).length / questions.length) * 100;
+  const answeredCount = Object.keys(answers).length;
+  const progress = (answeredCount / questions.length) * 100;
+  const allAnswered = answeredCount === questions.length;
 
-  const handleAnswer = (questionId: number, value: AnswerValue) => {
-    setAnswers(prev => ({ ...prev, [questionId]: value }));
+  const handleAnswer = useCallback((questionId: number, value: AnswerValue) => {
+    setAnswers(prev => {
+      const next = { ...prev, [questionId]: value };
+      return next;
+    });
     // Auto-advance after short delay
     setTimeout(() => {
-      if (currentIndex < questions.length - 1) {
-        setCurrentIndex(prev => prev + 1);
-      }
+      setCurrentIndex(prev => {
+        if (prev < questions.length - 1) return prev + 1;
+        return prev;
+      });
     }, 300);
-  };
+  }, [questions.length]);
 
-  const handleSubmit = () => {
-    const totalScore = Object.values(answers).reduce<number>((sum, val) => sum + val, 0);
-    const params = new URLSearchParams({
-      type: 'adult',
-      score: totalScore.toString(),
-      answers: JSON.stringify(answers),
+  const handleSubmit = useCallback(() => {
+    // Use functional read to get latest answers at submit time
+    setAnswers(currentAnswers => {
+      const totalScore = Object.values(currentAnswers).reduce<number>((sum, val) => sum + val, 0);
+      const params = new URLSearchParams({
+        type: 'adult',
+        score: totalScore.toString(),
+        answers: JSON.stringify(currentAnswers),
+      });
+      setLocation(`/result?${params.toString()}`);
+      return currentAnswers; // no state change, just read
     });
-    setLocation(`/result?${params.toString()}`);
-  };
-
-  const allAnswered = Object.keys(answers).length === questions.length;
-
-  if (showDisclaimer) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.4 }}
-          className="max-w-lg w-full bg-card rounded-2xl border border-border/50 p-8 shadow-sm"
-        >
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-              <AlertCircle className="w-6 h-6 text-primary" />
-            </div>
-            <h1 className="text-xl font-serif font-bold text-foreground">검사 전 안내</h1>
-          </div>
-          
-          <div className="space-y-4 mb-8">
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              본 체크리스트는 경계선 지적 기능의 <strong className="text-foreground">선별 목적</strong>으로만 사용되며, 
-              의학적 진단을 대체하지 않습니다.
-            </p>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              정확한 진단을 위해서는 정신건강의학과 또는 심리상담센터에서 
-              <strong className="text-foreground">웩슬러 지능검사(K-WAIS)</strong>를 받으시기 바랍니다.
-            </p>
-            <div className="bg-secondary/50 rounded-xl p-4">
-              <p className="text-xs text-muted-foreground">
-                <strong>검사 정보</strong><br />
-                대상: {adultQuestions.targetAge}<br />
-                문항 수: {questions.length}문항<br />
-                소요 시간: 약 5~7분
-              </p>
-            </div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              모든 응답은 브라우저에서만 처리되며, 외부 서버에 전송되거나 저장되지 않습니다.
-            </p>
-          </div>
-
-          <div className="flex gap-3">
-            <Link href="/">
-              <Button variant="outline" className="border-border">돌아가기</Button>
-            </Link>
-            <Button onClick={() => setShowDisclaimer(false)} className="flex-1 bg-primary text-primary-foreground">
-              이해했습니다, 검사 시작
-            </Button>
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
+  }, [setLocation]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -108,7 +66,7 @@ export default function AdultTest() {
             <span className="text-sm font-medium text-foreground">성인 자가진단</span>
           </div>
           <span className="text-xs text-muted-foreground">
-            {Object.keys(answers).length}/{questions.length}
+            {answeredCount}/{questions.length}
           </span>
         </div>
         <Progress value={progress} className="h-1" />
@@ -175,6 +133,17 @@ export default function AdultTest() {
             />
           ))}
         </div>
+
+        {/* All answered hint */}
+        {allAnswered && currentIndex < questions.length - 1 && (
+          <motion.p
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center text-sm text-muted-foreground mt-4"
+          >
+            모든 문항에 답변하셨습니다. 마지막 문항으로 이동해 결과를 확인하세요.
+          </motion.p>
+        )}
       </main>
     </div>
   );
