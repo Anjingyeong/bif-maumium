@@ -41,7 +41,7 @@ export default function FeedbackWidget({ testType, resultLevel }: FeedbackWidget
   const [showComment, setShowComment] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const allowData = sessionStorage.getItem("bif_allow_data") === "true";
+  const allowData = localStorage.getItem("bif_allow_data") === "true";
 
   const handleRating = (r: Rating) => {
     setRating(r);

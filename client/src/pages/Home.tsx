@@ -10,6 +10,7 @@ import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { Brain, Heart, BookOpen, ArrowRight, Shield, Users, ClipboardCheck, Newspaper } from "lucide-react";
 import ConsentModal from "@/components/ConsentModal";
+import { getConsentGiven, setConsentGiven } from "@/lib/history";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/hero-bg-G22PuoZQMHzrhaaPXVfouj.webp";
 const CHILD_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/child-section-2q9N99eJL9sDbwdufTEuCS.webp";
@@ -22,14 +23,18 @@ export default function Home() {
 
   const openConsent = (type: "adult" | "child") => {
     setPendingTestType(type);
-    setConsentOpen(true);
+    // 이미 동의한 경우 모달 건너뜀 (localStorage에 기록됨)
+    if (getConsentGiven()) {
+      navigate(type === "adult" ? "/test/adult" : "/test/child");
+    } else {
+      setConsentOpen(true);
+    }
   };
 
   const handleConsentAccept = (allowDataCollection: boolean) => {
     setConsentOpen(false);
-    // Store consent preference in sessionStorage for the test page to read
-    sessionStorage.setItem("bif_consent_given", "true");
-    sessionStorage.setItem("bif_allow_data", allowDataCollection ? "true" : "false");
+    // localStorage에 저장 - 브라우저를 닫아도 기억됨
+    setConsentGiven(allowDataCollection);
     navigate(pendingTestType === "adult" ? "/test/adult" : "/test/child");
   };
 
