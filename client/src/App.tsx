@@ -9,6 +9,8 @@ import AdultTest from "./pages/AdultTest";
 import ChildTest from "./pages/ChildTest";
 import Result from "./pages/Result";
 import Info from "./pages/Info";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 
 function Router() {
   return (
@@ -18,6 +20,8 @@ function Router() {
       <Route path="/test/child" component={ChildTest} />
       <Route path="/result" component={Result} />
       <Route path="/info" component={Info} />
+      <Route path="/blog" component={Blog} />
+      <Route path="/blog/:slug" component={BlogPost} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

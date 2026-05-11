@@ -2,11 +2,12 @@
  * Result Page - Score analysis and recommendations
  * Design: Warm Guidance - supportive, non-judgmental framing
  */
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Brain, Heart, ArrowLeft, Phone, ExternalLink, RotateCcw, BookOpen } from "lucide-react";
+import { Brain, Heart, ArrowLeft, Phone, ExternalLink, RotateCcw, BookOpen, Download, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import {
   getResultLevel,
   getCategoryScores,
@@ -15,10 +16,13 @@ import {
   supportResources,
   AnswerValue,
 } from "@/lib/questions";
+import { generateResultPdf } from "@/lib/generatePdf";
 
 const RESULT_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/result-bg-o79GvS4Xzaz8RqGYiPqNCU.webp";
 
 export default function Result() {
+  const [isPdfLoading, setIsPdfLoading] = useState(false);
+
   const params = useMemo(() => new URLSearchParams(window.location.search), []);
   const type = params.get('type') as 'adult' | 'child' || 'adult';
   const score = parseInt(params.get('score') || '0', 10);
@@ -38,6 +42,19 @@ export default function Result() {
   const categoryScores = getCategoryScores(answers, questionSet.questions);
   const percentage = Math.round((score / maxScore) * 100);
 
+  const handleDownloadPdf = async () => {
+    setIsPdfLoading(true);
+    try {
+      await generateResultPdf({ type, score, maxScore, result, answers, questionSet });
+      toast.success("PDF 리포트가 다운로드되었습니다.");
+    } catch (err) {
+      console.error(err);
+      toast.error("PDF 생성 중 오류가 발생했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsPdfLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -51,7 +68,21 @@ export default function Result() {
             {type === 'adult' ? <Brain className="w-5 h-5 text-primary" /> : <Heart className="w-5 h-5 text-accent" />}
             <span className="text-sm font-medium text-foreground">검사 결과</span>
           </div>
-          <div />
+          {/* PDF Download button in header */}
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleDownloadPdf}
+            disabled={isPdfLoading}
+            className="gap-1.5 text-xs border-primary/30 text-primary hover:bg-primary/5"
+          >
+            {isPdfLoading ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Download className="w-3.5 h-3.5" />
+            )}
+            PDF 저장
+          </Button>
         </div>
       </header>
 
@@ -201,7 +232,21 @@ export default function Result() {
         </motion.div>
 
         {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        <div className="flex flex-col sm:flex-row gap-3 justify-center flex-wrap">
+          {/* PDF Download - prominent */}
+          <Button
+            onClick={handleDownloadPdf}
+            disabled={isPdfLoading}
+            className="w-full sm:w-auto bg-primary text-primary-foreground gap-2"
+          >
+            {isPdfLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Download className="w-4 h-4" />
+            )}
+            {isPdfLoading ? "PDF 생성 중..." : "상세 리포트 PDF 저장"}
+          </Button>
+
           <Link href={type === 'adult' ? '/test/adult' : '/test/child'}>
             <Button variant="outline" className="w-full sm:w-auto gap-2">
               <RotateCcw className="w-4 h-4" /> 다시 검사하기
@@ -210,11 +255,6 @@ export default function Result() {
           <Link href="/info">
             <Button variant="outline" className="w-full sm:w-auto gap-2">
               <BookOpen className="w-4 h-4" /> 경계선 지능 알아보기
-            </Button>
-          </Link>
-          <Link href="/">
-            <Button className="w-full sm:w-auto bg-primary text-primary-foreground">
-              홈으로 돌아가기
             </Button>
           </Link>
         </div>

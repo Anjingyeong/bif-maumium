@@ -7,7 +7,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { Brain, Heart, BookOpen, ArrowRight, Shield, Users, ClipboardCheck } from "lucide-react";
+import { Brain, Heart, BookOpen, ArrowRight, Shield, Users, ClipboardCheck, Newspaper } from "lucide-react";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/hero-bg-G22PuoZQMHzrhaaPXVfouj.webp";
 const CHILD_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/child-section-2q9N99eJL9sDbwdufTEuCS.webp";
@@ -26,6 +26,9 @@ export default function Home() {
           <div className="flex items-center gap-4">
             <Link href="/info" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               경계선 지능이란?
+            </Link>
+            <Link href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              정보 센터
             </Link>
             <Link href="/test/adult">
               <Button variant="outline" size="sm">검사 시작</Button>
@@ -250,6 +253,58 @@ export default function Home() {
                 결과에 따라 적절한 전문기관과 지원 서비스를 안내해드립니다.
               </p>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Blog Preview Section */}
+      <section className="py-20">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="flex items-center justify-between mb-10"
+          >
+            <div>
+              <h2 className="text-2xl md:text-3xl font-serif font-bold text-foreground mb-2">
+                경계선 지능 정보 센터
+              </h2>
+              <p className="text-muted-foreground text-sm">전문가 기준의 신뢰할 수 있는 정보를 제공합니다.</p>
+            </div>
+            <Link href="/blog">
+              <Button variant="outline" size="sm" className="gap-1.5 hidden sm:flex">
+                전체 보기 <ArrowRight className="w-3.5 h-3.5" />
+              </Button>
+            </Link>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            {[
+              { title: "경계선 지능이란? 증상과 특징 완전 정리", cat: "기초 정보", slug: "what-is-borderline-intelligence", time: "5분" },
+              { title: "우리 아이 경계선 지능 의심될 때 — 부모가 알아야 할 5가지", cat: "아동·청소년", slug: "child-borderline-intelligence-parents-guide", time: "7분" },
+              { title: "성인 경계선 지능 자가진단 — 나도 해당될까?", cat: "성인", slug: "adult-borderline-intelligence-self-check", time: "6분" },
+              { title: "경계선 지능 지원 제도 총정리 (2026년 최신)", cat: "지원 정보", slug: "borderline-intelligence-support-2026", time: "8분" },
+            ].map((item, i) => (
+              <motion.div
+                key={item.slug}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.08 }}
+              >
+                <Link href={`/blog/${item.slug}`}>
+                  <div className="group bg-card rounded-xl border border-border/50 p-5 hover:shadow-md transition-all h-full flex flex-col">
+                    <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full w-fit mb-3">{item.cat}</span>
+                    <h3 className="text-sm font-semibold text-foreground leading-snug mb-3 flex-1 group-hover:text-primary transition-colors">{item.title}</h3>
+                    <span className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Newspaper className="w-3 h-3" /> {item.time} 읽기
+                    </span>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
