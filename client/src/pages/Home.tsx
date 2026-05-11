@@ -4,18 +4,45 @@
  * Deep Navy + Warm Sand + Soft Coral palette
  * Noto Serif KR headings + Pretendard body
  */
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { Brain, Heart, BookOpen, ArrowRight, Shield, Users, ClipboardCheck, Newspaper } from "lucide-react";
+import ConsentModal from "@/components/ConsentModal";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/hero-bg-G22PuoZQMHzrhaaPXVfouj.webp";
 const CHILD_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/child-section-2q9N99eJL9sDbwdufTEuCS.webp";
 const ADULT_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/adult-section-Las3h5McrYzSYMVrCZmJEN.webp";
 
 export default function Home() {
+  const [, navigate] = useLocation();
+  const [consentOpen, setConsentOpen] = useState(false);
+  const [pendingTestType, setPendingTestType] = useState<"adult" | "child">("adult");
+
+  const openConsent = (type: "adult" | "child") => {
+    setPendingTestType(type);
+    setConsentOpen(true);
+  };
+
+  const handleConsentAccept = (allowDataCollection: boolean) => {
+    setConsentOpen(false);
+    // Store consent preference in sessionStorage for the test page to read
+    sessionStorage.setItem("bif_consent_given", "true");
+    sessionStorage.setItem("bif_allow_data", allowDataCollection ? "true" : "false");
+    navigate(pendingTestType === "adult" ? "/test/adult" : "/test/child");
+  };
+
   return (
     <div className="min-h-screen">
+      {/* Consent Modal */}
+      <ConsentModal
+        open={consentOpen}
+        testType={pendingTestType}
+        onAccept={handleConsentAccept}
+        onClose={() => setConsentOpen(false)}
+      />
+
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
         <div className="container flex items-center justify-between h-16">
@@ -30,9 +57,7 @@ export default function Home() {
             <Link href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               정보 센터
             </Link>
-            <Link href="/test/adult">
-              <Button variant="outline" size="sm">검사 시작</Button>
-            </Link>
+            <Button variant="outline" size="sm" onClick={() => openConsent("adult")}>검사 시작</Button>
           </div>
         </div>
       </nav>
@@ -59,18 +84,23 @@ export default function Home() {
               누구나 자신에게 맞는 삶을 살아갈 수 있습니다.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/test/adult">
-                <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 gap-2">
-                  성인 자가진단
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </Link>
-              <Link href="/test/child">
-                <Button size="lg" variant="outline" className="border-primary/30 text-primary hover:bg-primary/5 px-8 gap-2">
-                  아동 선별검사
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </Link>
+              <Button
+                size="lg"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 gap-2"
+                onClick={() => openConsent("adult")}
+              >
+                성인 자가진단
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-primary/30 text-primary hover:bg-primary/5 px-8 gap-2"
+                onClick={() => openConsent("child")}
+              >
+                아동 선별검사
+                <ArrowRight className="w-4 h-4" />
+              </Button>
             </div>
           </motion.div>
         </div>
@@ -110,81 +140,83 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+            className="text-center mb-12"
           >
             <h2 className="text-2xl md:text-3xl font-serif font-bold text-foreground mb-4">
-              간편 선별검사
+              어떤 검사가 필요하신가요?
             </h2>
             <p className="text-muted-foreground max-w-lg mx-auto">
-              약 5~10분 소요되는 간단한 체크리스트로 경계선 지능의 가능성을 확인해보세요.
+              성인 자가진단과 아동 선별검사(학부모용) 두 가지를 제공합니다.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
             {/* Adult Card */}
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="group bg-card rounded-2xl border border-border/50 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer"
+              onClick={() => openConsent("adult")}
             >
-              <Link href="/test/adult">
-                <div className="group relative overflow-hidden rounded-2xl border border-border/50 bg-card shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer">
-                  <div className="aspect-[4/3] overflow-hidden">
-                    <img
-                      src={ADULT_IMG}
-                      alt="성인 자가진단"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                  <div className="p-6 md:p-8">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Brain className="w-5 h-5 text-primary" />
-                      <span className="text-sm font-medium text-primary">만 18세 이상</span>
-                    </div>
-                    <h3 className="text-xl font-serif font-bold text-foreground mb-2">성인 자가진단</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                      본인의 인지 능력, 학습 패턴, 사회적 적응력을 스스로 점검해보는 15문항 체크리스트입니다.
-                    </p>
-                    <div className="flex items-center gap-2 text-sm text-primary font-medium group-hover:gap-3 transition-all">
-                      검사 시작하기 <ArrowRight className="w-4 h-4" />
-                    </div>
-                  </div>
+              <div className="h-44 overflow-hidden">
+                <img
+                  src={ADULT_IMG}
+                  alt="성인 자가진단"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <Brain className="w-5 h-5 text-primary" />
+                  <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full">성인용</span>
                 </div>
-              </Link>
+                <h3 className="text-lg font-serif font-bold text-foreground mb-2">성인 자가진단</h3>
+                <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                  직장, 인간관계, 일상생활에서의 어려움을 15개 문항으로 확인합니다.
+                </p>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-muted-foreground">15문항 · 약 5분</span>
+                  <span className="text-xs text-primary font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+                    시작하기 <ArrowRight className="w-3.5 h-3.5" />
+                  </span>
+                </div>
+              </div>
             </motion.div>
 
             {/* Child Card */}
             <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="group bg-card rounded-2xl border border-border/50 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer"
+              onClick={() => openConsent("child")}
             >
-              <Link href="/test/child">
-                <div className="group relative overflow-hidden rounded-2xl border border-border/50 bg-card shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer">
-                  <div className="aspect-[4/3] overflow-hidden">
-                    <img
-                      src={CHILD_IMG}
-                      alt="아동 선별검사"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                  <div className="p-6 md:p-8">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Heart className="w-5 h-5 text-accent" />
-                      <span className="text-sm font-medium text-accent">만 5세 ~ 15세</span>
-                    </div>
-                    <h3 className="text-xl font-serif font-bold text-foreground mb-2">아동 선별검사 (학부모용)</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                      자녀의 발달, 학습, 사회성을 관찰하여 응답하는 18문항 학부모용 체크리스트입니다.
-                    </p>
-                    <div className="flex items-center gap-2 text-sm text-accent font-medium group-hover:gap-3 transition-all">
-                      검사 시작하기 <ArrowRight className="w-4 h-4" />
-                    </div>
-                  </div>
+              <div className="h-44 overflow-hidden">
+                <img
+                  src={CHILD_IMG}
+                  alt="아동 선별검사"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <Heart className="w-5 h-5 text-rose-500" />
+                  <span className="text-xs font-medium text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full">학부모용</span>
                 </div>
-              </Link>
+                <h3 className="text-lg font-serif font-bold text-foreground mb-2">아동 선별검사</h3>
+                <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                  자녀의 학습, 사회성, 언어 발달을 18개 문항으로 확인합니다.
+                </p>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-muted-foreground">18문항 · 약 7분</span>
+                  <span className="text-xs text-primary font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+                    시작하기 <ArrowRight className="w-3.5 h-3.5" />
+                  </span>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -198,60 +230,95 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-14"
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
           >
-            <h2 className="text-2xl md:text-3xl font-serif font-bold text-foreground mb-4">
-              안전하고 신뢰할 수 있는 검사
-            </h2>
+            {[
+              {
+                icon: <Shield className="w-6 h-6 text-primary" />,
+                title: "개인정보 보호",
+                desc: "모든 검사는 브라우저 내에서만 처리됩니다. 개인 식별 정보는 수집하지 않습니다.",
+              },
+              {
+                icon: <ClipboardCheck className="w-6 h-6 text-primary" />,
+                title: "영역별 상세 분석",
+                desc: "인지, 학습, 사회성, 정서 등 영역별로 세분화된 분석 결과를 제공합니다.",
+              },
+              {
+                icon: <Users className="w-6 h-6 text-primary" />,
+                title: "전문기관 연계",
+                desc: "결과에 따라 가까운 전문기관과 지원 서비스를 안내해 드립니다.",
+              },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.1 }}
+                className="flex flex-col items-center text-center p-6 rounded-2xl bg-card border border-border/50"
+              >
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                  {item.icon}
+                </div>
+                <h3 className="font-serif font-bold text-foreground mb-2">{item.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+              </motion.div>
+            ))}
           </motion.div>
+        </div>
+      </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+      {/* Info Section */}
+      <section className="py-20">
+        <div className="container">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-center space-y-3"
+              transition={{ duration: 0.6 }}
             >
-              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mx-auto">
-                <Shield className="w-7 h-7 text-primary" />
-              </div>
-              <h3 className="font-serif font-semibold text-foreground">개인정보 보호</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                모든 응답은 브라우저에서만 처리되며 서버에 저장되지 않습니다.
+              <h2 className="text-2xl md:text-3xl font-serif font-bold text-foreground mb-4">
+                경계선 지능이란 무엇인가요?
+              </h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                경계선 지능(Borderline Intellectual Functioning)은 IQ 71~84 범위에 해당하는 인지 능력 수준입니다.
+                지적장애로 분류되지 않아 복지 서비스의 사각지대에 놓여 있습니다.
               </p>
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                국내 약 700만 명이 해당하는 것으로 추산되지만, 적절한 지원을 받지 못하는 경우가 많습니다.
+                조기 발견과 적절한 지원이 있다면 충분히 일상생활을 영위할 수 있습니다.
+              </p>
+              <Link href="/info">
+                <Button variant="outline" className="gap-2">
+                  <BookOpen className="w-4 h-4" /> 자세히 알아보기
+                </Button>
+              </Link>
             </motion.div>
-
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-center space-y-3"
+              transition={{ duration: 0.6 }}
+              className="grid grid-cols-2 gap-4"
             >
-              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mx-auto">
-                <ClipboardCheck className="w-7 h-7 text-primary" />
-              </div>
-              <h3 className="font-serif font-semibold text-foreground">근거 기반 문항</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                교육부 및 전문기관의 선별 기준을 참고하여 구성된 체크리스트입니다.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="text-center space-y-3"
-            >
-              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mx-auto">
-                <Users className="w-7 h-7 text-primary" />
-              </div>
-              <h3 className="font-serif font-semibold text-foreground">전문기관 연계</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                결과에 따라 적절한 전문기관과 지원 서비스를 안내해드립니다.
-              </p>
+              {[
+                { label: "지적장애", iq: "IQ 70 이하", color: "bg-red-50 border-red-200 text-red-700" },
+                { label: "경계선 지능", iq: "IQ 71~84", color: "bg-amber-50 border-amber-200 text-amber-700", highlight: true },
+                { label: "평균 지능", iq: "IQ 85~115", color: "bg-green-50 border-green-200 text-green-700" },
+                { label: "우수 지능", iq: "IQ 116 이상", color: "bg-blue-50 border-blue-200 text-blue-700" },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className={`p-4 rounded-xl border ${item.color} ${item.highlight ? "ring-2 ring-amber-300" : ""}`}
+                >
+                  <p className="text-xs font-medium mb-1">{item.label}</p>
+                  <p className="text-lg font-serif font-bold">{item.iq}</p>
+                  {item.highlight && (
+                    <p className="text-xs mt-1 opacity-70">← 이 범위</p>
+                  )}
+                </div>
+              ))}
             </motion.div>
           </div>
         </div>
@@ -317,21 +384,31 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="max-w-2xl mx-auto text-center"
+            className="bg-primary rounded-3xl p-10 md:p-16 text-center"
           >
-            <BookOpen className="w-10 h-10 text-primary mx-auto mb-6" />
-            <h2 className="text-2xl md:text-3xl font-serif font-bold text-foreground mb-4">
-              이해는 변화의 시작입니다
+            <h2 className="text-2xl md:text-3xl font-serif font-bold text-primary-foreground mb-4">
+              지금 바로 확인해보세요
             </h2>
-            <p className="text-muted-foreground leading-relaxed mb-8">
-              경계선 지능은 적절한 지원과 환경이 갖춰진다면 충분히 극복할 수 있습니다.
-              먼저 현재 상태를 이해하는 것에서 시작해보세요.
+            <p className="text-primary-foreground/80 mb-8 max-w-md mx-auto">
+              5~10분으로 경계선 지능의 가능성을 확인하고, 상세 PDF 리포트를 받아보세요.
             </p>
-            <Link href="/info">
-              <Button variant="outline" className="border-primary/30 text-primary hover:bg-primary/5">
-                경계선 지능에 대해 더 알아보기
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                size="lg"
+                className="bg-white text-primary hover:bg-white/90 px-8 gap-2"
+                onClick={() => openConsent("adult")}
+              >
+                성인 자가진단 시작 <ArrowRight className="w-4 h-4" />
               </Button>
-            </Link>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white/40 text-white hover:bg-white/10 px-8 gap-2"
+                onClick={() => openConsent("child")}
+              >
+                아동 선별검사 시작 <ArrowRight className="w-4 h-4" />
+              </Button>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -342,11 +419,15 @@ export default function Home() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <Brain className="w-5 h-5 text-primary" />
-              <span className="font-serif font-medium text-foreground">마음이음</span>
+              <span className="font-serif font-semibold text-foreground">마음이음</span>
             </div>
-            <p className="text-xs text-muted-foreground text-center md:text-right max-w-md">
-              본 서비스는 의학적 진단을 대체하지 않습니다. 정확한 진단은 반드시 전문기관을 통해 받으시기 바랍니다.
+            <p className="text-xs text-muted-foreground text-center">
+              본 서비스는 의학적 진단을 대체하지 않습니다. 정확한 진단은 전문기관을 통해 받으시기 바랍니다.
             </p>
+            <div className="flex gap-4 text-xs text-muted-foreground">
+              <Link href="/info" className="hover:text-foreground transition-colors">경계선 지능이란?</Link>
+              <Link href="/blog" className="hover:text-foreground transition-colors">정보 센터</Link>
+            </div>
           </div>
         </div>
       </footer>

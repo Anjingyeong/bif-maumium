@@ -17,6 +17,7 @@ import {
   AnswerValue,
 } from "@/lib/questions";
 import { generateResultPdf } from "@/lib/generatePdf";
+import FeedbackWidget from "@/components/FeedbackWidget";
 
 const RESULT_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/result-bg-o79GvS4Xzaz8RqGYiPqNCU.webp";
 
@@ -216,6 +217,16 @@ export default function Result() {
             </div>
           </motion.div>
         )}
+
+        {/* Feedback Widget */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.75 }}
+          className="bg-card rounded-2xl border border-border/50 px-6 mb-6"
+        >
+          <FeedbackWidget testType={type} resultLevel={result.level} />
+        </motion.div>
 
         {/* Disclaimer */}
         <motion.div
