@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 import {
   Brain, Heart, ArrowLeft, Phone, ExternalLink,
   RotateCcw, BookOpen, Download, Loader2,
-  TrendingUp, TrendingDown, Minus, History, Share2, Printer,
+  TrendingUp, TrendingDown, Minus, History, Share2, Printer, Link2, Check,
 } from "lucide-react";
 import { shareToKakao, buildShareText } from "@/lib/kakaoShare";
 import { toast } from "sonner";
@@ -80,6 +80,24 @@ export default function Result() {
   }, []);
 
   const scoreDiff = prevRecord ? getScoreDiff(score, prevRecord.score) : null;
+
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopyLink = async () => {
+    const resultUrl = `${window.location.origin}/result?type=${encodeURIComponent(type)}&score=${score}`;
+    try {
+      await navigator.clipboard.writeText(resultUrl);
+      setIsCopied(true);
+      toast.success("결과 링크가 복사되었습니다!", {
+        description: "카카오톡, 인스타그램, 트위터 등 어디서든 붙여넣기 하세요.",
+      });
+      setTimeout(() => setIsCopied(false), 2500);
+    } catch {
+      // fallback: prompt
+      const resultUrl2 = `${window.location.origin}/result?type=${encodeURIComponent(type)}&score=${score}`;
+      window.prompt("아래 링크를 복사하세요:", resultUrl2);
+    }
+  };
 
   const handleKakaoShare = () => {
     setIsSharing(true);
@@ -462,6 +480,21 @@ export default function Result() {
           >
             <Share2 className="w-4 h-4" />
             카카오톡 공유
+          </Button>
+          <Button
+            variant="outline"
+            onClick={handleCopyLink}
+            className={`w-full sm:w-auto min-h-[44px] gap-2 transition-all ${
+              isCopied
+                ? "border-green-500 text-green-700 bg-green-50"
+                : "border-border text-foreground hover:bg-secondary"
+            }`}
+          >
+            {isCopied ? (
+              <><Check className="w-4 h-4" />링크 복사됨!</>
+            ) : (
+              <><Link2 className="w-4 h-4" />링크 복사</>
+            )}
           </Button>
           <Link href={type === "adult" ? "/test/adult" : "/test/child"}>
             <Button variant="outline" className="w-full sm:w-auto min-h-[44px] gap-2">
