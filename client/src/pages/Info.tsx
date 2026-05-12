@@ -94,6 +94,52 @@ export default function Info() {
           </div>
         </motion.section>
 
+        {/* 용어 혼동 섹션 */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-12"
+        >
+          <div className="bg-amber-50 border border-amber-200/70 rounded-2xl p-6 md:p-8">
+            <h2 className="text-xl font-serif font-bold text-foreground mb-1 flex items-center gap-2">
+              <span className="text-amber-500 text-lg">⚠</span>
+              "경계선 지능" vs "경계성 지능" — 같은 말인가요?
+            </h2>
+            <p className="text-xs text-amber-700 mb-5">많이 혼동하시는 용어입니다. 둘은 전혀 다른 개념입니다.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-white/80 rounded-xl p-5 border border-amber-100">
+                <p className="text-sm font-bold text-primary mb-2">경계선 지능 (境界線 知能)</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+                  <strong className="text-foreground">인지 능력(IQ)</strong>에 관한 개념입니다.<br />
+                  IQ 71~84 범위로, 지적장애와 평균 지능 사이에 위치합니다.
+                  학습·적응·실행기능 등에서 어려움을 겪을 수 있으며,
+                  <strong className="text-foreground"> 발달·교육 분야</strong>에서 주로 사용하는 용어입니다.
+                </p>
+                <div className="text-[11px] bg-primary/8 text-primary rounded-lg px-3 py-2 font-medium">
+                  영문: Borderline Intellectual Functioning (BIF)
+                </div>
+              </div>
+              <div className="bg-white/80 rounded-xl p-5 border border-amber-100">
+                <p className="text-sm font-bold text-foreground mb-2">경계성 인격장애 (境界性 人格障碍)</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+                  <strong className="text-foreground">성격·정서 조절</strong>에 관한 개념입니다.<br />
+                  극단적인 감정 기복, 충동성, 불안정한 대인관계가 특징이며,
+                  지능과는 무관합니다.
+                  <strong className="text-foreground"> 정신건강 임상 분야</strong>에서 사용하는 진단명입니다.
+                </p>
+                <div className="text-[11px] bg-secondary text-muted-foreground rounded-lg px-3 py-2 font-medium">
+                  영문: Borderline Personality Disorder (BPD)
+                </div>
+              </div>
+            </div>
+            <p className="text-xs text-amber-700 mt-4 text-center">
+              본 사이트의 검사는 <strong>경계선 지능(BIF)</strong>을 선별하는 도구입니다. 경계성 인격장애(BPD)와는 관련이 없습니다.
+            </p>
+          </div>
+        </motion.section>
+
         {/* Characteristics */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}

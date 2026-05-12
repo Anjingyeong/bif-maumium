@@ -329,6 +329,37 @@ export default function Home() {
         </div>
       </section>
 
+      {/* 용어 혼동 배너 */}
+      <section className="py-10 bg-amber-50/60">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="flex flex-col md:flex-row items-start md:items-center gap-5 bg-white/80 border border-amber-200 rounded-2xl px-6 py-5"
+          >
+            <div className="text-2xl shrink-0">⚠️</div>
+            <div className="flex-1">
+              <p className="text-sm font-bold text-foreground mb-1">
+                &ldquo;경계선 지능&rdquo;과 &ldquo;경계성 지능&rdquo;, 헷갈리시나요?
+              </p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                두 용어는 전혀 다른 개념입니다.
+                <strong className="text-foreground"> 경계선 지능(BIF)</strong>은 IQ 71~84의 인지 능력 수준을 뜻하며,
+                <strong className="text-foreground"> 경계성 인격장애(BPD)</strong>는 감정 조절·대인관계의 어려움을 특징으로 하는 정신건강 진단명입니다.
+                본 사이트는 <strong className="text-foreground">경계선 지능(BIF)</strong> 선별 도구입니다.
+              </p>
+            </div>
+            <Link href="/info" className="shrink-0">
+              <Button variant="outline" size="sm" className="gap-1.5 border-amber-300 text-amber-800 hover:bg-amber-50 whitespace-nowrap">
+                자세히 알아보기 <ArrowRight className="w-3.5 h-3.5" />
+              </Button>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Blog Preview Section */}
       <section className="py-20">
         <div className="container">
