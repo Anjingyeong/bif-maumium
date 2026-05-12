@@ -10,6 +10,7 @@ import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { Brain, Heart, BookOpen, ArrowRight, Shield, Users, ClipboardCheck, Newspaper, History as HistoryIcon } from "lucide-react";
 import ConsentModal from "@/components/ConsentModal";
+import EmailNotifyWidget from "@/components/EmailNotifyWidget";
 import { getConsentGiven, setConsentGiven } from "@/lib/history";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/hero-bg-G22PuoZQMHzrhaaPXVfouj.webp";
@@ -413,6 +414,29 @@ export default function Home() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Email Notify Banner */}
+      <section className="py-16 bg-gradient-to-b from-background to-secondary/30">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="max-w-2xl mx-auto"
+          >
+            <div className="text-center mb-6">
+              <h2 className="text-xl md:text-2xl font-serif font-bold text-foreground mb-2">
+                아직 검사가 망설여지시나요?
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                전문가 자문 서비스 오픈 시 가장 먼저 알림을 받아보세요.
+              </p>
+            </div>
+            <EmailNotifyWidget />
+          </motion.div>
         </div>
       </section>
 
