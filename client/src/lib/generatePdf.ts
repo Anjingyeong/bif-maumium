@@ -1,9 +1,10 @@
 /**
- * PDF Report Generator
- * 경계선 지능 자가진단 결과를 PDF로 생성합니다.
- * jsPDF를 사용하여 브라우저에서 직접 PDF를 생성합니다.
+ * PDF Report Generator — html2canvas + jsPDF 방식
+ * 결과 페이지의 실제 렌더링을 캡처하여 PDF로 저장합니다.
+ * 한글 폰트가 완벽하게 지원됩니다.
  */
 import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 import {
   ResultLevel,
   QuestionSet,
@@ -12,14 +13,20 @@ import {
   answerOptions,
 } from "./questions";
 
-export async function generateResultPdf(params: {
+export interface GeneratePdfParams {
   type: "adult" | "child";
   score: number;
   maxScore: number;
   result: ResultLevel;
   answers: Record<number, AnswerValue>;
   questionSet: QuestionSet;
-}) {
+}
+
+/**
+ * 결과 리포트용 HTML 문자열을 생성합니다.
+ * 이 HTML은 숨겨진 div에 렌더링된 뒤 html2canvas로 캡처됩니다.
+ */
+function buildReportHtml(params: GeneratePdfParams): string {
   const { type, score, maxScore, result, answers, questionSet } = params;
   const percentage = Math.round((score / maxScore) * 100);
   const categoryScores = getCategoryScores(answers, questionSet.questions);
@@ -28,254 +35,234 @@ export async function generateResultPdf(params: {
     month: "long",
     day: "numeric",
   });
-
-  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-  const pageW = 210;
-  const pageH = 297;
-  const margin = 20;
-  const contentW = pageW - margin * 2;
-
-  // ─── Helper functions ───────────────────────────────────────────
-  const addText = (
-    text: string,
-    x: number,
-    y: number,
-    opts: {
-      size?: number;
-      bold?: boolean;
-      color?: [number, number, number];
-      align?: "left" | "center" | "right";
-      maxWidth?: number;
-    } = {}
-  ) => {
-    const { size = 10, bold = false, color = [40, 40, 60], align = "left", maxWidth } = opts;
-    doc.setFontSize(size);
-    doc.setTextColor(...color);
-    if (bold) doc.setFont("helvetica", "bold");
-    else doc.setFont("helvetica", "normal");
-    if (maxWidth) {
-      doc.text(text, x, y, { align, maxWidth });
-    } else {
-      doc.text(text, x, y, { align });
-    }
-  };
-
-  const drawRect = (
-    x: number,
-    y: number,
-    w: number,
-    h: number,
-    color: [number, number, number],
-    filled = true
-  ) => {
-    doc.setFillColor(...color);
-    doc.setDrawColor(...color);
-    if (filled) doc.rect(x, y, w, h, "F");
-    else doc.rect(x, y, w, h, "S");
-  };
-
-  const drawRoundedRect = (
-    x: number,
-    y: number,
-    w: number,
-    h: number,
-    r: number,
-    color: [number, number, number],
-    filled = true
-  ) => {
-    doc.setFillColor(...color);
-    doc.setDrawColor(...color);
-    if (filled) doc.roundedRect(x, y, w, h, r, r, "F");
-    else doc.roundedRect(x, y, w, h, r, r, "S");
-  };
-
-  // ─── Page 1: Cover & Summary ────────────────────────────────────
-  // Header background
-  drawRect(0, 0, pageW, 55, [42, 58, 90]);
-
-  // Logo area
-  addText("마음이음", margin, 22, { size: 18, bold: true, color: [255, 255, 255] });
-  addText("경계선 지능 선별검사 결과 리포트", margin, 32, { size: 11, color: [200, 215, 240] });
-
-  // Date & type badge
   const typeLabel = type === "adult" ? "성인 자가진단" : "아동 선별검사 (학부모용)";
-  addText(typeLabel, pageW - margin, 22, { size: 10, bold: true, color: [255, 220, 180], align: "right" });
-  addText(today, pageW - margin, 30, { size: 9, color: [200, 215, 240], align: "right" });
 
-  // Disclaimer banner
-  drawRect(0, 55, pageW, 10, [255, 245, 220]);
-  addText(
-    "⚠  본 결과는 선별 목적의 참고 자료이며, 의학적 진단을 대체하지 않습니다.",
-    pageW / 2,
-    61.5,
-    { size: 8, color: [140, 100, 30], align: "center" }
-  );
-
-  let y = 80;
-
-  // Score circle (simulated with concentric circles)
-  const cx = margin + 30;
-  const cy = y + 20;
-  doc.setFillColor(230, 235, 245);
-  doc.circle(cx, cy, 22, "F");
-
-  // Score arc (filled sector approximation using colored circle + white circle)
-  const levelColorMap: Record<string, [number, number, number]> = {
-    low: [80, 180, 120],
-    mild: [220, 170, 60],
-    moderate: [220, 110, 60],
-    high: [200, 60, 50],
+  const levelColorMap: Record<string, string> = {
+    low: "#4caf82",
+    mild: "#d4a017",
+    moderate: "#e07030",
+    high: "#c83232",
   };
-  const arcColor = levelColorMap[result.level] || [100, 130, 200];
-  doc.setFillColor(...arcColor);
-  doc.circle(cx, cy, 22, "F");
-  doc.setFillColor(255, 255, 255);
-  doc.circle(cx, cy, 16, "F");
+  const levelBgMap: Record<string, string> = {
+    low: "#edfaf3",
+    mild: "#fdf8e8",
+    moderate: "#fdf0e8",
+    high: "#fde8e8",
+  };
+  const accentColor = levelColorMap[result.level] || "#5070c8";
+  const accentBg = levelBgMap[result.level] || "#eef1fa";
 
-  // Score text in circle
-  addText(`${score}`, cx, cy - 1, { size: 14, bold: true, color: [40, 40, 60], align: "center" });
-  addText(`/ ${maxScore}`, cx, cy + 5, { size: 8, color: [120, 120, 140], align: "center" });
+  // 영역별 분석 바 HTML
+  const categoryRows = Object.entries(categoryScores)
+    .map(([cat, { score: cs, max }]) => {
+      const pct = Math.round((cs / max) * 100);
+      const barColor = pct > 60 ? accentColor : "#5070c8";
+      return `
+        <div style="margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+            <span style="font-size:12px;font-weight:600;color:#2a3a5a;">${cat}</span>
+            <span style="font-size:11px;color:#888;">${cs}/${max} (${pct}%)</span>
+          </div>
+          <div style="height:8px;background:#e5e8f0;border-radius:4px;overflow:hidden;">
+            <div style="height:100%;width:${pct}%;background:${barColor};border-radius:4px;"></div>
+          </div>
+        </div>`;
+    })
+    .join("");
 
-  // Result title & description
-  const rx = margin + 60;
-  addText(result.title, rx, y + 8, { size: 16, bold: true, color: [42, 58, 90] });
-  addText(`점수: ${score}점 / ${maxScore}점 (${percentage}%)`, rx, y + 16, {
-    size: 10,
-    color: [100, 100, 120],
-  });
-
-  // Description box
-  drawRoundedRect(rx, y + 20, contentW - 60, 22, 3, [240, 243, 250]);
-  const descLines = doc.splitTextToSize(result.description, contentW - 68);
-  doc.setFontSize(9);
-  doc.setTextColor(60, 70, 90);
-  doc.setFont("helvetica", "normal");
-  descLines.slice(0, 3).forEach((line: string, i: number) => {
-    doc.text(line, rx + 4, y + 27 + i * 5);
-  });
-
-  y += 60;
-
-  // ─── Category Breakdown ─────────────────────────────────────────
-  addText("영역별 분석", margin, y, { size: 13, bold: true, color: [42, 58, 90] });
-  y += 8;
-
-  const entries = Object.entries(categoryScores);
-  entries.forEach(([category, { score: catScore, max }]) => {
-    const catPct = catScore / max;
-    const barW = contentW - 50;
-
-    addText(category, margin, y + 4, { size: 9, bold: true, color: [60, 70, 90] });
-    addText(`${catScore}/${max}`, margin + contentW, y + 4, {
-      size: 8,
-      color: [120, 120, 140],
-      align: "right",
-    });
-
-    // Bar background
-    drawRoundedRect(margin + 28, y, barW, 5, 2, [225, 228, 238]);
-    // Bar fill
-    const fillColor: [number, number, number] =
-      catPct > 0.6 ? arcColor : [80, 110, 180];
-    drawRoundedRect(margin + 28, y, Math.max(barW * catPct, 2), 5, 2, fillColor);
-
-    y += 10;
-  });
-
-  y += 6;
-
-  // ─── Recommendation ─────────────────────────────────────────────
-  addText("권장 사항", margin, y, { size: 13, bold: true, color: [42, 58, 90] });
-  y += 6;
-
-  drawRoundedRect(margin, y, contentW, 28, 4, [245, 248, 255]);
-  doc.setDrawColor(180, 190, 220);
-  doc.setLineWidth(0.5);
-  doc.roundedRect(margin, y, contentW, 28, 4, 4, "S");
-
-  const recLines = doc.splitTextToSize(result.recommendation, contentW - 10);
-  doc.setFontSize(9.5);
-  doc.setTextColor(50, 60, 90);
-  doc.setFont("helvetica", "normal");
-  recLines.slice(0, 4).forEach((line: string, i: number) => {
-    doc.text(line, margin + 5, y + 8 + i * 6);
-  });
-
-  y += 36;
-
-  // ─── Answer Summary ─────────────────────────────────────────────
-  if (y < pageH - 80) {
-    addText("문항별 응답 요약", margin, y, { size: 13, bold: true, color: [42, 58, 90] });
-    y += 8;
-
-    // Table header
-    drawRect(margin, y - 4, contentW, 7, [42, 58, 90]);
-    addText("번호", margin + 3, y + 0.5, { size: 8, bold: true, color: [255, 255, 255] });
-    addText("문항", margin + 18, y + 0.5, { size: 8, bold: true, color: [255, 255, 255] });
-    addText("응답", margin + contentW - 3, y + 0.5, {
-      size: 8,
-      bold: true,
-      color: [255, 255, 255],
-      align: "right",
-    });
-    y += 8;
-
-    questionSet.questions.forEach((q, i) => {
-      if (y > pageH - 30) {
-        doc.addPage();
-        y = margin;
-      }
-      const rowBg: [number, number, number] = i % 2 === 0 ? [250, 251, 255] : [255, 255, 255];
-      drawRect(margin, y - 4, contentW, 7, rowBg);
-
-      addText(`${q.id}`, margin + 3, y + 0.5, { size: 8, color: [80, 90, 110] });
-
-      const qText = q.text.length > 55 ? q.text.slice(0, 52) + "..." : q.text;
-      addText(qText, margin + 18, y + 0.5, { size: 8, color: [50, 60, 80] });
-
+  // 문항별 응답 행 HTML
+  const answerRows = questionSet.questions
+    .map((q, i) => {
       const ansVal = answers[q.id];
       const ansLabel =
         ansVal !== undefined
           ? answerOptions.find((a) => a.value === ansVal)?.label || "-"
           : "-";
-      const ansColor: [number, number, number] =
-        ansVal === 3
-          ? [200, 60, 50]
-          : ansVal === 2
-          ? [200, 130, 40]
-          : ansVal === 1
-          ? [80, 150, 80]
-          : [120, 130, 150];
-      addText(ansLabel, margin + contentW - 3, y + 0.5, {
-        size: 8,
-        color: ansColor,
-        align: "right",
-      });
+      const ansColorMap: Record<number, string> = {
+        0: "#888",
+        1: "#4caf82",
+        2: "#d4a017",
+        3: "#c83232",
+      };
+      const ansColor = ansVal !== undefined ? ansColorMap[ansVal] ?? "#888" : "#888";
+      const rowBg = i % 2 === 0 ? "#f7f8fc" : "#ffffff";
+      return `
+        <tr style="background:${rowBg};">
+          <td style="padding:5px 8px;font-size:11px;color:#666;width:32px;text-align:center;">${q.id}</td>
+          <td style="padding:5px 8px;font-size:11px;color:#333;line-height:1.4;">${q.text}</td>
+          <td style="padding:5px 8px;font-size:11px;font-weight:600;color:${ansColor};width:80px;text-align:center;">${ansLabel}</td>
+        </tr>`;
+    })
+    .join("");
 
-      y += 7;
+  return `
+    <div id="pdf-report" style="
+      width:794px;
+      font-family:'Noto Sans KR','Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+      background:#ffffff;
+      color:#2a3a5a;
+      padding:0;
+      box-sizing:border-box;
+    ">
+      <!-- 헤더 -->
+      <div style="background:#2a3a5a;padding:28px 36px 24px;display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-size:22px;font-weight:700;color:#ffffff;letter-spacing:-0.5px;margin-bottom:4px;">마음이음</div>
+          <div style="font-size:13px;color:#b0c4e8;">경계선 지능 선별검사 결과 리포트</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:12px;font-weight:600;color:#ffd9a0;margin-bottom:4px;">${typeLabel}</div>
+          <div style="font-size:11px;color:#b0c4e8;">${today}</div>
+        </div>
+      </div>
+
+      <!-- 면책 배너 -->
+      <div style="background:#fff8e8;padding:8px 36px;border-bottom:1px solid #f0e0b0;">
+        <span style="font-size:10px;color:#9a7020;">⚠ 본 결과는 선별 목적의 참고 자료이며, 의학적 진단을 대체하지 않습니다.</span>
+      </div>
+
+      <!-- 결과 요약 -->
+      <div style="padding:28px 36px 20px;display:flex;gap:24px;align-items:flex-start;border-bottom:1px solid #eaecf4;">
+        <!-- 점수 원형 -->
+        <div style="
+          width:100px;height:100px;border-radius:50%;
+          background:conic-gradient(${accentColor} 0% ${percentage}%, #e5e8f0 ${percentage}% 100%);
+          display:flex;align-items:center;justify-content:center;
+          flex-shrink:0;
+          position:relative;
+        ">
+          <div style="
+            width:72px;height:72px;border-radius:50%;background:#fff;
+            display:flex;flex-direction:column;align-items:center;justify-content:center;
+          ">
+            <span style="font-size:22px;font-weight:700;color:#2a3a5a;line-height:1;">${score}</span>
+            <span style="font-size:10px;color:#888;margin-top:2px;">/ ${maxScore}</span>
+          </div>
+        </div>
+        <!-- 결과 텍스트 -->
+        <div style="flex:1;">
+          <div style="font-size:20px;font-weight:700;color:#2a3a5a;margin-bottom:6px;">${result.title}</div>
+          <div style="font-size:12px;color:#666;margin-bottom:10px;">총점 ${score}점 / ${maxScore}점 (${percentage}%)</div>
+          <div style="background:${accentBg};border-left:3px solid ${accentColor};padding:10px 14px;border-radius:0 6px 6px 0;">
+            <p style="font-size:12px;color:#444;line-height:1.7;margin:0;">${result.description}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 영역별 분석 -->
+      <div style="padding:24px 36px 20px;border-bottom:1px solid #eaecf4;">
+        <div style="font-size:15px;font-weight:700;color:#2a3a5a;margin-bottom:14px;">영역별 분석</div>
+        ${categoryRows}
+      </div>
+
+      <!-- 권장 사항 -->
+      <div style="padding:24px 36px 20px;border-bottom:1px solid #eaecf4;">
+        <div style="font-size:15px;font-weight:700;color:#2a3a5a;margin-bottom:12px;">권장 사항</div>
+        <div style="background:#f0f4ff;border:1px solid #d0d8f0;border-radius:8px;padding:14px 18px;">
+          <p style="font-size:12px;color:#3a4a7a;line-height:1.8;margin:0;">${result.recommendation}</p>
+        </div>
+      </div>
+
+      <!-- 문항별 응답 요약 -->
+      <div style="padding:24px 36px 28px;">
+        <div style="font-size:15px;font-weight:700;color:#2a3a5a;margin-bottom:12px;">문항별 응답 요약</div>
+        <table style="width:100%;border-collapse:collapse;font-size:11px;">
+          <thead>
+            <tr style="background:#2a3a5a;">
+              <th style="padding:7px 8px;color:#fff;text-align:center;width:32px;">번호</th>
+              <th style="padding:7px 8px;color:#fff;text-align:left;">문항</th>
+              <th style="padding:7px 8px;color:#fff;text-align:center;width:80px;">응답</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${answerRows}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 푸터 -->
+      <div style="background:#2a3a5a;padding:12px 36px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:10px;color:#b0c4e8;">마음이음 경계선 지능 선별검사 | ${today}</span>
+        <span style="font-size:10px;color:#8090b0;">본 결과는 의학적 진단을 대체하지 않습니다.</span>
+      </div>
+    </div>`;
+}
+
+/**
+ * 결과 PDF를 생성하고 다운로드합니다.
+ * html2canvas로 HTML을 이미지로 캡처한 뒤 jsPDF에 삽입합니다.
+ */
+export async function generateResultPdf(params: GeneratePdfParams): Promise<void> {
+  const { type } = params;
+
+  // 1. 숨겨진 컨테이너에 리포트 HTML 삽입
+  const container = document.createElement("div");
+  container.style.cssText = `
+    position: fixed;
+    left: -9999px;
+    top: 0;
+    width: 794px;
+    background: #ffffff;
+    z-index: -1;
+    font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  `;
+  container.innerHTML = buildReportHtml(params);
+  document.body.appendChild(container);
+
+  // 폰트 로딩 대기
+  await document.fonts.ready;
+  // 렌더링 안정화 대기
+  await new Promise((r) => setTimeout(r, 300));
+
+  try {
+    // 2. html2canvas로 캡처
+    const canvas = await html2canvas(container.firstElementChild as HTMLElement, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: "#ffffff",
+      logging: false,
+      width: 794,
     });
-  }
 
-  // ─── Footer on last page ─────────────────────────────────────────
-  const totalPages = doc.getNumberOfPages();
-  for (let p = 1; p <= totalPages; p++) {
-    doc.setPage(p);
-    drawRect(0, pageH - 14, pageW, 14, [42, 58, 90]);
-    addText(
-      `마음이음 경계선 지능 선별검사  |  ${today}  |  ${p} / ${totalPages}`,
-      pageW / 2,
-      pageH - 5,
-      { size: 7.5, color: [180, 195, 225], align: "center" }
-    );
-    addText(
-      "본 결과는 의학적 진단을 대체하지 않습니다. 정확한 진단은 전문기관을 통해 받으시기 바랍니다.",
-      pageW / 2,
-      pageH - 9,
-      { size: 7, color: [160, 175, 210], align: "center" }
-    );
-  }
+    // 3. jsPDF에 이미지 삽입 (A4 비율 맞춤)
+    const imgData = canvas.toDataURL("image/jpeg", 0.92);
+    const imgWidth = 210; // A4 mm
+    const imgHeight = (canvas.height / canvas.width) * imgWidth;
 
-  // ─── Save ────────────────────────────────────────────────────────
-  const filename = `마음이음_경계선지능_${type === "adult" ? "성인자가진단" : "아동선별검사"}_${today.replace(/\s/g, "").replace(/년|월/g, "-").replace("일", "")}.pdf`;
-  doc.save(filename);
+    const pageHeight = 297; // A4 mm
+    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+
+    let yOffset = 0;
+    let pageCount = 0;
+
+    while (yOffset < imgHeight) {
+      if (pageCount > 0) doc.addPage();
+
+      // 현재 페이지에 해당하는 이미지 슬라이스를 그립니다
+      doc.addImage(
+        imgData,
+        "JPEG",
+        0,
+        -yOffset,
+        imgWidth,
+        imgHeight,
+        undefined,
+        "FAST"
+      );
+
+      yOffset += pageHeight;
+      pageCount++;
+    }
+
+    // 4. 파일명 생성 및 저장
+    const today = new Date()
+      .toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" })
+      .replace(/\. /g, "-")
+      .replace(".", "");
+    const filename = `마음이음_${type === "adult" ? "성인자가진단" : "아동선별검사"}_${today}.pdf`;
+    doc.save(filename);
+  } finally {
+    document.body.removeChild(container);
+  }
 }

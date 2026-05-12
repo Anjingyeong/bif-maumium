@@ -187,6 +187,35 @@ export default function Result() {
           </div>
         </motion.div>
 
+        {/* ── PDF 다운로드 CTA ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="flex flex-col sm:flex-row items-center gap-3 bg-card border border-primary/20 rounded-2xl p-5 mb-8 no-print"
+        >
+          <div className="flex items-center gap-3 flex-1">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+              <Download className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-foreground">결과 리포트 PDF 저장</p>
+              <p className="text-xs text-muted-foreground">영역별 분석·문항 응답이 담긴 상세 리포트를 내 기기에 보관하세요.</p>
+            </div>
+          </div>
+          <Button
+            onClick={handleDownloadPdf}
+            disabled={isPdfLoading}
+            className="w-full sm:w-auto min-h-[44px] bg-primary text-primary-foreground gap-2 shrink-0 px-6"
+          >
+            {isPdfLoading ? (
+              <><Loader2 className="w-4 h-4 animate-spin" />PDF 생성 중...</>
+            ) : (
+              <><Download className="w-4 h-4" />PDF 다운로드</>
+            )}
+          </Button>
+        </motion.div>
+
         {/* ── 이전 결과 비교 섹션 ── */}
         {prevRecord && scoreDiff && (
           <motion.div
