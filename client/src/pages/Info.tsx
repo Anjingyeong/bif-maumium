@@ -137,6 +137,11 @@ export default function Info() {
             <p className="text-xs text-amber-700 mt-4 text-center">
               본 사이트의 검사는 <strong>경계선 지능(BIF)</strong>을 선별하는 도구입니다. 경계성 인격장애(BPD)와는 관련이 없습니다.
             </p>
+            <div className="mt-4 text-center">
+              <a href="/term-diff" className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 border border-amber-300 rounded-full px-4 py-2 hover:bg-amber-100 transition-colors">
+                두 용어 상세 비교 보기 →
+              </a>
+            </div>
           </div>
         </motion.section>
 

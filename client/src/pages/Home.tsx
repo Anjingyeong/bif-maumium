@@ -355,7 +355,7 @@ export default function Home() {
                 본 사이트는 <strong className="text-foreground">경계선 지능(BIF)</strong> 선별 도구입니다.
               </p>
             </div>
-            <Link href="/info" className="shrink-0">
+            <Link href="/term-diff" className="shrink-0">
               <Button variant="outline" size="sm" className="gap-1.5 border-amber-300 text-amber-800 hover:bg-amber-50 whitespace-nowrap">
                 자세히 알아보기 <ArrowRight className="w-3.5 h-3.5" />
               </Button>
