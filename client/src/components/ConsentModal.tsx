@@ -60,7 +60,8 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
             className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
           >
             <div
-              className="bg-card rounded-2xl border border-border shadow-2xl w-full max-w-md pointer-events-auto overflow-hidden"
+              className="bg-card rounded-2xl border border-border shadow-2xl w-full max-w-md pointer-events-auto overflow-hidden flex flex-col"
+              style={{ maxHeight: "calc(100dvh - 2rem)" }}
               onClick={e => e.stopPropagation()}
             >
               {/* Header */}
@@ -104,7 +105,7 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.2 }}
-                    className="px-6 py-5"
+                    className="px-6 py-5 overflow-y-auto flex-1"
                   >
                     {/* Warning notice */}
                     <div className="flex gap-3 p-4 rounded-xl bg-amber-50 border border-amber-200 mb-5">
@@ -162,7 +163,7 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.2 }}
-                    className="px-6 py-5"
+                    className="px-6 py-5 overflow-y-auto flex-1"
                   >
                     <div className="flex gap-3 p-4 rounded-xl bg-primary/5 border border-primary/20 mb-5">
                       <Shield className="w-5 h-5 text-primary shrink-0 mt-0.5" />
