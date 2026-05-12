@@ -14,8 +14,8 @@ import BlogPost from "./pages/BlogPost";
 import History from "./pages/History";
 import TermDiff from "./pages/TermDiff";
 import Privacy from "./pages/Privacy";
-
 function Router() {
+  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path="/" component={Home} />

@@ -85,18 +85,19 @@ export default function Result() {
     setIsSharing(true);
     try {
       const shareText = buildShareText(type, result.title, score, maxScore);
-      const currentUrl = window.location.href;
-      const baseUrl = window.location.origin;
+      // 결과 유형과 점수를 포함한 공유 URL 생성 (서버 동적 OG 메타태그 활용)
+      const resultUrl = `${window.location.origin}/result?type=${encodeURIComponent(type)}&score=${score}`;
       shareToKakao({
         title: shareText.title,
         description: shareText.description,
-        webUrl: baseUrl,
-        mobileWebUrl: baseUrl,
+        webUrl: resultUrl,
+        mobileWebUrl: resultUrl,
       });
     } catch (err) {
-      // fallback: 링크 복사
-      navigator.clipboard.writeText(window.location.origin).then(() => {
-        toast.success("링크가 복사되었습니다. 카카오톡에 붙여넣기 해보세요!");
+      // fallback: 결과 링크 복사
+      const resultUrl = `${window.location.origin}/result?type=${encodeURIComponent(type)}&score=${score}`;
+      navigator.clipboard.writeText(resultUrl).then(() => {
+        toast.success("결과 링크가 복사되었습니다. 카카오톡에 붙여넣기 해보세요!");
       });
     } finally {
       setIsSharing(false);
