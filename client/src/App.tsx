@@ -13,6 +13,7 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import History from "./pages/History";
 import TermDiff from "./pages/TermDiff";
+import Privacy from "./pages/Privacy";
 
 function Router() {
   return (
@@ -26,6 +27,7 @@ function Router() {
       <Route path="/blog/:slug" component={BlogPost} />
       <Route path="/history" component={History} />
       <Route path="/term-diff" component={TermDiff} />
+      <Route path="/privacy" component={Privacy} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

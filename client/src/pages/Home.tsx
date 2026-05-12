@@ -8,7 +8,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
-import { Brain, Heart, BookOpen, ArrowRight, Shield, Users, ClipboardCheck, Newspaper, History as HistoryIcon } from "lucide-react";
+import { Brain, Heart, BookOpen, ArrowRight, Shield, Users, ClipboardCheck, Newspaper } from "lucide-react";
+import NavBar from "@/components/NavBar";
 import ConsentModal from "@/components/ConsentModal";
 import EmailNotifyWidget from "@/components/EmailNotifyWidget";
 import { getConsentGiven, setConsentGiven } from "@/lib/history";
@@ -50,27 +51,7 @@ export default function Home() {
       />
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
-        <div className="container flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2">
-            <Brain className="w-6 h-6 text-primary" />
-            <span className="font-serif font-semibold text-lg text-foreground">마음이음</span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/info" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              경계선 지능이란?
-            </Link>
-            <Link href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              정보 센터
-            </Link>
-            <Link href="/history" className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
-              <HistoryIcon className="w-3.5 h-3.5" />
-              내 기록
-            </Link>
-            <Button variant="outline" size="sm" onClick={() => openConsent("adult")}>검사 시작</Button>
-          </div>
-        </div>
-      </nav>
+      <NavBar onStartTest={openConsent} />
 
       {/* Hero Section */}
       <section className="relative pt-16 overflow-hidden">
@@ -491,6 +472,7 @@ export default function Home() {
             <div className="flex gap-4 text-xs text-muted-foreground">
               <Link href="/info" className="hover:text-foreground transition-colors">경계선 지능이란?</Link>
               <Link href="/blog" className="hover:text-foreground transition-colors">정보 센터</Link>
+              <Link href="/privacy" className="hover:text-foreground transition-colors">개인정보처리방침</Link>
             </div>
           </div>
         </div>
