@@ -11,6 +11,7 @@ import Result from "./pages/Result";
 import Info from "./pages/Info";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import History from "./pages/History";
 
 function Router() {
   return (
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/info" component={Info} />
       <Route path="/blog" component={Blog} />
       <Route path="/blog/:slug" component={BlogPost} />
+      <Route path="/history" component={History} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

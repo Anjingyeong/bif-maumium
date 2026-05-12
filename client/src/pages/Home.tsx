@@ -8,7 +8,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
-import { Brain, Heart, BookOpen, ArrowRight, Shield, Users, ClipboardCheck, Newspaper } from "lucide-react";
+import { Brain, Heart, BookOpen, ArrowRight, Shield, Users, ClipboardCheck, Newspaper, History as HistoryIcon } from "lucide-react";
 import ConsentModal from "@/components/ConsentModal";
 import { getConsentGiven, setConsentGiven } from "@/lib/history";
 
@@ -61,6 +61,10 @@ export default function Home() {
             </Link>
             <Link href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               정보 센터
+            </Link>
+            <Link href="/history" className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
+              <HistoryIcon className="w-3.5 h-3.5" />
+              내 기록
             </Link>
             <Button variant="outline" size="sm" onClick={() => openConsent("adult")}>검사 시작</Button>
           </div>

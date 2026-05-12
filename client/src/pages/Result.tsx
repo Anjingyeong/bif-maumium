@@ -10,8 +10,9 @@ import { motion } from "framer-motion";
 import {
   Brain, Heart, ArrowLeft, Phone, ExternalLink,
   RotateCcw, BookOpen, Download, Loader2,
-  TrendingUp, TrendingDown, Minus, History,
+  TrendingUp, TrendingDown, Minus, History, Share2,
 } from "lucide-react";
+import { shareToKakao, buildShareText } from "@/lib/kakaoShare";
 import { toast } from "sonner";
 import {
   getResultLevel,
@@ -35,6 +36,7 @@ const RESULT_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHe
 
 export default function Result() {
   const [isPdfLoading, setIsPdfLoading] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
   const [prevRecord, setPrevRecord] = useState<TestRecord | null>(null);
   const savedRef = useRef(false);
 
@@ -78,6 +80,28 @@ export default function Result() {
 
   const scoreDiff = prevRecord ? getScoreDiff(score, prevRecord.score) : null;
 
+  const handleKakaoShare = () => {
+    setIsSharing(true);
+    try {
+      const shareText = buildShareText(type, result.title, score, maxScore);
+      const currentUrl = window.location.href;
+      const baseUrl = window.location.origin;
+      shareToKakao({
+        title: shareText.title,
+        description: shareText.description,
+        webUrl: baseUrl,
+        mobileWebUrl: baseUrl,
+      });
+    } catch (err) {
+      // fallback: 링크 복사
+      navigator.clipboard.writeText(window.location.origin).then(() => {
+        toast.success("링크가 복사되었습니다. 카카오톡에 붙여넣기 해보세요!");
+      });
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
   const handleDownloadPdf = async () => {
     setIsPdfLoading(true);
     try {
@@ -96,10 +120,16 @@ export default function Result() {
       {/* Header */}
       <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-md border-b border-border/50">
         <div className="container flex items-center justify-between h-14">
-          <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            <span className="text-sm">홈으로</span>
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+              <span className="text-sm">홈으로</span>
+            </Link>
+            <Link href="/history" className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
+              <History className="w-3.5 h-3.5" />
+              <span>내 기록</span>
+            </Link>
+          </div>
           <div className="flex items-center gap-2">
             {type === "adult" ? <Brain className="w-5 h-5 text-primary" /> : <Heart className="w-5 h-5 text-accent" />}
             <span className="text-sm font-medium text-foreground">검사 결과</span>
@@ -374,6 +404,15 @@ export default function Result() {
           >
             {isPdfLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
             {isPdfLoading ? "PDF 생성 중..." : "상세 리포트 PDF 저장"}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={handleKakaoShare}
+            disabled={isSharing}
+            className="w-full sm:w-auto gap-2 border-yellow-400 text-yellow-700 hover:bg-yellow-50"
+          >
+            <Share2 className="w-4 h-4" />
+            카카오톡 공유
           </Button>
           <Link href={type === "adult" ? "/test/adult" : "/test/child"}>
             <Button variant="outline" className="w-full sm:w-auto gap-2">
