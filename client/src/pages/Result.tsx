@@ -24,6 +24,7 @@ import {
 } from "@/lib/questions";
 import { generateResultPdf } from "@/lib/generatePdf";
 import FeedbackWidget from "@/components/FeedbackWidget";
+import EmailNotifyWidget from "@/components/EmailNotifyWidget";
 import {
   saveTestRecord,
   getLastRecord,
@@ -379,6 +380,16 @@ export default function Result() {
           className="bg-card rounded-2xl border border-border/50 px-6 mb-6"
         >
           <FeedbackWidget testType={type} resultLevel={result.level} />
+        </motion.div>
+
+        {/* Email Notify */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          className="mb-6 no-print"
+        >
+          <EmailNotifyWidget />
         </motion.div>
 
         {/* Disclaimer */}
