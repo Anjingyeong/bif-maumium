@@ -6,7 +6,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
-import { Brain, History as HistoryIcon, Menu, X } from "lucide-react";
+import { History as HistoryIcon, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface NavBarProps {
@@ -38,8 +38,12 @@ export default function NavBar({ onStartTest }: NavBarProps) {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
         <div className="container flex items-center justify-between h-16">
           {/* 로고 */}
-          <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-            <Brain className="w-6 h-6 text-primary" />
+          <Link href="/" className="flex items-center gap-1.5 flex-shrink-0">
+            <img
+              src="/manus-storage/favicon-32_b4200aca.png"
+              alt="마음이음 로고"
+              className="w-7 h-7 object-contain"
+            />
             <span className="font-serif font-semibold text-lg text-foreground">마음이음</span>
           </Link>
 

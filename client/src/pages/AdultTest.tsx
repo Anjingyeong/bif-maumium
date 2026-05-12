@@ -13,7 +13,7 @@ import { useState, useCallback, useRef } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { AnimatePresence } from "framer-motion";
-import { Brain, ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Link } from "wouter";
 import { adultQuestions, AnswerValue } from "@/lib/questions";
 import QuestionCard from "@/components/QuestionCard";
@@ -85,7 +85,7 @@ export default function AdultTest() {
           {/* Center: title + progress fraction */}
           <div className="flex flex-col items-center gap-0.5">
             <div className="flex items-center gap-1.5">
-              <Brain className="w-4 h-4 text-primary" />
+              <img src="/manus-storage/favicon-32_b4200aca.png" alt="" className="w-4 h-4 object-contain" />
               <span className="text-sm font-semibold text-foreground">성인 자가진단</span>
             </div>
             <span className="text-xs text-muted-foreground">
