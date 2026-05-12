@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 import {
   Brain, Heart, ArrowLeft, Phone, ExternalLink,
   RotateCcw, BookOpen, Download, Loader2,
-  TrendingUp, TrendingDown, Minus, History, Share2,
+  TrendingUp, TrendingDown, Minus, History, Share2, Printer,
 } from "lucide-react";
 import { shareToKakao, buildShareText } from "@/lib/kakaoShare";
 import { toast } from "sonner";
@@ -396,31 +396,39 @@ export default function Result() {
         </motion.div>
 
         {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-3 justify-center flex-wrap">
+        <div className="flex flex-col sm:flex-row gap-3 justify-center flex-wrap no-print">
           <Button
             onClick={handleDownloadPdf}
             disabled={isPdfLoading}
-            className="w-full sm:w-auto bg-primary text-primary-foreground gap-2"
+            className="w-full sm:w-auto min-h-[44px] bg-primary text-primary-foreground gap-2"
           >
             {isPdfLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
             {isPdfLoading ? "PDF 생성 중..." : "상세 리포트 PDF 저장"}
           </Button>
           <Button
             variant="outline"
+            onClick={() => window.print()}
+            className="w-full sm:w-auto min-h-[44px] gap-2 border-border text-foreground hover:bg-secondary"
+          >
+            <Printer className="w-4 h-4" />
+            인쇄하기
+          </Button>
+          <Button
+            variant="outline"
             onClick={handleKakaoShare}
             disabled={isSharing}
-            className="w-full sm:w-auto gap-2 border-yellow-400 text-yellow-700 hover:bg-yellow-50"
+            className="w-full sm:w-auto min-h-[44px] gap-2 border-yellow-400 text-yellow-700 hover:bg-yellow-50"
           >
             <Share2 className="w-4 h-4" />
             카카오톡 공유
           </Button>
           <Link href={type === "adult" ? "/test/adult" : "/test/child"}>
-            <Button variant="outline" className="w-full sm:w-auto gap-2">
+            <Button variant="outline" className="w-full sm:w-auto min-h-[44px] gap-2">
               <RotateCcw className="w-4 h-4" /> 다시 검사하기
             </Button>
           </Link>
           <Link href="/info">
-            <Button variant="outline" className="w-full sm:w-auto gap-2">
+            <Button variant="outline" className="w-full sm:w-auto min-h-[44px] gap-2">
               <BookOpen className="w-4 h-4" /> 경계선 지능 알아보기
             </Button>
           </Link>
