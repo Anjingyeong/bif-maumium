@@ -85,13 +85,13 @@ export function buildShareText(
   const pct = Math.round((score / maxScore) * 100);
   if (type === "adult") {
     return {
-      title: `나의 경계선 지능 자가진단 결과: ${levelTitle}`,
-      description: `점수 ${score}/${maxScore}점 (${pct}%). 마음이음에서 경계선 지능 자가진단을 해봤어요. 나도 해당될까 궁금하다면 직접 확인해보세요!`,
+      title: `마음이음 인지 기능 선별검사 결과: ${levelTitle}`,
+      description: `마음이음에서 인지 기능 선별검사를 해봤어요. 나도 나의 인지 스타일이 궁금하다면 직접 확인해보세요!`,
     };
   } else {
     return {
-      title: `우리 아이 경계선 지능 선별검사 결과: ${levelTitle}`,
-      description: `점수 ${score}/${maxScore}점 (${pct}%). 마음이음에서 아동 경계선 지능 선별검사를 해봤어요. 우리 아이도 확인해보세요!`,
+      title: `마음이음 아동 인지 발달 선별검사 결과: ${levelTitle}`,
+      description: `마음이음에서 아이의 인지 발달 선별검사를 해봤어요. 우리 아이의 성장이 궁금하다면 직접 확인해보세요!`,
     };
   }
 }

@@ -58,10 +58,11 @@ const CATEGORY_LABEL: Record<string, string> = {
 function ScoreBadge({ level }: { level: string }) {
   const color = LEVEL_COLOR[level] ?? "#94a3b8";
   const label: Record<string, string> = {
-    normal: "정상 범위",
-    mild: "경미한 수준",
-    moderate: "주의 필요",
-    high: "전문가 상담 권장",
+    low: "일상생활 잘 유지 중",
+    normal: "일상생활 잘 유지 중",
+    mild: "가벼운 어려움 있음",
+    moderate: "전문가 상담 권장",
+    high: "전문가 상담 적극 권장",
   };
   return (
     <span
