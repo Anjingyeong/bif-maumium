@@ -8,7 +8,7 @@ import { Shield, ArrowLeft, Mail, Lock, Trash2, Eye, AlertCircle } from "lucide-
 
 const LAST_UPDATED = "2026년 5월 12일";
 const SERVICE_NAME = "마음이음";
-const CONTACT_EMAIL = "privacy@maumium.kr"; // 추후 실제 이메일로 교체
+const CONTACT_EMAIL = "maumium.service@gmail.com";
 
 const sections = [
   {
