@@ -3,23 +3,82 @@
  * 전문가 자문 오픈 시 알림 받기 이메일 수집 컴포넌트
  * - localStorage에 이메일 저장 (bif_notify_email)
  * - 이미 등록한 경우 완료 상태 표시
- * - 이메일 형식 유효성 검사
- * - 등록 완료 시 풍성한 애니메이션: 파티클 폭죽, 체크마크 드로잉, 순차 등장
+ * - 실시간 유효성 검사 + 친절한 에러 메시지
+ * - 등록 완료 시 파티클 폭죽, 체크마크 드로잉, 순차 등장 애니메이션
  */
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
-import { Bell, Mail, ArrowRight, Loader2 } from "lucide-react";
+import { Bell, Mail, ArrowRight, Loader2, AlertCircle, CheckCircle2 as CheckIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
 
 const STORAGE_KEY = "bif_notify_email";
 
-function isValidEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+// 유효성 검사 단계별 상태
+type ValidationState = "idle" | "typing" | "valid" | "invalid";
+
+interface ValidationResult {
+  state: ValidationState;
+  message: string;
 }
 
-// 파티클 데이터 (색상, 위치, 방향 고정값으로 SSR-safe)
+function validateEmail(email: string): ValidationResult {
+  if (!email) return { state: "idle", message: "" };
+
+  // 입력 중 — @ 없으면 아직 타이핑 중으로 간주
+  if (!email.includes("@")) {
+    return { state: "typing", message: "이메일 주소에 '@'가 필요합니다." };
+  }
+
+  const [local, domain] = email.split("@");
+
+  if (!local || local.length === 0) {
+    return { state: "invalid", message: "'@' 앞에 아이디를 입력해주세요. (예: hong@gmail.com)" };
+  }
+
+  if (!domain) {
+    return { state: "typing", message: "'@' 뒤에 도메인을 입력해주세요. (예: gmail.com)" };
+  }
+
+  if (!domain.includes(".")) {
+    return { state: "typing", message: "도메인에 '.'이 필요합니다. (예: gmail.com)" };
+  }
+
+  const domainParts = domain.split(".");
+  const tld = domainParts[domainParts.length - 1];
+
+  if (!tld || tld.length < 2) {
+    return { state: "typing", message: "올바른 도메인 형식을 입력해주세요. (예: .com, .kr)" };
+  }
+
+  // 특수문자 검사
+  const validPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  if (!validPattern.test(email)) {
+    return { state: "invalid", message: "사용할 수 없는 문자가 포함되어 있습니다. 이메일 주소를 다시 확인해주세요." };
+  }
+
+  // 일반적인 오타 힌트
+  const commonTypos: Record<string, string> = {
+    "gamil.com": "gmail.com",
+    "gmial.com": "gmail.com",
+    "gmai.com": "gmail.com",
+    "navar.com": "naver.com",
+    "naver.co": "naver.com",
+    "daurn.net": "daum.net",
+    "daum.com": "daum.net",
+    "kakao.co": "kakao.com",
+  };
+  if (commonTypos[domain]) {
+    return {
+      state: "invalid",
+      message: `혹시 '@${commonTypos[domain]}' 을 입력하려 하셨나요?`,
+    };
+  }
+
+  return { state: "valid", message: "올바른 이메일 형식입니다." };
+}
+
+// 파티클 데이터
 const PARTICLES = [
   { color: "#3b5bdb", x: -60, y: -80, rotate: 45,  delay: 0 },
   { color: "#f59e0b", x:  60, y: -90, rotate: -30, delay: 0.05 },
@@ -59,53 +118,31 @@ function SuccessAnimation({ email }: { email: string }) {
             className="absolute w-2 h-2 rounded-sm"
             style={{ backgroundColor: p.color, top: 0, left: 0 }}
             initial={{ x: 0, y: 0, opacity: 1, scale: 1, rotate: 0 }}
-            animate={{
-              x: p.x,
-              y: p.y,
-              opacity: [1, 1, 0],
-              scale: [1, 1.2, 0.4],
-              rotate: p.rotate,
-            }}
-            transition={{
-              duration: 0.9,
-              delay: p.delay,
-              ease: [0.22, 1, 0.36, 1],
-            }}
+            animate={{ x: p.x, y: p.y, opacity: [1, 1, 0], scale: [1, 1.2, 0.4], rotate: p.rotate }}
+            transition={{ duration: 0.9, delay: p.delay, ease: [0.22, 1, 0.36, 1] }}
           />
         ))}
       </div>
 
-      {/* 체크마크 원 - 스케일 팝 + SVG 드로잉 */}
+      {/* 체크마크 원 */}
       <motion.div
         className="relative w-20 h-20 flex items-center justify-center"
-        variants={{
-          hidden: { scale: 0, opacity: 0 },
-          visible: { scale: 1, opacity: 1 },
-        }}
+        variants={{ hidden: { scale: 0, opacity: 0 }, visible: { scale: 1, opacity: 1 } }}
         transition={{ type: "spring", stiffness: 300, damping: 18, delay: 0.1 }}
       >
-        {/* 배경 원 - 파동 효과 */}
-        <motion.div
-          className="absolute inset-0 rounded-full bg-primary/20"
+        <motion.div className="absolute inset-0 rounded-full bg-primary/20"
           animate={{ scale: [1, 1.4, 1], opacity: [0.6, 0, 0] }}
           transition={{ duration: 1.2, delay: 0.3, repeat: 1 }}
         />
-        <motion.div
-          className="absolute inset-0 rounded-full bg-primary/10"
+        <motion.div className="absolute inset-0 rounded-full bg-primary/10"
           animate={{ scale: [1, 1.7, 1], opacity: [0.4, 0, 0] }}
           transition={{ duration: 1.4, delay: 0.5, repeat: 1 }}
         />
-
-        {/* 메인 원 */}
         <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
-          {/* SVG 체크마크 드로잉 */}
           <svg viewBox="0 0 24 24" className="w-9 h-9" fill="none">
             <motion.path
               d="M5 13l4 4L19 7"
-              stroke="white"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+              stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
               initial={{ pathLength: 0, opacity: 0 }}
               animate={{ pathLength: 1, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.35, ease: "easeOut" }}
@@ -114,30 +151,19 @@ function SuccessAnimation({ email }: { email: string }) {
         </div>
       </motion.div>
 
-      {/* 텍스트 - 순차 등장 */}
+      {/* 텍스트 순차 등장 */}
       <motion.div
-        variants={{
-          hidden: { opacity: 0, y: 12 },
-          visible: { opacity: 1, y: 0 },
-        }}
+        variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0 } }}
         transition={{ delay: 0.55, duration: 0.4 }}
       >
-        <motion.p
-          className="text-lg font-bold text-foreground"
-          variants={{
-            hidden: { opacity: 0, y: 8 },
-            visible: { opacity: 1, y: 0 },
-          }}
+        <motion.p className="text-lg font-bold text-foreground"
+          variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
           transition={{ delay: 0.55 }}
         >
           알림 등록 완료! 🎉
         </motion.p>
-        <motion.p
-          className="text-sm text-muted-foreground mt-1.5 leading-relaxed"
-          variants={{
-            hidden: { opacity: 0, y: 8 },
-            visible: { opacity: 1, y: 0 },
-          }}
+        <motion.p className="text-sm text-muted-foreground mt-1.5 leading-relaxed"
+          variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
           transition={{ delay: 0.7 }}
         >
           <span className="font-semibold text-primary">{email}</span>으로<br />
@@ -145,13 +171,10 @@ function SuccessAnimation({ email }: { email: string }) {
         </motion.p>
       </motion.div>
 
-      {/* 혜택 배지 - 순차 등장 */}
+      {/* 혜택 배지 순차 등장 */}
       <motion.div
         className="flex flex-wrap gap-2 justify-center"
-        variants={{
-          hidden: {},
-          visible: { transition: { staggerChildren: 0.1, delayChildren: 0.85 } },
-        }}
+        variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1, delayChildren: 0.85 } } }}
       >
         {[
           { icon: "🎯", text: "조기 등록 할인 예정" },
@@ -161,10 +184,7 @@ function SuccessAnimation({ email }: { email: string }) {
           <motion.span
             key={badge.text}
             className="flex items-center gap-1.5 bg-primary/10 text-primary text-xs font-medium px-3 py-1.5 rounded-full"
-            variants={{
-              hidden: { opacity: 0, scale: 0.8, y: 6 },
-              visible: { opacity: 1, scale: 1, y: 0 },
-            }}
+            variants={{ hidden: { opacity: 0, scale: 0.8, y: 6 }, visible: { opacity: 1, scale: 1, y: 0 } }}
             transition={{ type: "spring", stiffness: 260, damping: 20 }}
           >
             <span>{badge.icon}</span>
@@ -178,22 +198,31 @@ function SuccessAnimation({ email }: { email: string }) {
 
 export default function EmailNotifyWidget() {
   const [email, setEmail] = useState("");
+  const [touched, setTouched] = useState(false); // 한 번이라도 입력했는지
   const [isLoading, setIsLoading] = useState(false);
   const [isDone, setIsDone] = useState(() => !!localStorage.getItem(STORAGE_KEY));
-  const [registeredEmail, setRegisteredEmail] = useState(
-    () => localStorage.getItem(STORAGE_KEY) || ""
-  );
+  const [registeredEmail, setRegisteredEmail] = useState(() => localStorage.getItem(STORAGE_KEY) || "");
+
+  // 실시간 유효성 검사
+  const validation = validateEmail(email);
+  const showError = touched && (validation.state === "invalid" || (validation.state === "typing" && email.length > 3));
+  const showSuccess = touched && validation.state === "valid";
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    if (!touched && e.target.value.length > 0) setTouched(true);
+  };
+
+  const handleBlur = () => {
+    if (email.length > 0) setTouched(true);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) {
-      toast.error("이메일 주소를 입력해주세요.");
-      return;
-    }
-    if (!isValidEmail(email)) {
-      toast.error("올바른 이메일 형식이 아닙니다.");
-      return;
-    }
+    setTouched(true);
+
+    if (!email.trim()) return;
+    if (validation.state !== "valid") return;
 
     setIsLoading(true);
     await new Promise(res => setTimeout(res, 700));
@@ -204,6 +233,15 @@ export default function EmailNotifyWidget() {
     setIsDone(true);
   };
 
+  // 입력 필드 테두리 색상
+  const inputBorderClass = !touched
+    ? "border-border/60"
+    : showError
+    ? "border-destructive focus:border-destructive"
+    : showSuccess
+    ? "border-emerald-500 focus:border-emerald-500"
+    : "border-border/60";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -213,32 +251,18 @@ export default function EmailNotifyWidget() {
     >
       <AnimatePresence mode="wait">
         {isDone ? (
-          <motion.div
-            key="done"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="done" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
             <SuccessAnimation email={registeredEmail} />
           </motion.div>
         ) : (
-          <motion.div
-            key="input"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25 }}
-          >
+          <motion.div key="input" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
             {/* Header */}
             <div className="flex items-start gap-4 mb-5">
               <div className="w-11 h-11 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0">
                 <Bell className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground text-base">
-                  전문가 자문 서비스 오픈 알림 받기
-                </h3>
+                <h3 className="font-semibold text-foreground text-base">전문가 자문 서비스 오픈 알림 받기</h3>
                 <p className="text-sm text-muted-foreground mt-0.5 leading-relaxed">
                   임상심리사·정신건강의학과 전문의와의 1:1 온라인 자문 서비스를 준비 중입니다.
                   오픈 시 이메일로 가장 먼저 알려드릴게요.
@@ -253,10 +277,7 @@ export default function EmailNotifyWidget() {
                 { icon: "👨‍⚕️", text: "검증된 전문가 연결" },
                 { icon: "🔒", text: "개인정보 외부 미전송" },
               ].map((item) => (
-                <div
-                  key={item.text}
-                  className="flex items-center gap-2 bg-background/60 rounded-lg px-3 py-2 text-xs text-muted-foreground"
-                >
+                <div key={item.text} className="flex items-center gap-2 bg-background/60 rounded-lg px-3 py-2 text-xs text-muted-foreground">
                   <span>{item.icon}</span>
                   <span>{item.text}</span>
                 </div>
@@ -264,32 +285,92 @@ export default function EmailNotifyWidget() {
             </div>
 
             {/* Email form */}
-            <form onSubmit={handleSubmit} className="flex gap-2">
-              <div className="relative flex-1">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  type="email"
-                  placeholder="이메일 주소 입력"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="pl-9 min-h-[44px] bg-background border-border/60 focus:border-primary/50"
-                  disabled={isLoading}
-                />
+            <form onSubmit={handleSubmit} className="space-y-2">
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  {/* 왼쪽 아이콘 */}
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
+
+                  <Input
+                    type="email"
+                    placeholder="예: hong@gmail.com"
+                    value={email}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={`pl-9 pr-9 min-h-[44px] bg-background transition-colors duration-200 ${inputBorderClass}`}
+                    disabled={isLoading}
+                    autoComplete="email"
+                  />
+
+                  {/* 오른쪽 상태 아이콘 */}
+                  <AnimatePresence>
+                    {showError && (
+                      <motion.div
+                        key="err-icon"
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.5 }}
+                        className="absolute right-3 top-1/2 -translate-y-1/2"
+                      >
+                        <AlertCircle className="w-4 h-4 text-destructive" />
+                      </motion.div>
+                    )}
+                    {showSuccess && (
+                      <motion.div
+                        key="ok-icon"
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.5 }}
+                        className="absolute right-3 top-1/2 -translate-y-1/2"
+                      >
+                        <CheckIcon className="w-4 h-4 text-emerald-500" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={isLoading || (touched && validation.state !== "valid")}
+                  className="min-h-[44px] px-5 bg-primary text-primary-foreground gap-1.5 flex-shrink-0 disabled:opacity-50"
+                >
+                  {isLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <>알림 받기 <ArrowRight className="w-4 h-4" /></>
+                  )}
+                </Button>
               </div>
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="min-h-[44px] px-5 bg-primary text-primary-foreground gap-1.5 flex-shrink-0"
-              >
-                {isLoading ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <>
-                    알림 받기
-                    <ArrowRight className="w-4 h-4" />
-                  </>
+
+              {/* 에러 / 성공 메시지 */}
+              <AnimatePresence mode="wait">
+                {showError && (
+                  <motion.p
+                    key="error-msg"
+                    initial={{ opacity: 0, y: -4, height: 0 }}
+                    animate={{ opacity: 1, y: 0, height: "auto" }}
+                    exit={{ opacity: 0, y: -4, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex items-start gap-1.5 text-xs text-destructive px-1"
+                  >
+                    <AlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
+                    {validation.message}
+                  </motion.p>
                 )}
-              </Button>
+                {showSuccess && (
+                  <motion.p
+                    key="success-msg"
+                    initial={{ opacity: 0, y: -4, height: 0 }}
+                    animate={{ opacity: 1, y: 0, height: "auto" }}
+                    exit={{ opacity: 0, y: -4, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex items-center gap-1.5 text-xs text-emerald-600 px-1"
+                  >
+                    <CheckIcon className="w-3.5 h-3.5 flex-shrink-0" />
+                    {validation.message}
+                  </motion.p>
+                )}
+              </AnimatePresence>
             </form>
 
             <p className="text-xs text-muted-foreground mt-3 text-center">
