@@ -32,8 +32,8 @@ Worker result APIs:
 
 - `POST /api/results`: Save a consented screening result with `nickname`, `answers`, `domainScores`, `totalScore`, `riskLevel`, `consentAgreed`, and `createdAt`.
 - `GET /api/results/:id`: Fetch one result by UUID.
-- `GET /api/admin/results`: List recent results. Requires `ADMIN_TOKEN`.
-- `DELETE /api/admin/results/:id`: Delete a result by UUID. Requires `ADMIN_TOKEN`.
+- `GET /api/admin/results`: List recent result summaries. Requires `Authorization: Bearer <ADMIN_TOKEN>`.
+- `DELETE /api/admin/results/:id`: Delete a result by UUID. Requires `Authorization: Bearer <ADMIN_TOKEN>`.
 
 ## Legacy Render/Vercel Notes
 

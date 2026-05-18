@@ -145,12 +145,14 @@ describe("Cloudflare Worker result API", () => {
       env
     );
     expect(fetched.status).toBe(200);
-    await expect(fetched.json()).resolves.toMatchObject({
+    const fetchedBody = await fetched.json();
+    expect(fetchedBody).toMatchObject({
       nickname: "tester",
-      domainScores: payload.domainScores,
       consentAgreed: true,
       createdAt: payload.createdAt,
     });
+    expect(fetchedBody.answers).toBeUndefined();
+    expect(fetchedBody.domainScores).toBeUndefined();
   });
 
   it("does not save without consent", async () => {
@@ -189,11 +191,31 @@ describe("Cloudflare Worker result API", () => {
 
     const authorized = await worker.fetch(
       request("/api/admin/results", {
-        headers: { "X-Admin-Token": "secret-admin-token" },
+        headers: { Authorization: "Bearer secret-admin-token" },
       }),
       env
     );
     expect(authorized.status).toBe(200);
+  });
+
+  it("rejects invalid admin tokens and legacy token headers", async () => {
+    const { env } = createEnv();
+
+    const invalid = await worker.fetch(
+      request("/api/admin/results", {
+        headers: { Authorization: "Bearer wrong-token" },
+      }),
+      env
+    );
+    expect(invalid.status).toBe(401);
+
+    const legacyHeader = await worker.fetch(
+      request("/api/admin/results", {
+        headers: { "X-Admin-Token": "secret-admin-token" },
+      }),
+      env
+    );
+    expect(legacyHeader.status).toBe(401);
   });
 
   it("rejects disallowed CORS origins", async () => {
@@ -205,5 +227,71 @@ describe("Cloudflare Worker result API", () => {
       env
     );
     expect(response.status).toBe(403);
+  });
+
+  it("rejects invalid result ids safely", async () => {
+    const { env } = createEnv();
+    const response = await worker.fetch(
+      request("/api/results/not-a-uuid"),
+      env
+    );
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      error: "Invalid result id.",
+    });
+  });
+
+  it("rejects HTML-like nicknames before storage", async () => {
+    const { env, rows } = createEnv();
+    const response = await worker.fetch(
+      request("/api/results", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nickname: "<script>alert(1)</script>",
+          testType: "adult",
+          answers: { 1: 1 },
+          domainScores: { learning: { score: 1, max: 3 } },
+          totalScore: 1,
+          maxScore: 45,
+          riskLevel: "low",
+          riskTitle: "Low",
+          consentAgreed: true,
+          createdAt: "2026-05-18T00:00:00.000Z",
+        }),
+      }),
+      env
+    );
+
+    expect(response.status).toBe(400);
+    expect(rows).toHaveLength(0);
+  });
+
+  it("handles SQL injection-like nickname as bound data", async () => {
+    const { env, rows } = createEnv();
+    const nickname = "x'); DROP TABLE t;--";
+    const response = await worker.fetch(
+      request("/api/results", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nickname,
+          testType: "adult",
+          answers: { 1: 1 },
+          domainScores: { learning: { score: 1, max: 3 } },
+          totalScore: 1,
+          maxScore: 45,
+          riskLevel: "low",
+          riskTitle: "Low",
+          consentAgreed: true,
+          createdAt: "2026-05-18T00:00:00.000Z",
+        }),
+      }),
+      env
+    );
+
+    expect(response.status).toBe(201);
+    expect(rows).toHaveLength(1);
+    expect(rows[0].nickname).toBe(nickname);
   });
 });

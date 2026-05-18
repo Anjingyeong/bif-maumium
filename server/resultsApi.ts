@@ -30,6 +30,7 @@ function normalizeNickname(value: unknown): string | null {
   if (typeof value !== "string") return null;
   const nickname = value.trim();
   if (nickname.length < 1 || nickname.length > 40) return null;
+  if (/[<>]/.test(nickname)) return null;
   return nickname;
 }
 
@@ -108,8 +109,8 @@ function requireAdminToken(req: Request, res: Response, next: NextFunction) {
     return sendError(res, 503, "관리자 토큰이 설정되지 않았습니다.");
   }
 
-  const bearer = req.header("authorization")?.replace(/^Bearer\s+/i, "");
-  const token = req.header("x-admin-token") || bearer;
+  const match = (req.header("authorization") || "").match(/^Bearer\s+(.+)$/i);
+  const token = match?.[1];
 
   if (token !== configuredToken) {
     return sendError(res, 401, "관리자 권한이 필요합니다.");
@@ -158,6 +159,17 @@ export function registerResultsApi(app: Express) {
 
     const result = await prisma.screeningResult.findUnique({
       where: { id },
+      select: {
+        id: true,
+        nickname: true,
+        testType: true,
+        totalScore: true,
+        maxScore: true,
+        riskLevel: true,
+        riskTitle: true,
+        consentGiven: true,
+        submittedAt: true,
+      },
     });
 
     if (!result) {
@@ -176,6 +188,17 @@ export function registerResultsApi(app: Express) {
     const results = await prisma.screeningResult.findMany({
       orderBy: { submittedAt: "desc" },
       take: limit,
+      select: {
+        id: true,
+        nickname: true,
+        testType: true,
+        totalScore: true,
+        maxScore: true,
+        riskLevel: true,
+        riskTitle: true,
+        consentGiven: true,
+        submittedAt: true,
+      },
     });
 
     return res.json({ results });

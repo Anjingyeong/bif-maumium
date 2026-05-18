@@ -68,6 +68,14 @@ interface ScreeningResultRow {
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
+const SECURITY_HEADERS: HeadersInit = {
+  "X-Content-Type-Options": "nosniff",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+  "X-Frame-Options": "DENY",
+  "Content-Security-Policy": "frame-ancestors 'none'",
+};
+
 function jsonResponse(
   body: unknown,
   init: ResponseInit = {},
@@ -76,6 +84,7 @@ function jsonResponse(
   return new Response(JSON.stringify(body), {
     ...init,
     headers: {
+      ...SECURITY_HEADERS,
       "Content-Type": "application/json; charset=utf-8",
       ...corsHeaders,
       ...init.headers,
@@ -107,8 +116,7 @@ function buildCorsHeaders(request: Request, env: Env): HeadersInit {
     return {
       "Access-Control-Allow-Origin": origin,
       "Access-Control-Allow-Methods": "GET,POST,DELETE,OPTIONS",
-      "Access-Control-Allow-Headers":
-        "Content-Type, Authorization, X-Admin-Token",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
       Vary: "Origin",
     };
   }
@@ -129,6 +137,7 @@ function normalizeNickname(value: unknown): string | null {
   if (typeof value !== "string") return null;
   const nickname = value.trim();
   if (nickname.length < 1 || nickname.length > 40) return null;
+  if (/[<>]/.test(nickname)) return null;
   return nickname;
 }
 
@@ -215,20 +224,16 @@ function validatePayload(
 }
 
 function requireAdmin(request: Request, env: Env): boolean {
-  const bearer = request.headers
-    .get("Authorization")
-    ?.replace(/^Bearer\s+/i, "");
-  const token = request.headers.get("X-Admin-Token") || bearer;
-  return !!env.ADMIN_TOKEN && token === env.ADMIN_TOKEN;
+  const authorization = request.headers.get("Authorization") || "";
+  const match = authorization.match(/^Bearer\s+(.+)$/i);
+  return !!env.ADMIN_TOKEN && !!match && match[1] === env.ADMIN_TOKEN;
 }
 
-function toPublicResult(row: ScreeningResultRow) {
+function toResultSummary(row: ScreeningResultRow) {
   return {
     id: row.id,
     nickname: row.nickname,
     testType: row.test_type,
-    answers: JSON.parse(row.answers_json),
-    domainScores: JSON.parse(row.domain_scores_json),
     totalScore: row.total_score,
     maxScore: row.max_score,
     riskLevel: row.risk_level,
@@ -299,7 +304,7 @@ async function getResult(id: string, env: Env, corsHeaders: HeadersInit) {
     .first<ScreeningResultRow>();
 
   if (!row) return errorResponse("Result not found.", 404, corsHeaders);
-  return jsonResponse(toPublicResult(row), { status: 200 }, corsHeaders);
+  return jsonResponse(toResultSummary(row), { status: 200 }, corsHeaders);
 }
 
 async function listAdminResults(
@@ -324,7 +329,7 @@ async function listAdminResults(
     .all<ScreeningResultRow>();
 
   return jsonResponse(
-    { results: results.map(toPublicResult) },
+    { results: results.map(toResultSummary) },
     { status: 200 },
     corsHeaders
   );
@@ -345,10 +350,10 @@ async function deleteAdminResult(
   }
 
   const existing = await env.DB.prepare(
-    "SELECT * FROM screening_results WHERE id = ?"
+    "SELECT id FROM screening_results WHERE id = ?"
   )
     .bind(id)
-    .first<ScreeningResultRow>();
+    .first<{ id: string }>();
 
   if (!existing) return errorResponse("Result not found.", 404, corsHeaders);
 
@@ -356,7 +361,10 @@ async function deleteAdminResult(
     .bind(id)
     .run();
 
-  return new Response(null, { status: 204, headers: corsHeaders });
+  return new Response(null, {
+    status: 204,
+    headers: { ...SECURITY_HEADERS, ...corsHeaders },
+  });
 }
 
 export default {
@@ -365,8 +373,11 @@ export default {
 
     if (request.method === "OPTIONS") {
       return isCorsAllowed(request, env)
-        ? new Response(null, { status: 204, headers: corsHeaders })
-        : new Response(null, { status: 403 });
+        ? new Response(null, {
+            status: 204,
+            headers: { ...SECURITY_HEADERS, ...corsHeaders },
+          })
+        : new Response(null, { status: 403, headers: SECURITY_HEADERS });
     }
 
     if (!isCorsAllowed(request, env)) {

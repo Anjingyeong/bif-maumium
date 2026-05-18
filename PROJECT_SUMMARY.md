@@ -41,8 +41,8 @@ The Cloudflare Worker provides the same result API surface with D1 instead of Po
 
 - `POST /api/results`: Save a consented screening result with `nickname`, `answers`, `domainScores`, `totalScore`, `riskLevel`, `consentAgreed`, and `createdAt`.
 - `GET /api/results/:id`: Fetch one result by UUID.
-- `GET /api/admin/results`: Admin list endpoint, requires `ADMIN_TOKEN`.
-- `DELETE /api/admin/results/:id`: Admin delete endpoint, requires `ADMIN_TOKEN`.
+- `GET /api/admin/results`: Admin list endpoint, requires `Authorization: Bearer <ADMIN_TOKEN>`.
+- `DELETE /api/admin/results/:id`: Admin delete endpoint, requires `Authorization: Bearer <ADMIN_TOKEN>`.
 
 ## Deployment Environment Variables
 
