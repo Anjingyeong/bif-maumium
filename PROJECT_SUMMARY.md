@@ -93,3 +93,8 @@ More detail is in `docs/deployment-env.md`.
 - The yellow terminology notice is visually calmer so the main hero message remains primary.
 - Main and final CTA pairs are balanced with filled adult/child buttons using primary and accent tones.
 - The email interest widget accurately reflects the current implementation: emails are saved only in this browser's localStorage and are not sent to a server.
+
+## 2026-05-18 Icon Asset Notes
+
+- Replaced missing Manus favicon references with generated Maumium icon assets under `client/public/icons/`.
+- Added `site.webmanifest` and reused the new icon for the homepage navigation logo and adult test header icon.

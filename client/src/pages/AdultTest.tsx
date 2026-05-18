@@ -108,7 +108,7 @@ export default function AdultTest() {
           {/* Center: title + progress fraction */}
           <div className="flex flex-col items-center gap-0.5">
             <div className="flex items-center gap-1.5">
-              <img src="/manus-storage/favicon-32_b4200aca.png" alt="" className="w-4 h-4 object-contain" />
+              <img src="/icons/maumium-icon-32.png" alt="" className="w-4 h-4 object-contain" />
               <span className="text-sm font-semibold text-foreground">성인 자가체크</span>
             </div>
             <span className="text-xs text-muted-foreground">

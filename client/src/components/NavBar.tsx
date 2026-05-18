@@ -40,7 +40,7 @@ export default function NavBar({ onStartTest }: NavBarProps) {
           {/* 로고 */}
           <Link href="/" className="flex items-center gap-1.5 flex-shrink-0">
             <img
-              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%236A879F'/%3E%3Cpath d='M10 19c2 4 10 4 12 0M10 14c1-4 5-6 8-3 3-3 7-1 8 3' stroke='white' stroke-width='2.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"
+              src="/icons/maumium-icon-32.png"
               alt="마음이음 로고"
               className="w-7 h-7 object-contain"
             />
