@@ -198,6 +198,52 @@ describe("Cloudflare Worker result API", () => {
     expect(authorized.status).toBe(200);
   });
 
+  it("returns admin-friendly result summaries without raw answers", async () => {
+    const { env } = createEnv();
+    const payload = {
+      nickname: "tester",
+      testType: "adult",
+      answers: { 1: 2 },
+      domainScores: { learning: { score: 2, max: 3 } },
+      totalScore: 2,
+      maxScore: 45,
+      riskLevel: "low",
+      riskTitle: "Low",
+      consentAgreed: true,
+      createdAt: "2026-05-18T00:00:00.000Z",
+    };
+
+    await worker.fetch(
+      request("/api/results", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }),
+      env
+    );
+
+    const response = await worker.fetch(
+      request("/api/admin/results", {
+        headers: { Authorization: "Bearer secret-admin-token" },
+      }),
+      env
+    );
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.results[0]).toMatchObject({
+      nickname: "tester",
+      domainScores: { learning: { score: 2, max: 3 } },
+      adminView: {
+        scoreText: "2/45",
+        scorePercent: 4,
+        answerCount: 1,
+        domains: [{ name: "learning", score: 2, max: 3, percent: 67 }],
+      },
+    });
+    expect(body.results[0].answers).toBeUndefined();
+  });
+
   it("rejects invalid admin tokens and legacy token headers", async () => {
     const { env } = createEnv();
 

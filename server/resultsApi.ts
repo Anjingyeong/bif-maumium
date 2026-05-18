@@ -119,6 +119,79 @@ function requireAdminToken(req: Request, res: Response, next: NextFunction) {
   return next();
 }
 
+function isScoreEntry(value: unknown): value is { score: number; max: number } {
+  return (
+    isPlainObject(value) &&
+    typeof value.score === "number" &&
+    typeof value.max === "number" &&
+    value.max > 0
+  );
+}
+
+function formatPercent(score: number, max: number): number {
+  return Math.round((score / max) * 100);
+}
+
+function formatKst(value: Date | string): string {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  return date.toLocaleString("ko-KR", {
+    timeZone: "Asia/Seoul",
+    hour12: false,
+  });
+}
+
+function toAdminResult(result: {
+  id: string;
+  nickname: string;
+  testType: string;
+  answers: Prisma.JsonValue;
+  categoryScores: Prisma.JsonValue;
+  totalScore: number;
+  maxScore: number;
+  riskLevel: string;
+  riskTitle: string;
+  consentGiven: boolean;
+  submittedAt: Date;
+}) {
+  const answerCount = isPlainObject(result.answers)
+    ? Object.keys(result.answers).length
+    : 0;
+  const domains = isPlainObject(result.categoryScores)
+    ? Object.entries(result.categoryScores).map(([name, value]) => {
+        if (!isScoreEntry(value)) {
+          return { name, score: null, max: null, percent: null };
+        }
+        return {
+          name,
+          score: value.score,
+          max: value.max,
+          percent: formatPercent(value.score, value.max),
+        };
+      })
+    : [];
+
+  return {
+    id: result.id,
+    nickname: result.nickname,
+    testType: result.testType,
+    totalScore: result.totalScore,
+    maxScore: result.maxScore,
+    riskLevel: result.riskLevel,
+    riskTitle: result.riskTitle,
+    consentGiven: result.consentGiven,
+    submittedAt: result.submittedAt,
+    categoryScores: result.categoryScores,
+    adminView: {
+      scoreText: `${result.totalScore}/${result.maxScore}`,
+      scorePercent: formatPercent(result.totalScore, result.maxScore),
+      answerCount,
+      submittedAtKst: formatKst(result.submittedAt),
+      domains,
+    },
+  };
+}
+
 export function registerResultsApi(app: Express) {
   app.post("/api/results", async (req, res) => {
     const validated = validateResultPayload(req.body);
@@ -192,6 +265,8 @@ export function registerResultsApi(app: Express) {
         id: true,
         nickname: true,
         testType: true,
+        answers: true,
+        categoryScores: true,
         totalScore: true,
         maxScore: true,
         riskLevel: true,
@@ -201,7 +276,7 @@ export function registerResultsApi(app: Express) {
       },
     });
 
-    return res.json({ results });
+    return res.json({ results: results.map(toAdminResult) });
   });
 
   app.delete("/api/admin/results/:id", requireAdminToken, async (req, res) => {

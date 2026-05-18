@@ -229,6 +229,36 @@ function requireAdmin(request: Request, env: Env): boolean {
   return !!env.ADMIN_TOKEN && !!match && match[1] === env.ADMIN_TOKEN;
 }
 
+function safeParseJson(value: string): unknown {
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+}
+
+function isScoreEntry(value: unknown): value is { score: number; max: number } {
+  return (
+    isPlainObject(value) &&
+    typeof value.score === "number" &&
+    typeof value.max === "number" &&
+    value.max > 0
+  );
+}
+
+function formatPercent(score: number, max: number): number {
+  return Math.round((score / max) * 100);
+}
+
+function formatKst(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleString("ko-KR", {
+    timeZone: "Asia/Seoul",
+    hour12: false,
+  });
+}
+
 function toResultSummary(row: ScreeningResultRow) {
   return {
     id: row.id,
@@ -240,6 +270,37 @@ function toResultSummary(row: ScreeningResultRow) {
     riskTitle: row.risk_title,
     consentAgreed: row.consent_agreed === 1,
     createdAt: row.created_at,
+  };
+}
+
+function toAdminResult(row: ScreeningResultRow) {
+  const answers = safeParseJson(row.answers_json);
+  const domainScores = safeParseJson(row.domain_scores_json);
+  const answerCount = isPlainObject(answers) ? Object.keys(answers).length : 0;
+  const domains = isPlainObject(domainScores)
+    ? Object.entries(domainScores).map(([name, value]) => {
+        if (!isScoreEntry(value)) {
+          return { name, score: null, max: null, percent: null };
+        }
+        return {
+          name,
+          score: value.score,
+          max: value.max,
+          percent: formatPercent(value.score, value.max),
+        };
+      })
+    : [];
+
+  return {
+    ...toResultSummary(row),
+    domainScores,
+    adminView: {
+      scoreText: `${row.total_score}/${row.max_score}`,
+      scorePercent: formatPercent(row.total_score, row.max_score),
+      answerCount,
+      createdAtKst: formatKst(row.created_at),
+      domains,
+    },
   };
 }
 
@@ -329,7 +390,7 @@ async function listAdminResults(
     .all<ScreeningResultRow>();
 
   return jsonResponse(
-    { results: results.map(toResultSummary) },
+    { results: results.map(toAdminResult) },
     { status: 200 },
     corsHeaders
   );

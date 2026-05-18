@@ -2,7 +2,7 @@
  * ConsentModal - 검사 시작 전 면책 동의 및 데이터 수집 동의 모달
  * Design: Warm Guidance - clear, non-threatening consent flow
  */
-import { useState } from "react";
+import { useState, type MouseEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Shield, AlertTriangle, CheckCircle2, ChevronRight, X } from "lucide-react";
@@ -33,6 +33,12 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
   const handleAccept = () => {
     onAccept(allowData);
     handleReset();
+  };
+
+  const handleAllowDataToggle = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setAllowData(v => !v);
   };
 
   return (
@@ -78,6 +84,7 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
                   </div>
                 </div>
                 <button
+                  type="button"
                   onClick={handleClose}
                   className="w-7 h-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
                 >
@@ -149,6 +156,7 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
                     </label>
 
                     <Button
+                      type="button"
                       className="w-full mt-4 gap-2"
                       disabled={!disclaimerChecked}
                       onClick={() => setStep(2)}
@@ -197,7 +205,8 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
                       <span className="text-xs text-foreground font-medium">익명 데이터 수집에 동의합니다</span>
                       <button
                         type="button"
-                        onClick={() => setAllowData(v => !v)}
+                        onPointerDown={event => event.stopPropagation()}
+                        onClick={handleAllowDataToggle}
                         className={`relative w-10 h-5.5 rounded-full transition-colors duration-200 ${
                           allowData ? "bg-primary" : "bg-border"
                         }`}
@@ -221,6 +230,7 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
 
                     <div className="flex gap-2">
                       <Button
+                        type="button"
                         variant="outline"
                         className="flex-1"
                         onClick={() => setStep(1)}
@@ -228,6 +238,7 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
                         이전
                       </Button>
                       <Button
+                        type="button"
                         className="flex-1 bg-primary text-primary-foreground"
                         onClick={handleAccept}
                       >
