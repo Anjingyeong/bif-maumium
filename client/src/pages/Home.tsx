@@ -12,6 +12,7 @@ import { Brain, Heart, BookOpen, ArrowRight, Shield, Users, ClipboardCheck, News
 import NavBar from "@/components/NavBar";
 import ConsentModal from "@/components/ConsentModal";
 import EmailNotifyWidget from "@/components/EmailNotifyWidget";
+import StartTestModal from "@/components/StartTestModal";
 import { getConsentGiven, setConsentGiven } from "@/lib/history";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/hero-bg-G22PuoZQMHzrhaaPXVfouj.webp";
@@ -22,19 +23,25 @@ const PARTNERSHIP_EMAIL = "maumium.service@gmail.com";
 export default function Home() {
   const [, navigate] = useLocation();
   const [consentOpen, setConsentOpen] = useState(false);
+  const [startModalOpen, setStartModalOpen] = useState(false);
   const [pendingTestType, setPendingTestType] = useState<"adult" | "child">("adult");
 
   const getTestPath = (type: "adult" | "child") =>
     `/test/${type}?run=${Date.now().toString(36)}`;
 
-  const openConsent = (type: "adult" | "child") => {
+  const openConsent = (type: "adult" | "child", forceNotice = false) => {
     setPendingTestType(type);
     // 이미 동의한 경우 모달 건너뜀 (localStorage에 기록됨)
-    if (getConsentGiven()) {
+    if (!forceNotice && getConsentGiven()) {
       navigate(getTestPath(type));
     } else {
       setConsentOpen(true);
     }
+  };
+
+  const handleStartSelection = (type: "adult" | "child") => {
+    setStartModalOpen(false);
+    openConsent(type, true);
   };
 
   const handleConsentAccept = (allowDataCollection: boolean) => {
@@ -53,9 +60,14 @@ export default function Home() {
         onAccept={handleConsentAccept}
         onClose={() => setConsentOpen(false)}
       />
+      <StartTestModal
+        open={startModalOpen}
+        onClose={() => setStartModalOpen(false)}
+        onStart={handleStartSelection}
+      />
 
       {/* Navigation */}
-      <NavBar onStartTest={openConsent} />
+      <NavBar onStartTest={() => setStartModalOpen(true)} />
 
       {/* Hero Section */}
       <section className="relative pt-16 overflow-hidden">

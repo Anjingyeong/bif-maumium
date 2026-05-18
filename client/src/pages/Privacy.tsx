@@ -2,6 +2,7 @@
  * Privacy Policy Page - 개인정보처리방침
  * 마음이음 서비스의 개인정보 수집/이용/보관 정책 안내
  */
+import { useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Shield, ArrowLeft, Mail, Lock, Trash2, Eye, AlertCircle } from "lucide-react";
@@ -114,6 +115,14 @@ const sections = [
 ];
 
 export default function Privacy() {
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* 간단한 헤더 */}
@@ -254,7 +263,7 @@ export default function Privacy() {
         <div className="container text-center text-xs text-muted-foreground">
           <p>© 2026 {SERVICE_NAME}. 본 서비스는 진단 도구가 아니라 선별용 자가체크입니다.</p>
           <p className="mt-1">
-            <Link href="/privacy" className="hover:text-foreground transition-colors underline underline-offset-2">
+            <Link href="/privacy" onClick={scrollToTop} className="hover:text-foreground transition-colors underline underline-offset-2">
               개인정보처리방침
             </Link>
           </p>

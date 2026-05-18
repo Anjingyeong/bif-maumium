@@ -104,3 +104,9 @@ More detail is in `docs/deployment-env.md`.
 - The homepage email area now clearly describes open/update interest storage instead of mixing it with partnership inquiries.
 - Partnership/contact inquiries are separated into a mailto-based card using `maumium.service@gmail.com`.
 - The email widget copy matches the current implementation: emails are stored only in this browser's localStorage and are not sent to a server or DB.
+
+## 2026-05-18 Test Start & Privacy Navigation Notes
+
+- The top navigation test-start action now opens a pre-test guide and target selector before entering the adult or child test route.
+- The guide states that the check is for screening, not a determination, and asks users to answer from recent lived experience.
+- The privacy policy page scrolls to the top when opened, and its repeated footer policy link scrolls back to the top instead of preserving the old position.

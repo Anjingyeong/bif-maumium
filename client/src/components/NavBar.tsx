@@ -10,7 +10,7 @@ import { History as HistoryIcon, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface NavBarProps {
-  onStartTest: (type: "adult" | "child") => void;
+  onStartTest: () => void;
 }
 
 const NAV_LINKS = [
@@ -64,7 +64,7 @@ export default function NavBar({ onStartTest }: NavBarProps) {
                 {link.label}
               </Link>
             ))}
-            <Button variant="outline" size="sm" onClick={() => onStartTest("adult")}>
+            <Button variant="outline" size="sm" onClick={onStartTest}>
               검사 시작
             </Button>
           </div>
@@ -135,7 +135,7 @@ export default function NavBar({ onStartTest }: NavBarProps) {
                 {/* 구분선 */}
                 <div className="my-2 border-t border-border" />
 
-                {/* 검사 시작 버튼들 */}
+                {/* 검사 시작 버튼 */}
                 <motion.div
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -144,16 +144,9 @@ export default function NavBar({ onStartTest }: NavBarProps) {
                 >
                   <Button
                     className="w-full min-h-[48px] text-sm"
-                    onClick={() => { setOpen(false); onStartTest("adult"); }}
+                    onClick={() => { setOpen(false); onStartTest(); }}
                   >
-                    성인 자가체크 시작
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="w-full min-h-[48px] text-sm"
-                    onClick={() => { setOpen(false); onStartTest("child"); }}
-                  >
-                    아동 선별검사 시작
+                    검사 시작
                   </Button>
                 </motion.div>
               </div>
