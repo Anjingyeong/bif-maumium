@@ -98,3 +98,9 @@ More detail is in `docs/deployment-env.md`.
 
 - Replaced missing Manus favicon references with generated Maumium icon assets under `client/public/icons/`.
 - Added `site.webmanifest` and reused the new icon for the homepage navigation logo and adult test header icon.
+
+## 2026-05-18 Email & Partnership Section Notes
+
+- The homepage email area now clearly describes open/update interest storage instead of mixing it with partnership inquiries.
+- Partnership/contact inquiries are separated into a mailto-based card using `maumium.service@gmail.com`.
+- The email widget copy matches the current implementation: emails are stored only in this browser's localStorage and are not sent to a server or DB.

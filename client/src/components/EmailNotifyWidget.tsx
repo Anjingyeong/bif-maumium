@@ -1,20 +1,11 @@
-/**
- * EmailNotifyWidget
- * 전문가 자문 오픈 시 알림 받기 이메일 수집 컴포넌트
- * - localStorage에 이메일 저장 (bif_notify_email)
- * - 이미 등록한 경우 완료 상태 표시
- * - 실시간 유효성 검사 + 친절한 에러 메시지
- * - 등록 완료 시 파티클 폭죽, 체크마크 드로잉, 순차 등장 애니메이션
- */
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useAnimation } from "framer-motion";
-import { Bell, Mail, ArrowRight, Loader2, AlertCircle, CheckCircle2 as CheckIcon } from "lucide-react";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { AlertCircle, ArrowRight, Bell, CheckCircle2, Loader2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const STORAGE_KEY = "bif_notify_email";
 
-// 유효성 검사 단계별 상태
 type ValidationState = "idle" | "typing" | "valid" | "invalid";
 
 interface ValidationResult {
@@ -23,224 +14,92 @@ interface ValidationResult {
 }
 
 function validateEmail(email: string): ValidationResult {
-  if (!email) return { state: "idle", message: "" };
+  const value = email.trim();
+  if (!value) return { state: "idle", message: "" };
+  if (!value.includes("@")) return { state: "typing", message: "이메일 주소에 @가 포함되어야 합니다." };
 
-  // 입력 중 — @ 없으면 아직 타이핑 중으로 간주
-  if (!email.includes("@")) {
-    return { state: "typing", message: "이메일 주소에 '@'가 필요합니다." };
-  }
-
-  const [local, domain] = email.split("@");
-
-  if (!local || local.length === 0) {
-    return { state: "invalid", message: "'@' 앞에 아이디를 입력해주세요. (예: hong@gmail.com)" };
-  }
-
-  if (!domain) {
-    return { state: "typing", message: "'@' 뒤에 도메인을 입력해주세요. (예: gmail.com)" };
-  }
-
-  if (!domain.includes(".")) {
-    return { state: "typing", message: "도메인에 '.'이 필요합니다. (예: gmail.com)" };
-  }
-
-  const domainParts = domain.split(".");
-  const tld = domainParts[domainParts.length - 1];
-
-  if (!tld || tld.length < 2) {
-    return { state: "typing", message: "올바른 도메인 형식을 입력해주세요. (예: .com, .kr)" };
-  }
-
-  // 특수문자 검사
   const validPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-  if (!validPattern.test(email)) {
-    return { state: "invalid", message: "사용할 수 없는 문자가 포함되어 있습니다. 이메일 주소를 다시 확인해주세요." };
+  if (!validPattern.test(value)) {
+    return { state: "invalid", message: "이메일 주소 형식을 다시 확인해 주세요." };
   }
 
-  // 일반적인 오타 힌트
-  const commonTypos: Record<string, string> = {
-    "gamil.com": "gmail.com",
-    "gmial.com": "gmail.com",
-    "gmai.com": "gmail.com",
-    "navar.com": "naver.com",
-    "naver.co": "naver.com",
-    "daurn.net": "daum.net",
-    "daum.com": "daum.net",
-    "kakao.co": "kakao.com",
-  };
-  if (commonTypos[domain]) {
-    return {
-      state: "invalid",
-      message: `혹시 '@${commonTypos[domain]}' 을 입력하려 하셨나요?`,
-    };
-  }
-
-  return { state: "valid", message: "올바른 이메일 형식입니다." };
+  return { state: "valid", message: "저장 가능한 이메일 주소입니다." };
 }
 
-// 파티클 데이터
-const PARTICLES = [
-  { color: "#3b5bdb", x: -60, y: -80, rotate: 45,  delay: 0 },
-  { color: "#f59e0b", x:  60, y: -90, rotate: -30, delay: 0.05 },
-  { color: "#10b981", x: -90, y: -40, rotate: 120, delay: 0.1 },
-  { color: "#f43f5e", x:  90, y: -50, rotate: -90, delay: 0.08 },
-  { color: "#8b5cf6", x: -40, y: -110,rotate: 60,  delay: 0.15 },
-  { color: "#06b6d4", x:  40, y: -100,rotate: -60, delay: 0.12 },
-  { color: "#f59e0b", x: -110,y: -20, rotate: 150, delay: 0.18 },
-  { color: "#3b5bdb", x:  110,y: -30, rotate: -120,delay: 0.06 },
-  { color: "#10b981", x:   0, y: -120,rotate: 0,   delay: 0.2 },
-  { color: "#f43f5e", x: -70, y: -60, rotate: 90,  delay: 0.14 },
-  { color: "#8b5cf6", x:  70, y: -70, rotate: -45, delay: 0.09 },
-  { color: "#06b6d4", x: -30, y: -95, rotate: 30,  delay: 0.17 },
-];
+function getStoredEmail() {
+  if (typeof window === "undefined") return "";
+  return window.localStorage.getItem(STORAGE_KEY) || "";
+}
 
-function SuccessAnimation({ email }: { email: string }) {
-  const controls = useAnimation();
-  const hasAnimated = useRef(false);
-
-  useEffect(() => {
-    if (hasAnimated.current) return;
-    hasAnimated.current = true;
-    controls.start("visible");
-  }, [controls]);
-
+function SuccessState({ email }: { email: string }) {
   return (
     <motion.div
-      className="flex flex-col items-center text-center gap-4 py-4 relative"
-      initial="hidden"
-      animate={controls}
+      className="flex flex-col items-center text-center gap-4 py-4"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
     >
-      {/* 파티클 폭죽 */}
-      <div className="absolute top-8 left-1/2 -translate-x-1/2 pointer-events-none">
-        {PARTICLES.map((p, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-2 h-2 rounded-sm"
-            style={{ backgroundColor: p.color, top: 0, left: 0 }}
-            initial={{ x: 0, y: 0, opacity: 1, scale: 1, rotate: 0 }}
-            animate={{ x: p.x, y: p.y, opacity: [1, 1, 0], scale: [1, 1.2, 0.4], rotate: p.rotate }}
-            transition={{ duration: 0.9, delay: p.delay, ease: [0.22, 1, 0.36, 1] }}
-          />
-        ))}
+      <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/25">
+        <CheckCircle2 className="w-8 h-8 text-primary-foreground" />
       </div>
 
-      {/* 체크마크 원 */}
-      <motion.div
-        className="relative w-20 h-20 flex items-center justify-center"
-        variants={{ hidden: { scale: 0, opacity: 0 }, visible: { scale: 1, opacity: 1 } }}
-        transition={{ type: "spring", stiffness: 300, damping: 18, delay: 0.1 }}
-      >
-        <motion.div className="absolute inset-0 rounded-full bg-primary/20"
-          animate={{ scale: [1, 1.4, 1], opacity: [0.6, 0, 0] }}
-          transition={{ duration: 1.2, delay: 0.3, repeat: 1 }}
-        />
-        <motion.div className="absolute inset-0 rounded-full bg-primary/10"
-          animate={{ scale: [1, 1.7, 1], opacity: [0.4, 0, 0] }}
-          transition={{ duration: 1.4, delay: 0.5, repeat: 1 }}
-        />
-        <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
-          <svg viewBox="0 0 24 24" className="w-9 h-9" fill="none">
-            <motion.path
-              d="M5 13l4 4L19 7"
-              stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.35, ease: "easeOut" }}
-            />
-          </svg>
-        </div>
-      </motion.div>
-
-      {/* 텍스트 순차 등장 */}
-      <motion.div
-        variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0 } }}
-        transition={{ delay: 0.55, duration: 0.4 }}
-      >
-        <motion.p className="text-lg font-bold text-foreground"
-          variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
-          transition={{ delay: 0.55 }}
-        >
-          이메일 저장 완료
-        </motion.p>
-        <motion.p className="text-sm text-muted-foreground mt-1.5 leading-relaxed"
-          variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
-          transition={{ delay: 0.7 }}
-        >
-          <span className="font-semibold text-primary">{email}</span>으로<br />
+      <div>
+        <p className="text-lg font-bold text-foreground">관심 이메일 저장 완료</p>
+        <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
+          <span className="font-semibold text-primary">{email}</span>
+          <br />
           현재 이 브라우저에만 저장되어 있으며, 외부 서버로 전송되지 않았습니다.
-        </motion.p>
-      </motion.div>
+        </p>
+      </div>
 
-      {/* 혜택 배지 순차 등장 */}
-      <motion.div
-        className="flex flex-wrap gap-2 justify-center"
-        variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1, delayChildren: 0.85 } } }}
-      >
-        {[
-          { icon: "🔒", text: "외부 서버 미전송" },
-          { icon: "💻", text: "브라우저에만 저장" },
-          { icon: "✕", text: "언제든 삭제 가능" },
-        ].map((badge) => (
-          <motion.span
-            key={badge.text}
-            className="flex items-center gap-1.5 bg-primary/10 text-primary text-xs font-medium px-3 py-1.5 rounded-full"
-            variants={{ hidden: { opacity: 0, scale: 0.8, y: 6 }, visible: { opacity: 1, scale: 1, y: 0 } }}
-            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+      <div className="flex flex-wrap gap-2 justify-center">
+        {["오픈 알림 관심", "브라우저 보관", "서버 미전송"].map((text) => (
+          <span
+            key={text}
+            className="bg-primary/10 text-primary text-xs font-medium px-3 py-1.5 rounded-full"
           >
-            <span>{badge.icon}</span>
-            {badge.text}
-          </motion.span>
+            {text}
+          </span>
         ))}
-      </motion.div>
+      </div>
     </motion.div>
   );
 }
 
 export default function EmailNotifyWidget() {
   const [email, setEmail] = useState("");
-  const [touched, setTouched] = useState(false); // 한 번이라도 입력했는지
+  const [touched, setTouched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isDone, setIsDone] = useState(() => !!localStorage.getItem(STORAGE_KEY));
-  const [registeredEmail, setRegisteredEmail] = useState(() => localStorage.getItem(STORAGE_KEY) || "");
+  const [registeredEmail, setRegisteredEmail] = useState(getStoredEmail);
+  const [isDone, setIsDone] = useState(() => !!getStoredEmail());
 
-  // 실시간 유효성 검사
   const validation = validateEmail(email);
-  const showError = touched && (validation.state === "invalid" || (validation.state === "typing" && email.length > 3));
+  const showError = touched && validation.state === "invalid";
   const showSuccess = touched && validation.state === "valid";
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-    if (!touched && e.target.value.length > 0) setTouched(true);
-  };
-
-  const handleBlur = () => {
-    if (email.length > 0) setTouched(true);
-  };
+  const inputBorderClass = !touched
+    ? "border-border/60"
+    : showError
+    ? "border-destructive focus-visible:ring-destructive/30"
+    : showSuccess
+    ? "border-emerald-500 focus-visible:ring-emerald-500/30"
+    : "border-border/60";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setTouched(true);
 
-    if (!email.trim()) return;
     if (validation.state !== "valid") return;
 
     setIsLoading(true);
-    await new Promise(res => setTimeout(res, 700));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
-    localStorage.setItem(STORAGE_KEY, email.trim());
-    setRegisteredEmail(email.trim());
+    const trimmedEmail = email.trim();
+    window.localStorage.setItem(STORAGE_KEY, trimmedEmail);
+    setRegisteredEmail(trimmedEmail);
     setIsLoading(false);
     setIsDone(true);
   };
-
-  // 입력 필드 테두리 색상
-  const inputBorderClass = !touched
-    ? "border-border/60"
-    : showError
-    ? "border-destructive focus:border-destructive"
-    : showSuccess
-    ? "border-emerald-500 focus:border-emerald-500"
-    : "border-border/60";
 
   return (
     <motion.div
@@ -251,57 +110,67 @@ export default function EmailNotifyWidget() {
     >
       <AnimatePresence mode="wait">
         {isDone ? (
-          <motion.div key="done" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
-            <SuccessAnimation email={registeredEmail} />
+          <motion.div
+            key="done"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <SuccessState email={registeredEmail} />
           </motion.div>
         ) : (
-          <motion.div key="input" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
-            {/* Header */}
+          <motion.div
+            key="input"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.25 }}
+          >
             <div className="flex items-start gap-4 mb-5">
               <div className="w-11 h-11 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0">
                 <Bell className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground text-base">전문가 자문 서비스 소식 받기</h3>
+                <h3 className="font-semibold text-foreground text-base">오픈 알림과 업데이트 소식</h3>
                 <p className="text-sm text-muted-foreground mt-0.5 leading-relaxed">
-                  1:1 온라인 자문 서비스는 준비 중입니다. 관심 이메일은 현재 이 브라우저에만 저장됩니다.
+                  마음이음의 정식 오픈 소식과 주요 업데이트를 받을 이메일을 저장해둘 수 있습니다.
                 </p>
               </div>
             </div>
 
-            {/* Benefits */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-5">
-              {[
-                { icon: "💻", text: "브라우저 임시 저장" },
-                { icon: "🔒", text: "외부 서버 미전송" },
-                { icon: "✕", text: "데이터 삭제로 제거" },
-              ].map((item) => (
-                <div key={item.text} className="flex items-center gap-2 bg-background/60 rounded-lg px-3 py-2 text-xs text-muted-foreground">
-                  <span>{item.icon}</span>
-                  <span>{item.text}</span>
+              {["오픈 소식", "주요 업데이트", "브라우저 저장"].map((text) => (
+                <div
+                  key={text}
+                  className="flex items-center gap-2 bg-background/60 rounded-lg px-3 py-2 text-xs text-muted-foreground"
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5 text-primary/70" />
+                  <span>{text}</span>
                 </div>
               ))}
             </div>
 
-            {/* Email form */}
             <form onSubmit={handleSubmit} className="space-y-2">
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <div className="relative flex-1">
-                  {/* 왼쪽 아이콘 */}
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
-
                   <Input
                     type="email"
                     placeholder="이메일 주소 입력"
                     value={email}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (!touched && e.target.value.length > 0) setTouched(true);
+                    }}
+                    onBlur={() => {
+                      if (email.length > 0) setTouched(true);
+                    }}
                     className={`pl-9 pr-9 min-h-[44px] bg-background transition-colors duration-200 ${inputBorderClass}`}
                     disabled={isLoading}
                     autoComplete="email"
                   />
 
-                  {/* 오른쪽 상태 아이콘 */}
                   <AnimatePresence>
                     {showError && (
                       <motion.div
@@ -322,7 +191,7 @@ export default function EmailNotifyWidget() {
                         exit={{ opacity: 0, scale: 0.5 }}
                         className="absolute right-3 top-1/2 -translate-y-1/2"
                       >
-                        <CheckIcon className="w-4 h-4 text-emerald-500" />
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -336,45 +205,40 @@ export default function EmailNotifyWidget() {
                   {isLoading ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
-                    <>이메일 저장 <ArrowRight className="w-4 h-4" /></>
+                    <>
+                      이메일 저장
+                      <ArrowRight className="w-4 h-4" />
+                    </>
                   )}
                 </Button>
               </div>
 
-              {/* 에러 / 성공 메시지 */}
               <AnimatePresence mode="wait">
-                {showError && (
+                {(showError || showSuccess) && (
                   <motion.p
-                    key="error-msg"
+                    key={showError ? "error-msg" : "success-msg"}
                     initial={{ opacity: 0, y: -4, height: 0 }}
                     animate={{ opacity: 1, y: 0, height: "auto" }}
                     exit={{ opacity: 0, y: -4, height: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="flex items-start gap-1.5 text-xs text-destructive px-1"
+                    className={`flex items-center gap-1.5 text-xs px-1 ${
+                      showError ? "text-destructive" : "text-emerald-600"
+                    }`}
                   >
-                    <AlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
-                    {validation.message}
-                  </motion.p>
-                )}
-                {showSuccess && (
-                  <motion.p
-                    key="success-msg"
-                    initial={{ opacity: 0, y: -4, height: 0 }}
-                    animate={{ opacity: 1, y: 0, height: "auto" }}
-                    exit={{ opacity: 0, y: -4, height: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="flex items-center gap-1.5 text-xs text-emerald-600 px-1"
-                  >
-                    <CheckIcon className="w-3.5 h-3.5 flex-shrink-0" />
+                    {showError ? (
+                      <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                    ) : (
+                      <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0" />
+                    )}
                     {validation.message}
                   </motion.p>
                 )}
               </AnimatePresence>
             </form>
 
-            <p className="text-xs text-muted-foreground mt-3 text-center">
-              현재 입력하신 이메일은 이 브라우저에만 임시 저장되며, 외부 서버로 전송되지 않습니다.
-              저장된 정보는 브라우저 데이터 삭제로 언제든 제거할 수 있습니다.
+            <p className="text-xs text-muted-foreground mt-4 leading-relaxed">
+              수집 목적은 정식 오픈 및 주요 업데이트 알림 신청 의사 확인이며, 이용 항목은 이메일 주소입니다.
+              현재 입력 정보는 이 브라우저에만 저장되고 서버/DB로 전송되지 않습니다. 저장된 정보는 브라우저 데이터 삭제로 제거할 수 있습니다.
             </p>
           </motion.div>
         )}

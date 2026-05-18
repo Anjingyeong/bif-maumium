@@ -8,7 +8,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
-import { Brain, Heart, BookOpen, ArrowRight, Shield, Users, ClipboardCheck, Newspaper } from "lucide-react";
+import { Brain, Heart, BookOpen, ArrowRight, Shield, Users, ClipboardCheck, Newspaper, Handshake, Mail } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import ConsentModal from "@/components/ConsentModal";
 import EmailNotifyWidget from "@/components/EmailNotifyWidget";
@@ -17,6 +17,7 @@ import { getConsentGiven, setConsentGiven } from "@/lib/history";
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/hero-bg-G22PuoZQMHzrhaaPXVfouj.webp";
 const CHILD_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/child-section-2q9N99eJL9sDbwdufTEuCS.webp";
 const ADULT_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/adult-section-Las3h5McrYzSYMVrCZmJEN.webp";
+const PARTNERSHIP_EMAIL = "maumium.service@gmail.com";
 
 export default function Home() {
   const [, navigate] = useLocation();
@@ -412,17 +413,46 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="max-w-2xl mx-auto"
+            className="max-w-5xl mx-auto"
           >
             <div className="text-center mb-6">
               <h2 className="text-xl md:text-2xl font-serif font-bold text-foreground mb-2">
-                아직 검사가 망설여지시나요?
+                마음이음 소식과 문의
               </h2>
               <p className="text-sm text-muted-foreground">
-                관심 이메일을 이 브라우저에 임시 저장해둘 수 있습니다.
+                오픈 알림/업데이트와 협업·제휴 문의를 각각의 목적에 맞게 안내합니다.
               </p>
             </div>
-            <EmailNotifyWidget />
+            <div className="grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(280px,0.9fr)] items-stretch">
+              <EmailNotifyWidget />
+              <div className="bg-card border border-border/60 rounded-2xl p-6 md:p-8 flex flex-col">
+                <div className="flex items-start gap-4 mb-5">
+                  <div className="w-11 h-11 rounded-xl bg-accent/20 flex items-center justify-center flex-shrink-0">
+                    <Handshake className="w-5 h-5 text-accent-foreground" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground text-base">협업·제휴 문의</h3>
+                    <p className="text-sm text-muted-foreground mt-0.5 leading-relaxed">
+                      교육기관, 상담센터, 연구, 콘텐츠 제휴 문의는 이메일로 연락해 주세요.
+                    </p>
+                  </div>
+                </div>
+                <div className="rounded-xl bg-secondary/50 border border-border/50 p-4 mb-4">
+                  <p className="text-xs font-medium text-muted-foreground mb-1">협업/제휴 문의</p>
+                  <a
+                    href={`mailto:${PARTNERSHIP_EMAIL}?subject=${encodeURIComponent("마음이음 협업/제휴 문의")}`}
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 rounded-md"
+                  >
+                    <Mail className="w-4 h-4" />
+                    {PARTNERSHIP_EMAIL}
+                  </a>
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-auto">
+                  협업 문의 메일에는 기관명, 담당자 연락처, 문의 목적 등 회신에 필요한 정보를 직접 작성해 주세요.
+                  해당 메일은 알림 신청 이메일 저장과 별도로 처리됩니다.
+                </p>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
