@@ -1,33 +1,56 @@
 # PROJECT_SUMMARY
 
-## 프로젝트 개요
-- 경계선 지능(BIF) 관련 정보와 학습·인지·적응기능 선별용 자가체크를 제공하는 웹 앱입니다.
-- 성인용 자가체크와 아동 보호자용 선별검사를 제공합니다.
-- 검사 결과는 진단이 아니라 참고용 선별 신호로 안내해야 합니다.
+## Project
 
-## 현재 구현 메모
-- 문항 데이터와 결과 수준 로직은 `client/src/lib/questions.ts`에 있습니다.
-- 성인 문항은 15개, 아동 문항은 18개 구조를 유지합니다.
-- 영역 분류는 다음 축을 사용합니다.
-  - 학습/개념 이해
-  - 작업기억
-  - 처리속도
-  - 실행기능
-  - 사회적 판단
-  - 일상생활 적응
-  - 학업/직업 적응
-  - 정서/주의/수면 등 혼동 요인
-- 결과 문구는 표준화 지능검사, 적응행동검사, 면담을 권장하는 선별 안내 톤으로 유지합니다.
-- `자가진단`, `정확한 진단`, 낙인성 표현은 UI 핵심 동선에서 되도록 피하고 `자가체크`, `정확한 평가`, `선별용 참고 자료`로 표현합니다.
+- `bif-screening` is a Vite/React self-check site for borderline intellectual functioning screening.
+- The app keeps the existing warm guidance UI, wouter routing, result page, local history, PDF export, and informational pages.
+- The checklist is a screening self-check only. It is not a diagnosis tool and does not copy standardized test questions.
 
-## 검증 방법
-- 타입체크: `pnpm check`
-- 테스트: `pnpm test`
-- 빌드: `pnpm build`
-- 문항/결과 문구 회귀 테스트: `server/questions.screening.test.ts`
+## Frontend Flow
 
-## 주의사항
-- 실제 표준화 검사 문항을 복제하지 않습니다.
-- 결과만으로 경계선 지능 여부를 단정하지 않습니다.
-- 주의력, 정서, 수면, 학습 문제 등 혼동 요인을 함께 안내합니다.
-- 빌드 시 `VITE_ANALYTICS_ENDPOINT`, `VITE_ANALYTICS_WEBSITE_ID` 미정의 경고가 날 수 있으나 현재 빌드는 성공합니다.
+- Adult and child tests live in `client/src/pages/AdultTest.tsx` and `client/src/pages/ChildTest.tsx`.
+- Questions and result thresholds live in `client/src/lib/questions.ts`.
+- Result rendering and local history saving live in `client/src/pages/Result.tsx`.
+- Before result submission, users can opt in to server result storage.
+- If storage is enabled, the user must enter an anonymous nickname and confirm consent.
+- The UI warns users not to enter direct identifiers such as real names, phone numbers, email addresses, or resident registration numbers.
+- Remote result saving uses `VITE_API_BASE_URL` through `client/src/lib/resultPersistence.ts`.
+
+## Backend Flow
+
+- Express starts in `server/_core/index.ts`.
+- REST result APIs are registered from `server/resultsApi.ts`.
+- Prisma is used for PostgreSQL persistence with the schema in `prisma/schema.prisma`.
+- Stored fields are minimized to nickname, test type, answers, category scores, total score, max score, risk level/title, consent flag, and submitted timestamp.
+- Result IDs are UUIDs so lookup URLs are not sequential or easily guessable.
+- Admin APIs are protected with `ADMIN_TOKEN`.
+- CORS is restricted to `FRONTEND_ORIGIN` plus explicit local development origins outside production.
+
+## APIs
+
+- `POST /api/results`: Save a consented screening result.
+- `GET /api/results/:id`: Fetch one result by UUID.
+- `GET /api/admin/results`: Admin list endpoint, requires `ADMIN_TOKEN`.
+- `DELETE /api/admin/results/:id`: Admin delete endpoint, requires `ADMIN_TOKEN`.
+
+## Deployment Environment Variables
+
+Render backend:
+
+- `DATABASE_URL`
+- `ADMIN_TOKEN`
+- `FRONTEND_ORIGIN`
+
+Vercel frontend:
+
+- `VITE_API_BASE_URL`
+
+More detail is in `docs/deployment-env.md`.
+
+## Validation Commands
+
+- `pnpm lint`
+- `pnpm typecheck`
+- `pnpm build`
+- `pnpm test`
+- `pnpm db:push`

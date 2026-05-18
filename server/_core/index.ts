@@ -10,6 +10,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { registerOgMetaRoute } from "../ogMeta";
+import { registerResultsApi } from "../resultsApi";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -33,11 +34,44 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
+  app.use((req, res, next) => {
+    const origin = req.header("origin");
+    const configuredOrigins = (process.env.FRONTEND_ORIGIN || "")
+      .split(",")
+      .map(value => value.trim())
+      .filter(Boolean);
+    const localDevOrigins =
+      process.env.NODE_ENV === "production"
+        ? []
+        : ["http://localhost:3000", "http://localhost:5173"];
+    const allowedOrigins = [...configuredOrigins, ...localDevOrigins];
+
+    if (!origin || allowedOrigins.includes(origin)) {
+      if (origin) {
+        res.setHeader("Access-Control-Allow-Origin", origin);
+        res.setHeader("Vary", "Origin");
+      }
+      res.setHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,OPTIONS");
+      res.setHeader(
+        "Access-Control-Allow-Headers",
+        "Content-Type, Authorization, X-Admin-Token"
+      );
+    }
+
+    if (req.method === "OPTIONS") {
+      return allowedOrigins.includes(origin || "")
+        ? res.status(204).end()
+        : res.status(403).end();
+    }
+
+    return next();
+  });
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   registerStorageProxy(app);
   registerOAuthRoutes(app);
+  registerResultsApi(app);
   // tRPC API
   app.use(
     "/api/trpc",

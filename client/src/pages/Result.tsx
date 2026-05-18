@@ -32,6 +32,11 @@ import {
   formatDate,
   TestRecord,
 } from "@/lib/history";
+import {
+  hasRemoteResultApi,
+  saveResultToApi,
+  SavedResultSummary,
+} from "@/lib/resultPersistence";
 
 const RESULT_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/result-bg-o79GvS4Xzaz8RqGYiPqNCU.webp";
 
@@ -39,12 +44,17 @@ export default function Result() {
   const [isPdfLoading, setIsPdfLoading] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
   const [prevRecord, setPrevRecord] = useState<TestRecord | null>(null);
+  const [remoteResult, setRemoteResult] = useState<SavedResultSummary | null>(null);
+  const [isRemoteSaving, setIsRemoteSaving] = useState(false);
+  const [remoteSaveError, setRemoteSaveError] = useState<string | null>(null);
   const savedRef = useRef(false);
 
   const params = useMemo(() => new URLSearchParams(window.location.search), []);
   const type = (params.get("type") as "adult" | "child") || "adult";
   const score = parseInt(params.get("score") || "0", 10);
   const answersRaw = params.get("answers");
+  const saveConsent = params.get("saveConsent") === "true";
+  const nickname = (params.get("nickname") || "").trim();
 
   const answers: Record<number, AnswerValue> = useMemo(() => {
     try {
@@ -76,6 +86,38 @@ export default function Result() {
       levelTitle: result.title,
       categoryScores,
     });
+
+    if (saveConsent && nickname) {
+      if (!hasRemoteResultApi()) {
+        setRemoteSaveError("API 주소가 설정되지 않아 서버에 저장하지 못했습니다.");
+        return;
+      }
+
+      setIsRemoteSaving(true);
+      saveResultToApi({
+        nickname,
+        testType: type,
+        answers,
+        categoryScores,
+        totalScore: score,
+        maxScore,
+        riskLevel: result.level,
+        riskTitle: result.title,
+        consentGiven: true,
+      })
+        .then(saved => {
+          setRemoteResult(saved);
+          setRemoteSaveError(null);
+        })
+        .catch(error => {
+          setRemoteSaveError(
+            error instanceof Error
+              ? error.message
+              : "결과 저장 중 오류가 발생했습니다."
+          );
+        })
+        .finally(() => setIsRemoteSaving(false));
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -234,6 +276,44 @@ export default function Result() {
             )}
           </Button>
         </motion.div>
+
+        {(saveConsent || remoteResult || remoteSaveError) && (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.12 }}
+            className="bg-card border border-border/50 rounded-2xl p-5 mb-8 no-print"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm font-semibold text-foreground">
+                  서버 결과 저장
+                </p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-1">
+                  저장 항목은 닉네임, 응답, 영역별 점수, 총점, 위험도, 동의 여부,
+                  제출 시각입니다. 실명, 전화번호, 이메일, 주민등록번호는 수집하지 않습니다.
+                </p>
+              </div>
+              {isRemoteSaving && (
+                <Loader2 className="w-4 h-4 animate-spin text-primary shrink-0 mt-1" />
+              )}
+            </div>
+
+            {remoteResult && (
+              <div className="mt-3 rounded-xl bg-primary/5 border border-primary/15 px-4 py-3">
+                <p className="text-xs text-primary font-medium">
+                  저장 완료: {remoteResult.id}
+                </p>
+              </div>
+            )}
+
+            {remoteSaveError && (
+              <div className="mt-3 rounded-xl bg-destructive/5 border border-destructive/20 px-4 py-3">
+                <p className="text-xs text-destructive">{remoteSaveError}</p>
+              </div>
+            )}
+          </motion.div>
+        )}
 
         {/* ── 이전 결과 비교 섹션 ── */}
         {prevRecord && scoreDiff && (

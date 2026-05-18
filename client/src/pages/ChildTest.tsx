@@ -11,8 +11,11 @@
 import { useState, useCallback, useRef } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { AnimatePresence, motion } from "framer-motion";
-import { Heart, ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Heart, ArrowLeft, ArrowRight, CheckCircle2, Shield } from "lucide-react";
 import { Link } from "wouter";
 import { childQuestions, AnswerValue } from "@/lib/questions";
 import QuestionCard from "@/components/QuestionCard";
@@ -22,6 +25,8 @@ export default function ChildTest() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, AnswerValue>>({});
   const [direction, setDirection] = useState(1);
+  const [nickname, setNickname] = useState("");
+  const [saveConsent, setSaveConsent] = useState(false);
   const autoAdvanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const questions = childQuestions.questions;
@@ -29,6 +34,7 @@ export default function ChildTest() {
   const progress = ((currentIndex + 1) / questions.length) * 100;
   const allAnswered = answeredCount === questions.length;
   const isLastQuestion = currentIndex === questions.length - 1;
+  const canSubmit = allAnswered && (!saveConsent || nickname.trim().length > 0);
 
   const totalMinutes = Math.ceil(questions.length * 0.2);
 
@@ -61,11 +67,15 @@ export default function ChildTest() {
         type: 'child',
         score: totalScore.toString(),
         answers: JSON.stringify(currentAnswers),
+        saveConsent: saveConsent ? "true" : "false",
       });
+      if (saveConsent) {
+        params.set("nickname", nickname.trim());
+      }
       setLocation(`/result?${params.toString()}`);
       return currentAnswers;
     });
-  }, [setLocation]);
+  }, [nickname, saveConsent, setLocation]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -131,6 +141,63 @@ export default function ChildTest() {
           />
         </AnimatePresence>
 
+        {isLastQuestion && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-6 rounded-2xl border border-rose-100 bg-card p-5"
+          >
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center shrink-0">
+                <Shield className="w-5 h-5 text-rose-500" />
+              </div>
+              <div className="space-y-3 flex-1">
+                <div>
+                  <h2 className="text-sm font-semibold text-foreground">
+                    결과 저장 선택
+                  </h2>
+                  <p className="text-xs text-muted-foreground leading-relaxed mt-1">
+                    저장에 동의하면 닉네임과 검사 결과가 서버에 보관됩니다. 자녀나
+                    보호자의 실명, 전화번호, 이메일, 주민등록번호 등 직접 식별 가능한
+                    정보는 입력하지 마세요. 본 검사는 진단 도구가 아닌 선별용 자가체크입니다.
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-2">
+                  <Checkbox
+                    id="child-save-consent"
+                    checked={saveConsent}
+                    onCheckedChange={checked => setSaveConsent(checked === true)}
+                    className="mt-0.5 data-[state=checked]:bg-rose-500 data-[state=checked]:border-rose-500"
+                  />
+                  <Label
+                    htmlFor="child-save-consent"
+                    className="text-xs leading-relaxed text-foreground"
+                  >
+                    익명 닉네임과 검사 결과 저장에 동의합니다.
+                  </Label>
+                </div>
+
+                {saveConsent && (
+                  <div className="space-y-1.5">
+                    <Label htmlFor="child-nickname" className="text-xs">
+                      닉네임
+                    </Label>
+                    <Input
+                      id="child-nickname"
+                      value={nickname}
+                      onChange={event => setNickname(event.target.value)}
+                      maxLength={40}
+                      placeholder="예: 마음이음01"
+                      className="min-h-[44px]"
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {/* Navigation buttons */}
         <div className="flex items-center justify-between mt-6 gap-3">
           <Button
@@ -146,7 +213,7 @@ export default function ChildTest() {
           {isLastQuestion ? (
             <Button
               onClick={handleSubmit}
-              disabled={!allAnswered}
+              disabled={!canSubmit}
               className="gap-2 min-h-[44px] px-6 bg-rose-500 hover:bg-rose-600 text-white font-semibold"
             >
               결과 보기
