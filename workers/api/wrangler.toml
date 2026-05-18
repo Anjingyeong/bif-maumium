@@ -10,7 +10,5 @@ FRONTEND_ORIGIN = "https://maumium.kr"
 [[d1_databases]]
 binding = "DB"
 database_name = "bif_maumium_results"
-# Replace after running:
-# wrangler d1 create bif_maumium_results
-database_id = "00000000-0000-0000-0000-000000000000"
+database_id = "8159d0ab-025d-42c9-b33c-24c208c2e50b"
 migrations_dir = "migrations"
