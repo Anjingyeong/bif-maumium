@@ -9,7 +9,7 @@
  * - "결과 보기" button only on last question when all answered
  * - Mobile-optimized navigation buttons (larger tap targets)
  */
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -23,7 +23,7 @@ import QuestionCard from "@/components/QuestionCard";
 import { motion } from "framer-motion";
 
 export default function AdultTest() {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, AnswerValue>>({});
   const [direction, setDirection] = useState(1);
@@ -40,6 +40,19 @@ export default function AdultTest() {
 
   // Estimated total time: ~12s per question
   const totalMinutes = Math.ceil(questions.length * 0.2);
+
+  const resetTest = useCallback(() => {
+    if (autoAdvanceTimer.current) clearTimeout(autoAdvanceTimer.current);
+    setCurrentIndex(0);
+    setAnswers({});
+    setDirection(1);
+    setNickname("");
+    setSaveConsent(false);
+  }, []);
+
+  useEffect(() => {
+    resetTest();
+  }, [location, resetTest]);
 
   const goTo = useCallback((index: number) => {
     const dir = index > currentIndex ? 1 : -1;

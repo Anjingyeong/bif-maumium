@@ -76,3 +76,12 @@ More detail is in `docs/deployment-env.md`.
 - `pnpm typecheck:worker`
 - `pnpm test`
 - `pnpm db:push`
+
+## 2026-05-18 Operations Bugfix Notes
+
+- Test entry links now include a fresh run key, and adult/child test pages reset question index, answers, direction, nickname, and save consent whenever a new run starts.
+- The result page's "test again" action starts a fresh run from the first question instead of reusing prior in-memory state.
+- Consent switch accessibility was tightened with an explicit button type, switch label, and synced `aria-checked` state.
+- The homepage terminology banner keeps its existing design while improving mobile wrapping, width constraints, and overflow handling.
+- KakaoTalk sharing UI and SDK helper code were removed; the general link copy action remains.
+- PDF export continues to use canvas-rendered Korean text through jsPDF, now waiting for Korean-capable fonts before rendering and using a Hangul-safe font fallback stack.

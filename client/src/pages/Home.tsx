@@ -23,11 +23,14 @@ export default function Home() {
   const [consentOpen, setConsentOpen] = useState(false);
   const [pendingTestType, setPendingTestType] = useState<"adult" | "child">("adult");
 
+  const getTestPath = (type: "adult" | "child") =>
+    `/test/${type}?run=${Date.now().toString(36)}`;
+
   const openConsent = (type: "adult" | "child") => {
     setPendingTestType(type);
     // 이미 동의한 경우 모달 건너뜀 (localStorage에 기록됨)
     if (getConsentGiven()) {
-      navigate(type === "adult" ? "/test/adult" : "/test/child");
+      navigate(getTestPath(type));
     } else {
       setConsentOpen(true);
     }
@@ -37,7 +40,7 @@ export default function Home() {
     setConsentOpen(false);
     // localStorage에 저장 - 브라우저를 닫아도 기억됨
     setConsentGiven(allowDataCollection);
-    navigate(pendingTestType === "adult" ? "/test/adult" : "/test/child");
+    navigate(getTestPath(pendingTestType));
   };
 
   return (
@@ -326,10 +329,10 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="flex flex-col md:flex-row items-start md:items-center gap-5 bg-white/80 border border-amber-200 rounded-2xl px-6 py-5"
+            className="flex flex-col md:flex-row items-start md:items-center gap-5 bg-white/80 border border-amber-200 rounded-2xl px-5 sm:px-6 py-5 overflow-hidden"
           >
             <div className="text-2xl shrink-0">⚠️</div>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-foreground mb-1">
                 &ldquo;경계선 지능&rdquo;과 &ldquo;경계성 지능&rdquo;, 헷갈리시나요?
               </p>
@@ -340,8 +343,8 @@ export default function Home() {
                 본 사이트는 <strong className="text-foreground">경계선 지능(BIF)</strong> 선별 도구입니다.
               </p>
             </div>
-            <Link href="/term-diff" className="shrink-0">
-              <Button variant="outline" size="sm" className="gap-1.5 border-amber-300 text-amber-800 hover:bg-amber-50 whitespace-nowrap">
+            <Link href="/term-diff" className="w-full md:w-auto shrink-0">
+              <Button variant="outline" size="sm" className="w-full md:w-auto gap-1.5 border-amber-300 text-amber-800 hover:bg-amber-50 whitespace-nowrap">
                 자세히 알아보기 <ArrowRight className="w-3.5 h-3.5" />
               </Button>
             </Link>

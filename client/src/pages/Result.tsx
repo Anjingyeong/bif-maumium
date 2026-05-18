@@ -10,9 +10,8 @@ import { motion } from "framer-motion";
 import {
   Brain, Heart, ArrowLeft, Phone, ExternalLink,
   RotateCcw, BookOpen, Download, Loader2,
-  TrendingUp, TrendingDown, Minus, History, Share2, Printer, Link2, Check,
+  TrendingUp, TrendingDown, Minus, History, Printer, Link2, Check,
 } from "lucide-react";
-import { shareToKakao, buildShareText } from "@/lib/kakaoShare";
 import { toast } from "sonner";
 import {
   getResultLevel,
@@ -42,7 +41,6 @@ const RESULT_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHe
 
 export default function Result() {
   const [isPdfLoading, setIsPdfLoading] = useState(false);
-  const [isSharing, setIsSharing] = useState(false);
   const [prevRecord, setPrevRecord] = useState<TestRecord | null>(null);
   const [remoteResult, setRemoteResult] = useState<SavedResultSummary | null>(null);
   const [isRemoteSaving, setIsRemoteSaving] = useState(false);
@@ -139,29 +137,6 @@ export default function Result() {
       // fallback: prompt
       const resultUrl2 = `${window.location.origin}/result?type=${encodeURIComponent(type)}&score=${score}`;
       window.prompt("아래 링크를 복사하세요:", resultUrl2);
-    }
-  };
-
-  const handleKakaoShare = () => {
-    setIsSharing(true);
-    try {
-      const shareText = buildShareText(type, result.title, score, maxScore);
-      // 결과 유형과 점수를 포함한 공유 URL 생성 (서버 동적 OG 메타태그 활용)
-      const resultUrl = `${window.location.origin}/result?type=${encodeURIComponent(type)}&score=${score}`;
-      shareToKakao({
-        title: shareText.title,
-        description: shareText.description,
-        webUrl: resultUrl,
-        mobileWebUrl: resultUrl,
-      });
-    } catch (err) {
-      // fallback: 결과 링크 복사
-      const resultUrl = `${window.location.origin}/result?type=${encodeURIComponent(type)}&score=${score}`;
-      navigator.clipboard.writeText(resultUrl).then(() => {
-        toast.success("결과 링크가 복사되었습니다. 카카오톡에 붙여넣기 해보세요!");
-      });
-    } finally {
-      setIsSharing(false);
     }
   };
 
@@ -555,15 +530,6 @@ export default function Result() {
           </Button>
           <Button
             variant="outline"
-            onClick={handleKakaoShare}
-            disabled={isSharing}
-            className="w-full sm:w-auto min-h-[44px] gap-2 border-yellow-400 text-yellow-700 hover:bg-yellow-50"
-          >
-            <Share2 className="w-4 h-4" />
-            카카오톡 공유
-          </Button>
-          <Button
-            variant="outline"
             onClick={handleCopyLink}
             className={`w-full sm:w-auto min-h-[44px] gap-2 transition-all ${
               isCopied
@@ -577,7 +543,7 @@ export default function Result() {
               <><Link2 className="w-4 h-4" />링크 복사</>
             )}
           </Button>
-          <Link href={type === "adult" ? "/test/adult" : "/test/child"}>
+          <Link href={`/test/${type}?run=${Date.now().toString(36)}`}>
             <Button variant="outline" className="w-full sm:w-auto min-h-[44px] gap-2">
               <RotateCcw className="w-4 h-4" /> 다시 검사하기
             </Button>

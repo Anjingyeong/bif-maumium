@@ -196,6 +196,7 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
                     <div className="flex items-center justify-between p-3 rounded-xl border border-border bg-secondary/30 mb-4">
                       <span className="text-xs text-foreground font-medium">익명 데이터 수집에 동의합니다</span>
                       <button
+                        type="button"
                         onClick={() => setAllowData(v => !v)}
                         className={`relative w-10 h-5.5 rounded-full transition-colors duration-200 ${
                           allowData ? "bg-primary" : "bg-border"
@@ -203,6 +204,7 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
                         style={{ height: "22px", width: "40px" }}
                         role="switch"
                         aria-checked={allowData}
+                        aria-label="익명 데이터 수집 동의"
                       >
                         <span
                           className={`absolute top-0.5 w-4.5 h-4.5 rounded-full bg-white shadow transition-transform duration-200 ${

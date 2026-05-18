@@ -51,7 +51,7 @@ function canvasText(
   const scale = 3; // 해상도 배율
   const fontSize = size * scale;
   const fontStyle = bold ? "bold" : "normal";
-  const fontFamily = "'Noto Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif";
+  const fontFamily = "'Pretendard', 'Noto Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', Arial, sans-serif";
 
   // 임시 캔버스로 텍스트 너비 측정
   const measureCanvas = document.createElement("canvas");
@@ -171,7 +171,17 @@ export async function generateResultPdf(params: GeneratePdfParams): Promise<void
   const contentW = pageW - margin * 2;
 
   // 폰트 로딩 대기 (Canvas 텍스트 렌더링을 위해)
-  await document.fonts.ready;
+  if ("fonts" in document) {
+    await Promise.allSettled([
+      document.fonts.ready,
+      document.fonts.load('400 16px "Pretendard"', "한글"),
+      document.fonts.load('700 16px "Pretendard"', "한글"),
+      document.fonts.load('400 16px "Noto Sans KR"', "한글"),
+      document.fonts.load('700 16px "Noto Sans KR"', "한글"),
+      document.fonts.load('400 16px "Malgun Gothic"', "한글"),
+      document.fonts.load('700 16px "Malgun Gothic"', "한글"),
+    ]);
+  }
 
   // ─── Page 1 ────────────────────────────────────────────────────────────────
 
