@@ -8,12 +8,13 @@ export interface ResultSavePayload {
   nickname: string;
   testType: TestType;
   answers: Record<number, AnswerValue>;
-  categoryScores: CategoryScores;
+  domainScores: CategoryScores;
   totalScore: number;
   maxScore: number;
   riskLevel: string;
   riskTitle: string;
-  consentGiven: boolean;
+  consentAgreed: boolean;
+  createdAt: string;
 }
 
 export interface SavedResultSummary {
@@ -24,7 +25,8 @@ export interface SavedResultSummary {
   maxScore: number;
   riskLevel: string;
   riskTitle: string;
-  submittedAt: string;
+  consentAgreed: boolean;
+  createdAt: string;
 }
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "").replace(
@@ -33,17 +35,14 @@ const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "").replace(
 );
 
 export function hasRemoteResultApi(): boolean {
-  return API_BASE_URL.length > 0;
+  return true;
 }
 
 export async function saveResultToApi(
   payload: ResultSavePayload
 ): Promise<SavedResultSummary> {
-  if (!API_BASE_URL) {
-    throw new Error("VITE_API_BASE_URL is not configured.");
-  }
-
-  const response = await fetch(`${API_BASE_URL}/api/results`, {
+  const endpoint = API_BASE_URL ? `${API_BASE_URL}/api/results` : "/api/results";
+  const response = await fetch(endpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

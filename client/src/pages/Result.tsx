@@ -98,12 +98,13 @@ export default function Result() {
         nickname,
         testType: type,
         answers,
-        categoryScores,
+        domainScores: categoryScores,
         totalScore: score,
         maxScore,
         riskLevel: result.level,
         riskTitle: result.title,
-        consentGiven: true,
+        consentAgreed: true,
+        createdAt: new Date().toISOString(),
       })
         .then(saved => {
           setRemoteResult(saved);

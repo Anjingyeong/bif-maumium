@@ -1,0 +1,16 @@
+name = "bif-maumium-api"
+main = "src/index.ts"
+compatibility_date = "2026-05-18"
+workers_dev = true
+
+[vars]
+# Set this to the deployed Cloudflare Pages origin.
+FRONTEND_ORIGIN = "https://maumium.kr"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "bif_maumium_results"
+# Replace after running:
+# wrangler d1 create bif_maumium_results
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
