@@ -121,7 +121,7 @@ export default function Blog() {
               지금 바로 선별검사를 해보세요
             </h3>
             <p className="text-sm text-muted-foreground">
-              약 5~10분으로 경계선 지능의 가능성을 확인할 수 있습니다.
+              약 5~10분으로 학습·인지·적응기능 어려움 가능성을 점검할 수 있습니다.
             </p>
           </div>
           <div className="flex gap-3 shrink-0">

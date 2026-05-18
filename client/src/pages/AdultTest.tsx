@@ -86,7 +86,7 @@ export default function AdultTest() {
           <div className="flex flex-col items-center gap-0.5">
             <div className="flex items-center gap-1.5">
               <img src="/manus-storage/favicon-32_b4200aca.png" alt="" className="w-4 h-4 object-contain" />
-              <span className="text-sm font-semibold text-foreground">성인 자가진단</span>
+              <span className="text-sm font-semibold text-foreground">성인 자가체크</span>
             </div>
             <span className="text-xs text-muted-foreground">
               {currentIndex + 1}번째 문항 · 총 {questions.length}문항 · 약 {totalMinutes}분

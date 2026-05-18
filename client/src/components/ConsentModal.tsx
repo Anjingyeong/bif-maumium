@@ -72,7 +72,7 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">
-                      {testType === "adult" ? "성인 자가진단" : "아동 선별검사"}
+                      {testType === "adult" ? "성인 자가체크" : "아동 선별검사"}
                     </p>
                     <h2 className="text-sm font-semibold text-foreground">검사 시작 전 안내</h2>
                   </div>
@@ -112,20 +112,20 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
                       <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                       <div>
                         <p className="text-sm font-semibold text-amber-800 mb-1">
-                          의학적 진단이 아닙니다
+                          진단 도구가 아닙니다
                         </p>
                         <p className="text-xs text-amber-700 leading-relaxed">
-                          본 검사는 경계선 지능의 가능성을 <strong>선별</strong>하는 참고 자료입니다.
-                          정확한 진단은 반드시 정신건강의학과 또는 발달센터의 전문 검사(K-WAIS/K-WISC)를 통해 받으시기 바랍니다.
+                          본 검사는 학습·인지·적응기능 어려움과 경계선 지능 가능성을 <strong>선별</strong>하는 참고 자료입니다.
+                          정확한 평가는 표준화 지능검사(K-WAIS/K-WISC), 적응행동검사, 면담을 통해 받으시기 바랍니다.
                         </p>
                       </div>
                     </div>
 
                     <ul className="space-y-3 mb-6">
                       {[
-                        "검사 결과는 전문 의료 기관의 진단을 대체하지 않습니다.",
+                        "검사 결과는 전문기관의 표준화 평가를 대체하지 않습니다.",
                         "결과에 따른 의사결정(치료, 교육 등)은 반드시 전문가와 상담 후 진행하세요.",
-                        "검사 결과가 높더라도 반드시 경계선 지능을 의미하지 않습니다.",
+                        "검사 결과가 높더라도 주의력, 정서, 수면, 학습 문제 등 다른 요인을 함께 확인해야 합니다.",
                         "검사 결과가 낮더라도 전문가 상담이 필요할 수 있습니다.",
                       ].map((item, i) => (
                         <li key={i} className="flex items-start gap-2.5">
@@ -144,7 +144,7 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
                         className="mt-0.5 w-4 h-4 accent-primary cursor-pointer"
                       />
                       <span className="text-xs text-foreground leading-relaxed">
-                        위 내용을 모두 읽고 이해했으며, 본 검사가 의학적 진단이 아님을 동의합니다.
+                        위 내용을 모두 읽고 이해했으며, 본 검사가 진단 도구가 아니라 선별용 자가체크임을 동의합니다.
                       </span>
                     </label>
 

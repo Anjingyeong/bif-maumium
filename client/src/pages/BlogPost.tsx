@@ -129,12 +129,12 @@ export default function BlogPost() {
             <h3 className="font-serif font-bold text-foreground">지금 바로 확인해보세요</h3>
           </div>
           <p className="text-sm text-muted-foreground mb-4">
-            경계선 지능의 가능성을 간편한 체크리스트로 확인할 수 있습니다.
+            학습·인지·적응기능 어려움 가능성을 간편한 체크리스트로 점검할 수 있습니다.
           </p>
           <div className="flex gap-3">
             <Link href="/test/adult">
               <Button className="bg-primary text-primary-foreground gap-1.5" size="sm">
-                성인 자가진단 <ArrowRight className="w-3.5 h-3.5" />
+                성인 자가체크 <ArrowRight className="w-3.5 h-3.5" />
               </Button>
             </Link>
             <Link href="/test/child">

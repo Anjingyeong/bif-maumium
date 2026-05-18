@@ -448,9 +448,9 @@ export default function Result() {
           className="bg-secondary/30 rounded-xl p-5 mb-8"
         >
           <p className="text-xs text-muted-foreground leading-relaxed text-center">
-            <strong>주의:</strong> 본 결과는 선별 목적의 참고 자료이며, 의학적 진단을 대체하지 않습니다.
-            정확한 진단을 위해서는 반드시 전문기관을 방문하시기 바랍니다.
-            경계선 지능은 적절한 지원을 통해 충분히 개선될 수 있습니다.
+            <strong>주의:</strong> 본 결과는 진단 도구가 아니라 선별 목적의 참고 자료입니다.
+            정확한 평가는 표준화 지능검사와 적응행동검사, 면담을 포함해 전문기관에서 받으시기 바랍니다.
+            점수가 높더라도 주의력, 정서, 수면, 학습 문제 등 다른 요인을 함께 확인해야 합니다.
           </p>
         </motion.div>
 

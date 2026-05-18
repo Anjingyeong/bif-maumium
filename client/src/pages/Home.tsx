@@ -70,17 +70,20 @@ export default function Home() {
               우리 아이, 혹은 나 자신을<br />
               <span className="text-primary">이해하는 첫걸음</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-8 max-w-xl">
+            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-4 max-w-xl">
               경계선 지능은 장애가 아닙니다. 적절한 이해와 지원이 있다면 
               누구나 자신에게 맞는 삶을 살아갈 수 있습니다.
             </p>
+            <div className="max-w-xl mb-8 rounded-xl border border-amber-200 bg-amber-50/80 px-4 py-3 text-xs text-amber-800 leading-relaxed">
+              <strong>안내:</strong> 본 검사는 진단 도구가 아니라 선별용 자가체크입니다. 정확한 평가는 표준화 지능검사와 적응행동검사, 면담을 통해 이루어져야 하며, 본 결과만으로 경계선 지능 여부를 확정하지 않습니다.
+            </div>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
                 size="lg"
                 className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 gap-2"
                 onClick={() => openConsent("adult")}
               >
-                성인 자가진단
+                성인 자가체크
                 <ArrowRight className="w-4 h-4" />
               </Button>
               <Button
@@ -137,7 +140,7 @@ export default function Home() {
               어떤 검사가 필요하신가요?
             </h2>
             <p className="text-muted-foreground max-w-lg mx-auto">
-              성인 자가진단과 아동 선별검사(학부모용) 두 가지를 제공합니다.
+              성인 자가체크와 아동 선별검사(학부모용) 두 가지를 제공합니다.
             </p>
           </motion.div>
 
@@ -154,7 +157,7 @@ export default function Home() {
               <div className="h-44 overflow-hidden">
                 <img
                   src={ADULT_IMG}
-                  alt="성인 자가진단"
+                  alt="성인 자가체크"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
@@ -163,9 +166,9 @@ export default function Home() {
                   <Brain className="w-5 h-5 text-primary" />
                   <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full">성인용</span>
                 </div>
-                <h3 className="text-lg font-serif font-bold text-foreground mb-2">성인 자가진단</h3>
+                <h3 className="text-lg font-serif font-bold text-foreground mb-2">성인 자가체크</h3>
                 <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                  직장, 인간관계, 일상생활에서의 어려움을 15개 문항으로 확인합니다.
+                  직장, 인간관계, 일상생활에서의 학습·인지·적응기능 어려움을 15개 문항으로 점검합니다.
                 </p>
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-muted-foreground">15문항 · 약 5분</span>
@@ -199,7 +202,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-lg font-serif font-bold text-foreground mb-2">아동 선별검사</h3>
                 <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                  자녀의 학습, 사회성, 언어 발달을 18개 문항으로 확인합니다.
+                  자녀의 학습, 인지, 사회적 판단, 일상 적응 모습을 18개 문항으로 점검합니다.
                 </p>
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-muted-foreground">18문항 · 약 7분</span>
@@ -232,12 +235,12 @@ export default function Home() {
               {
                 icon: <ClipboardCheck className="w-6 h-6 text-primary" />,
                 title: "영역별 상세 분석",
-                desc: "인지, 학습, 사회성, 정서 등 영역별로 세분화된 분석 결과를 제공합니다.",
+                desc: "학습/개념 이해, 작업기억, 처리속도, 실행기능, 사회적 판단, 일상 적응 등 영역별 분석을 제공합니다.",
               },
               {
                 icon: <Users className="w-6 h-6 text-primary" />,
                 title: "전문기관 연계",
-                desc: "결과에 따라 가까운 전문기관과 지원 서비스를 안내해 드립니다.",
+                desc: "결과 수준에 따라 전문 평가와 지원 정보를 안내합니다.",
               },
             ].map((item, i) => (
               <motion.div
@@ -373,7 +376,7 @@ export default function Home() {
             {[
               { title: "경계선 지능이란? 증상과 특징 완전 정리", cat: "기초 정보", slug: "what-is-borderline-intelligence", time: "5분" },
               { title: "우리 아이 경계선 지능 의심될 때 — 부모가 알아야 할 5가지", cat: "아동·청소년", slug: "child-borderline-intelligence-parents-guide", time: "7분" },
-              { title: "성인 경계선 지능 자가진단 — 나도 해당될까?", cat: "성인", slug: "adult-borderline-intelligence-self-check", time: "6분" },
+              { title: "성인 경계선 지능 가능성 자가체크 — 어떤 지원이 필요할까?", cat: "성인", slug: "adult-borderline-intelligence-self-check", time: "6분" },
               { title: "경계선 지능 지원 제도 총정리 (2026년 최신)", cat: "지원 정보", slug: "borderline-intelligence-support-2026", time: "8분" },
             ].map((item, i) => (
               <motion.div
@@ -435,7 +438,7 @@ export default function Home() {
               지금 바로 확인해보세요
             </h2>
             <p className="text-primary-foreground/80 mb-8 max-w-md mx-auto">
-              5~10분으로 경계선 지능의 가능성을 확인하고, 상세 PDF 리포트를 받아보세요.
+              5~10분으로 학습·인지·적응기능 어려움 가능성을 점검하고, 상세 PDF 리포트를 받아보세요.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
@@ -443,7 +446,7 @@ export default function Home() {
                 className="bg-white text-primary hover:bg-white/90 px-8 gap-2"
                 onClick={() => openConsent("adult")}
               >
-                성인 자가진단 시작 <ArrowRight className="w-4 h-4" />
+                성인 자가체크 시작 <ArrowRight className="w-4 h-4" />
               </Button>
               <Button
                 size="lg"
@@ -467,7 +470,7 @@ export default function Home() {
               <span className="font-serif font-semibold text-foreground">마음이음</span>
             </div>
             <p className="text-xs text-muted-foreground text-center">
-              본 서비스는 의학적 진단을 대체하지 않습니다. 정확한 진단은 전문기관을 통해 받으시기 바랍니다.
+              본 서비스는 진단 도구가 아니라 선별용 자가체크입니다. 정확한 평가는 전문기관을 통해 받으시기 바랍니다.
             </p>
             <div className="flex gap-4 text-xs text-muted-foreground">
               <Link href="/info" className="hover:text-foreground transition-colors">경계선 지능이란?</Link>

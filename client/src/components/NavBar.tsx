@@ -141,7 +141,7 @@ export default function NavBar({ onStartTest }: NavBarProps) {
                     className="w-full min-h-[48px] text-sm"
                     onClick={() => { setOpen(false); onStartTest("adult"); }}
                   >
-                    성인 자가진단 시작
+                    성인 자가체크 시작
                   </Button>
                   <Button
                     variant="outline"

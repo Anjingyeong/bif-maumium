@@ -32,7 +32,7 @@ import { Button } from "@/components/ui/button";
 import { getHistory, clearHistory, formatDate, TestRecord } from "@/lib/history";
 
 const TYPE_LABEL: Record<string, string> = {
-  adult: "성인 자가진단",
+  adult: "성인 자가체크",
   child: "아동 선별검사",
 };
 
@@ -192,7 +192,7 @@ export default function History() {
             <p className="text-muted-foreground text-sm mb-6">아직 검사 기록이 없습니다.</p>
             <div className="flex gap-3 justify-center">
               <Link href="/test/adult">
-                <Button size="sm">성인 자가진단 시작</Button>
+                <Button size="sm">성인 자가체크 시작</Button>
               </Link>
               <Link href="/test/child">
                 <Button variant="outline" size="sm">아동 선별검사 시작</Button>
@@ -393,7 +393,7 @@ export default function History() {
         {records.length > 0 && (
           <div className="mt-10 flex gap-3 justify-center">
             <Link href="/test/adult">
-              <Button size="sm" className="gap-1.5">성인 자가진단 다시 하기</Button>
+              <Button size="sm" className="gap-1.5">성인 자가체크 다시 하기</Button>
             </Link>
             <Link href="/test/child">
               <Button variant="outline" size="sm" className="gap-1.5">아동 선별검사 다시 하기</Button>
@@ -405,7 +405,7 @@ export default function History() {
       <footer className="py-8 border-t border-border/50 mt-12">
         <div className="container">
           <p className="text-xs text-muted-foreground text-center">
-            본 서비스는 의학적 진단을 대체하지 않습니다. 정확한 진단은 반드시 전문기관을 통해 받으시기 바랍니다.
+            본 서비스는 진단 도구가 아니라 선별용 자가체크입니다. 정확한 평가는 반드시 전문기관을 통해 받으시기 바랍니다.
           </p>
         </div>
       </footer>

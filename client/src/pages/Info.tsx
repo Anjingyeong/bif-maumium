@@ -236,7 +236,7 @@ export default function Info() {
             </li>
             <li className="flex items-start gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
-              온라인 체크리스트는 선별 목적이며, 정확한 진단은 전문가를 통해 받으세요.
+              온라인 체크리스트는 선별 목적이며, 표준화 지능검사·적응행동검사·면담을 포함한 정확한 평가는 전문가를 통해 받으세요.
             </li>
             <li className="flex items-start gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
@@ -249,7 +249,7 @@ export default function Info() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link href="/test/adult">
             <Button className="w-full sm:w-auto bg-primary text-primary-foreground gap-2">
-              성인 자가진단 <ArrowRight className="w-4 h-4" />
+              성인 자가체크 <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
           <Link href="/test/child">
@@ -264,7 +264,7 @@ export default function Info() {
       <footer className="py-8 border-t border-border/50 mt-12">
         <div className="container">
           <p className="text-xs text-muted-foreground text-center">
-            본 서비스는 의학적 진단을 대체하지 않습니다. 정확한 진단은 반드시 전문기관을 통해 받으시기 바랍니다.
+            본 서비스는 진단 도구가 아니라 선별용 자가체크입니다. 정확한 평가는 반드시 전문기관을 통해 받으시기 바랍니다.
           </p>
         </div>
       </footer>

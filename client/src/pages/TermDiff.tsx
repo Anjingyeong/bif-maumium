@@ -241,7 +241,7 @@ export default function TermDiff() {
         <motion.div {...fadeUp(0.6)} className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link href="/test/adult">
             <Button className="w-full sm:w-auto gap-2">
-              <Brain className="w-4 h-4" /> 성인 자가진단 해보기
+              <Brain className="w-4 h-4" /> 성인 자가체크 해보기
             </Button>
           </Link>
           <Link href="/test/child">
@@ -260,7 +260,7 @@ export default function TermDiff() {
       <footer className="py-8 border-t border-border/50 mt-8">
         <div className="container">
           <p className="text-xs text-muted-foreground text-center">
-            본 서비스는 의학적 진단을 대체하지 않습니다. 정확한 진단은 반드시 전문기관을 통해 받으시기 바랍니다.
+            본 서비스는 진단 도구가 아니라 선별용 자가체크입니다. 정확한 평가는 반드시 전문기관을 통해 받으시기 바랍니다.
           </p>
         </div>
       </footer>

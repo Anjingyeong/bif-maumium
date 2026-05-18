@@ -15,7 +15,7 @@ const sections = [
     id: "overview",
     title: "1. 개요",
     icon: <Shield className="w-5 h-5" />,
-    content: `${SERVICE_NAME}(이하 "서비스")는 경계선 지능 자가진단 및 관련 정보를 제공하는 웹 서비스입니다. 본 방침은 서비스 이용 과정에서 수집되는 정보의 처리 방법을 안내합니다.
+    content: `${SERVICE_NAME}(이하 "서비스")는 경계선 지능 가능성 자가체크와 학습·인지·적응기능 선별 정보를 제공하는 웹 서비스입니다. 본 방침은 서비스 이용 과정에서 수집되는 정보의 처리 방법을 안내합니다.
 
 본 서비스는 사용자의 개인정보 보호를 최우선으로 하며, 가능한 한 최소한의 정보만 수집합니다. 현재 서비스는 별도의 서버 없이 사용자의 기기(브라우저) 내에서만 데이터를 처리합니다.`,
   },
@@ -26,7 +26,7 @@ const sections = [
     content: `서비스는 다음과 같이 최소한의 정보만 수집합니다.
 
 ■ 자동 수집 정보 (서버 미전송)
-- 검사 응답 데이터: 자가진단 문항에 대한 응답값 및 점수
+- 검사 응답 데이터: 자가체크 문항에 대한 응답값 및 점수
 - 검사 이력: 검사 일시, 검사 유형(성인/아동), 총점
 - 동의 기록: 면책 고지 및 데이터 수집 동의 여부
 - 피드백: 서비스 만족도 평가 및 코멘트
@@ -86,10 +86,10 @@ const sections = [
     id: "disclaimer",
     title: "6. 의료 면책 고지",
     icon: <AlertCircle className="w-5 h-5" />,
-    content: `본 서비스의 자가진단 결과는 의학적 진단을 대체하지 않습니다.
+    content: `본 서비스의 자가체크 결과는 진단 도구가 아니라 선별용 참고 자료입니다.
 
-- 본 검사는 경계선 지능의 가능성을 선별하기 위한 참고 도구입니다.
-- 검사 결과는 전문적인 심리 평가(K-WAIS, K-WISC 등)를 대체할 수 없습니다.
+- 본 검사는 학습·인지·적응기능 어려움과 경계선 지능 가능성을 살펴보기 위한 선별용 참고 도구입니다.
+- 검사 결과는 표준화 지능검사(K-WAIS, K-WISC 등), 적응행동검사(Vineland, ABAS, NISE-K·ABS 등), 면담을 대체할 수 없습니다.
 - 검사 결과에 관계없이 전문가 상담이 필요하다고 느끼시면 정신건강의학과 또는 임상심리사를 방문하시기 바랍니다.
 - 본 서비스는 의료기기가 아니며, 의료법상 의료행위에 해당하지 않습니다.`,
   },
@@ -252,7 +252,7 @@ export default function Privacy() {
       {/* 푸터에 개인정보처리방침 링크 */}
       <footer className="border-t border-border/50 py-6 mt-8">
         <div className="container text-center text-xs text-muted-foreground">
-          <p>© 2026 {SERVICE_NAME}. 본 서비스는 의학적 진단을 대체하지 않습니다.</p>
+          <p>© 2026 {SERVICE_NAME}. 본 서비스는 진단 도구가 아니라 선별용 자가체크입니다.</p>
           <p className="mt-1">
             <Link href="/privacy" className="hover:text-foreground transition-colors underline underline-offset-2">
               개인정보처리방침
