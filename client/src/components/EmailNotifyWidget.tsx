@@ -160,14 +160,14 @@ function SuccessAnimation({ email }: { email: string }) {
           variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
           transition={{ delay: 0.55 }}
         >
-          알림 등록 완료! 🎉
+          이메일 저장 완료
         </motion.p>
         <motion.p className="text-sm text-muted-foreground mt-1.5 leading-relaxed"
           variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
           transition={{ delay: 0.7 }}
         >
           <span className="font-semibold text-primary">{email}</span>으로<br />
-          전문가 자문 서비스 오픈 시 가장 먼저 알려드릴게요.
+          현재 이 브라우저에만 저장되어 있으며, 외부 서버로 전송되지 않았습니다.
         </motion.p>
       </motion.div>
 
@@ -177,9 +177,9 @@ function SuccessAnimation({ email }: { email: string }) {
         variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1, delayChildren: 0.85 } } }}
       >
         {[
-          { icon: "🎯", text: "조기 등록 할인 예정" },
-          { icon: "🔔", text: "오픈 즉시 알림" },
-          { icon: "🔒", text: "외부 미전송" },
+          { icon: "🔒", text: "외부 서버 미전송" },
+          { icon: "💻", text: "브라우저에만 저장" },
+          { icon: "✕", text: "언제든 삭제 가능" },
         ].map((badge) => (
           <motion.span
             key={badge.text}
@@ -262,10 +262,9 @@ export default function EmailNotifyWidget() {
                 <Bell className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground text-base">전문가 자문 서비스 오픈 알림 받기</h3>
+                <h3 className="font-semibold text-foreground text-base">전문가 자문 서비스 소식 받기</h3>
                 <p className="text-sm text-muted-foreground mt-0.5 leading-relaxed">
-                  임상심리사·정신건강의학과 전문의와의 1:1 온라인 자문 서비스를 준비 중입니다.
-                  오픈 시 이메일로 가장 먼저 알려드릴게요.
+                  1:1 온라인 자문 서비스는 준비 중입니다. 관심 이메일은 현재 이 브라우저에만 저장됩니다.
                 </p>
               </div>
             </div>
@@ -273,9 +272,9 @@ export default function EmailNotifyWidget() {
             {/* Benefits */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-5">
               {[
-                { icon: "🎯", text: "조기 등록 할인 혜택" },
-                { icon: "👨‍⚕️", text: "검증된 전문가 연결" },
-                { icon: "🔒", text: "개인정보 외부 미전송" },
+                { icon: "💻", text: "브라우저 임시 저장" },
+                { icon: "🔒", text: "외부 서버 미전송" },
+                { icon: "✕", text: "데이터 삭제로 제거" },
               ].map((item) => (
                 <div key={item.text} className="flex items-center gap-2 bg-background/60 rounded-lg px-3 py-2 text-xs text-muted-foreground">
                   <span>{item.icon}</span>
@@ -293,7 +292,7 @@ export default function EmailNotifyWidget() {
 
                   <Input
                     type="email"
-                    placeholder="예: hong@gmail.com"
+                    placeholder="이메일 주소 입력"
                     value={email}
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -337,7 +336,7 @@ export default function EmailNotifyWidget() {
                   {isLoading ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
-                    <>알림 받기 <ArrowRight className="w-4 h-4" /></>
+                    <>이메일 저장 <ArrowRight className="w-4 h-4" /></>
                   )}
                 </Button>
               </div>
@@ -374,8 +373,8 @@ export default function EmailNotifyWidget() {
             </form>
 
             <p className="text-xs text-muted-foreground mt-3 text-center">
-              이메일은 이 기기에만 저장되며 외부 서버로 전송되지 않습니다.
-              언제든지 브라우저 데이터 삭제로 취소할 수 있습니다.
+              현재 입력하신 이메일은 이 브라우저에만 임시 저장되며, 외부 서버로 전송되지 않습니다.
+              저장된 정보는 브라우저 데이터 삭제로 언제든 제거할 수 있습니다.
             </p>
           </motion.div>
         )}

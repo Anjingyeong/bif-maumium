@@ -85,3 +85,11 @@ More detail is in `docs/deployment-env.md`.
 - The homepage terminology banner keeps its existing design while improving mobile wrapping, width constraints, and overflow handling.
 - KakaoTalk sharing UI and SDK helper code were removed; the general link copy action remains.
 - PDF export continues to use canvas-rendered Korean text through jsPDF, now waiting for Korean-capable fonts before rendering and using a Hangul-safe font fallback stack.
+
+## 2026-05-18 Landing Page Polish Notes
+
+- The homepage hero keeps the existing image and brand mood, but now uses a stronger left-side readability overlay, slightly bolder headline weight, and tighter text width.
+- Top navigation links use higher contrast, clearer active state, and focus-visible rings.
+- The yellow terminology notice is visually calmer so the main hero message remains primary.
+- Main and final CTA pairs are balanced with filled adult/child buttons using primary and accent tones.
+- The email interest widget accurately reflects the current implementation: emails are saved only in this browser's localStorage and are not sent to a server.

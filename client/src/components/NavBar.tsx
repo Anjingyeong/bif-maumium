@@ -35,12 +35,12 @@ export default function NavBar({ onStartTest }: NavBarProps) {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/88 backdrop-blur-md border-b border-border/60 shadow-sm shadow-background/40">
         <div className="container flex items-center justify-between h-16">
           {/* 로고 */}
           <Link href="/" className="flex items-center gap-1.5 flex-shrink-0">
             <img
-              src="/manus-storage/favicon-32_b4200aca.png"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%236A879F'/%3E%3Cpath d='M10 19c2 4 10 4 12 0M10 14c1-4 5-6 8-3 3-3 7-1 8 3' stroke='white' stroke-width='2.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"
               alt="마음이음 로고"
               className="w-7 h-7 object-contain"
             />
@@ -53,7 +53,12 @@ export default function NavBar({ onStartTest }: NavBarProps) {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                aria-current={location === link.href ? "page" : undefined}
+                className={`text-sm font-medium transition-colors flex items-center gap-1 rounded-md px-1.5 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 ${
+                  location === link.href
+                    ? "text-foreground"
+                    : "text-foreground/70 hover:text-foreground"
+                }`}
               >
                 {link.icon}
                 {link.label}

@@ -59,31 +59,32 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative pt-16 overflow-hidden">
         <div className="absolute inset-0">
-          <img src={HERO_BG} alt="" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/30 to-background" />
+          <img src={HERO_BG} alt="" className="w-full h-full object-cover object-[62%_58%] md:object-[70%_52%]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/35" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/45 via-background/25 to-background" />
         </div>
         <div className="relative container py-24 md:py-36 lg:py-44">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="max-w-2xl"
+            className="w-full max-w-[43rem] min-w-0"
           >
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-foreground leading-tight mb-6">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-foreground leading-tight mb-6 [text-shadow:0_1px_2px_rgba(255,255,255,0.9)]">
               우리 아이, 혹은 나 자신을<br />
               <span className="text-primary">이해하는 첫걸음</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-4 max-w-xl">
+            <p className="text-lg md:text-xl text-foreground/75 leading-relaxed mb-4 max-w-[36rem]">
               경계선 지능은 장애가 아닙니다. 적절한 이해와 지원이 있다면 
               누구나 자신에게 맞는 삶을 살아갈 수 있습니다.
             </p>
-            <div className="max-w-xl mb-8 rounded-xl border border-amber-200 bg-amber-50/80 px-4 py-3 text-xs text-amber-800 leading-relaxed">
-              <strong>안내:</strong> 본 검사는 진단 도구가 아니라 선별용 자가체크입니다. 정확한 평가는 표준화 지능검사와 적응행동검사, 면담을 통해 이루어져야 하며, 본 결과만으로 경계선 지능 여부를 확정하지 않습니다.
+            <div className="w-full max-w-[36rem] mb-8 rounded-xl border border-amber-200/70 bg-white/70 px-4 py-3 text-[11px] sm:text-xs text-muted-foreground leading-relaxed shadow-sm shadow-background/40 break-words">
+              <strong>안내:</strong> 본 검사는 선별용 자가체크입니다. 결과는 가능성 참고용이며, 필요한 경우 전문가 평가를 권장합니다.
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
                 size="lg"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 gap-2"
+                className="w-full sm:w-auto max-w-full bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-primary/40 px-8 gap-2 shadow-sm"
                 onClick={() => openConsent("adult")}
               >
                 성인 자가체크
@@ -91,8 +92,7 @@ export default function Home() {
               </Button>
               <Button
                 size="lg"
-                variant="outline"
-                className="border-primary/30 text-primary hover:bg-primary/5 px-8 gap-2"
+                className="w-full sm:w-auto max-w-full bg-accent text-accent-foreground hover:bg-accent/90 focus-visible:ring-accent/40 px-8 gap-2 shadow-sm"
                 onClick={() => openConsent("child")}
               >
                 아동 선별검사
@@ -322,16 +322,16 @@ export default function Home() {
       </section>
 
       {/* 용어 혼동 배너 */}
-      <section className="py-10 bg-amber-50/60">
+      <section className="py-10 bg-secondary/30">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="flex flex-col md:flex-row items-start md:items-center gap-5 bg-white/80 border border-amber-200 rounded-2xl px-5 sm:px-6 py-5 overflow-hidden"
+            className="flex flex-col md:flex-row items-start md:items-center gap-5 bg-white/75 border border-amber-200/70 rounded-2xl px-5 sm:px-6 py-5 overflow-hidden"
           >
-            <div className="text-2xl shrink-0">⚠️</div>
+            <div className="text-xl shrink-0 opacity-80">⚠️</div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-foreground mb-1">
                 &ldquo;경계선 지능&rdquo;과 &ldquo;경계성 지능&rdquo;, 헷갈리시나요?
@@ -344,7 +344,7 @@ export default function Home() {
               </p>
             </div>
             <Link href="/term-diff" className="w-full md:w-auto shrink-0">
-              <Button variant="outline" size="sm" className="w-full md:w-auto gap-1.5 border-amber-300 text-amber-800 hover:bg-amber-50 whitespace-nowrap">
+              <Button variant="outline" size="sm" className="w-full md:w-auto gap-1.5 border-amber-200 text-amber-700 hover:bg-amber-50/70 whitespace-nowrap">
                 자세히 알아보기 <ArrowRight className="w-3.5 h-3.5" />
               </Button>
             </Link>
@@ -419,7 +419,7 @@ export default function Home() {
                 아직 검사가 망설여지시나요?
               </h2>
               <p className="text-sm text-muted-foreground">
-                전문가 자문 서비스 오픈 시 가장 먼저 알림을 받아보세요.
+                관심 이메일을 이 브라우저에 임시 저장해둘 수 있습니다.
               </p>
             </div>
             <EmailNotifyWidget />
@@ -446,15 +446,14 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 size="lg"
-                className="bg-white text-primary hover:bg-white/90 px-8 gap-2"
+                className="bg-white text-primary hover:bg-white/90 focus-visible:ring-white/50 px-8 gap-2"
                 onClick={() => openConsent("adult")}
               >
                 성인 자가체크 시작 <ArrowRight className="w-4 h-4" />
               </Button>
               <Button
                 size="lg"
-                variant="outline"
-                className="border-white/40 text-white hover:bg-white/10 px-8 gap-2"
+                className="bg-accent text-accent-foreground hover:bg-accent/90 focus-visible:ring-white/50 px-8 gap-2"
                 onClick={() => openConsent("child")}
               >
                 아동 선별검사 시작 <ArrowRight className="w-4 h-4" />
