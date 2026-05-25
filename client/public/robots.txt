@@ -1,29 +1,21 @@
-# 마음이음 (Maumium) - 경계선 지능 자가진단
-# https://maumium.kr
+# 마음이음 (Maumium)
+# https://maumium.pages.dev
 
-# 모든 검색 엔진 허용
 User-agent: *
 Allow: /
-
-# 검사 결과 페이지는 개인 데이터 포함 가능 → 색인 제외
 Disallow: /result
-
-# 검사 이력 페이지는 개인 데이터 → 색인 제외
 Disallow: /history
 
-# Sitemap 위치
-Sitemap: https://maumium.kr/sitemap.xml
+Sitemap: https://maumium.pages.dev/sitemap.xml
 
-# Naver 검색 로봇
 User-agent: Yeti
 Allow: /
 Disallow: /result
 Disallow: /history
-Sitemap: https://maumium.kr/sitemap.xml
+Sitemap: https://maumium.pages.dev/sitemap.xml
 
-# Daum/Kakao 검색 로봇
 User-agent: Daumoa
 Allow: /
 Disallow: /result
 Disallow: /history
-Sitemap: https://maumium.kr/sitemap.xml
+Sitemap: https://maumium.pages.dev/sitemap.xml

@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "NODE_ENV=development tsx watch server/_core/index.ts",
     "sitemap": "node scripts/generate-sitemap.mjs",
-    "sitemap:prod": "node scripts/generate-sitemap.mjs https://maumium.kr",
-    "build:pages": "node scripts/generate-sitemap.mjs https://maumium.kr && vite build",
-    "build": "node scripts/generate-sitemap.mjs https://maumium.kr && vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
+    "sitemap:prod": "node scripts/generate-sitemap.mjs https://maumium.pages.dev",
+    "build:pages": "node scripts/generate-sitemap.mjs https://maumium.pages.dev && vite build",
+    "build": "node scripts/generate-sitemap.mjs https://maumium.pages.dev && vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "start": "NODE_ENV=production node dist/index.js",
     "check": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
