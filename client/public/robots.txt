@@ -3,19 +3,5 @@
 
 User-agent: *
 Allow: /
-Disallow: /result
-Disallow: /history
 
-Sitemap: https://maumium.pages.dev/sitemap.xml
-
-User-agent: Yeti
-Allow: /
-Disallow: /result
-Disallow: /history
-Sitemap: https://maumium.pages.dev/sitemap.xml
-
-User-agent: Daumoa
-Allow: /
-Disallow: /result
-Disallow: /history
 Sitemap: https://maumium.pages.dev/sitemap.xml
