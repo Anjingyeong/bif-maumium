@@ -84,12 +84,12 @@ export default function Home() {
             className="w-full max-w-[43rem] min-w-0"
           >
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-foreground leading-tight mb-6 [text-shadow:0_1px_2px_rgba(255,255,255,0.9)]">
-              우리 아이, 혹은 나 자신을<br />
-              <span className="text-primary">이해하는 첫걸음</span>
+              느린학습자·경계선 지능<br />
+              <span className="text-primary">자가진단 테스트</span>
             </h1>
             <p className="text-lg md:text-xl text-foreground/75 leading-relaxed mb-4 max-w-[36rem]">
-              경계선 지능은 장애가 아닙니다. 적절한 이해와 지원이 있다면 
-              누구나 자신에게 맞는 삶을 살아갈 수 있습니다.
+              마음이음은 느린학습자와 경계선 지능 특성을 간단한 문항으로 확인해보는 참고용 자가진단 테스트입니다.
+              결과는 이해를 돕기 위한 자료이며 전문가 상담이나 검사를 대체하지 않습니다.
             </p>
             <div className="w-full max-w-[36rem] mb-8 rounded-xl border border-amber-200/70 bg-white/70 px-4 py-3 text-[11px] sm:text-xs text-muted-foreground leading-relaxed shadow-sm shadow-background/40 break-words">
               <strong>안내:</strong> 본 검사는 선별용 자가체크입니다. 결과는 가능성 참고용이며, 필요한 경우 전문가 평가를 권장합니다.
@@ -139,6 +139,25 @@ export default function Home() {
               <p className="text-muted-foreground">경계선 지능 범위</p>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* SEO Keyword Intro Section */}
+      <section className="py-14 bg-background">
+        <div className="container">
+          <div className="max-w-3xl mx-auto text-center">
+            <p className="text-xs font-medium text-primary bg-primary/10 px-3 py-1 rounded-full inline-flex mb-4">
+              마음이음 참고용 자가체크
+            </p>
+            <h2 className="text-2xl md:text-3xl font-serif font-bold text-foreground mb-4">
+              느린학습자 테스트와 경계선 지능 자가진단을 한곳에서
+            </h2>
+            <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+              느린학습자 자가진단, 경계선 지능 테스트, 경계선 지능장애 테스트를 찾는 분들이
+              부담 없이 살펴볼 수 있도록 성인용 자가체크와 자녀를 위한 보호자 체크를 제공합니다.
+              느린학습자 체크리스트는 최근 생활 경험을 기준으로 답하며, 결과는 참고용 안내로만 활용해 주세요.
+            </p>
+          </div>
         </div>
       </section>
 
