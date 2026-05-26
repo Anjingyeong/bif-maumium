@@ -1,7 +1,4 @@
-# 마음이음 (Maumium)
-# https://maumium.pages.dev
-
 User-agent: *
 Allow: /
 
-Sitemap: https://maumium.pages.dev/sitemap.xml
+Sitemap: https://maumium.pages.dev/sitemap-index.xml
