@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://maumium.pages.dev/sitemap-index.xml
+Sitemap: https://maumium.pages.dev/sitemap.xml

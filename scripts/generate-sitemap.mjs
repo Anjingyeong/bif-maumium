@@ -52,9 +52,21 @@ ${urlEntries}
 `;
 
 const outputPath = resolve(__dirname, "../client/public/sitemap.xml");
+const sitemapIndexPath = resolve(__dirname, "../client/public/sitemap-index.xml");
+const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>${BASE_URL}/sitemap.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+</sitemapindex>
+`;
+
 writeFileSync(outputPath, sitemap, "utf-8");
+writeFileSync(sitemapIndexPath, sitemapIndex, "utf-8");
 
 console.log(`sitemap.xml generated: ${outputPath}`);
+console.log(`sitemap-index.xml generated: ${sitemapIndexPath}`);
 console.log(`Base URL: ${BASE_URL}`);
 console.log(`Pages: ${pages.length}`);
 console.log(`Submit to Search Console: ${BASE_URL}/sitemap.xml`);
