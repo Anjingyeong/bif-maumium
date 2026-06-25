@@ -1,6 +1,6 @@
 /**
  * Result Page - Score analysis and recommendations
- * Design: Warm Guidance - supportive, non-judgmental framing
+ * Design: Calm & Trustworthy - supportive, non-judgmental framing
  * Features: localStorage 이력 저장, 이전 결과 비교, PDF 다운로드
  */
 import { useMemo, useState, useEffect, useRef } from "react";
@@ -36,8 +36,7 @@ import {
   saveResultToApi,
   SavedResultSummary,
 } from "@/lib/resultPersistence";
-
-const RESULT_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/result-bg-o79GvS4Xzaz8RqGYiPqNCU.webp";
+import { shouldShowSupportResources } from "@/lib/riskLevels";
 
 export default function Result() {
   const [isPdfLoading, setIsPdfLoading] = useState(false);
@@ -68,7 +67,6 @@ export default function Result() {
   const categoryScores = getCategoryScores(answers, questionSet.questions);
   const percentage = Math.round((score / maxScore) * 100);
 
-  // 결과 페이지 진입 시 이전 기록 조회 후 현재 결과 저장 (한 번만 실행)
   useEffect(() => {
     if (savedRef.current) return;
     savedRef.current = true;
@@ -134,7 +132,6 @@ export default function Result() {
       });
       setTimeout(() => setIsCopied(false), 2500);
     } catch {
-      // fallback: prompt
       const resultUrl2 = `${window.location.origin}/result?type=${encodeURIComponent(type)}&score=${score}`;
       window.prompt("아래 링크를 복사하세요:", resultUrl2);
     }
@@ -156,7 +153,7 @@ export default function Result() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-md border-b border-border/50">
+      <header className="sticky top-0 z-40 bg-card/95 backdrop-blur-md border-b border-border/60 shadow-sm">
         <div className="container flex items-center justify-between h-14">
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
@@ -169,7 +166,7 @@ export default function Result() {
             </Link>
           </div>
           <div className="flex items-center gap-2">
-            {type === "adult" ? <Brain className="w-5 h-5 text-primary" /> : <Heart className="w-5 h-5 text-accent" />}
+            {type === "adult" ? <Brain className="w-4 h-4 text-primary" /> : <Heart className="w-4 h-4 text-accent" />}
             <span className="text-sm font-medium text-foreground">검사 결과</span>
           </div>
           <Button
@@ -186,26 +183,25 @@ export default function Result() {
       </header>
 
       <main className="container max-w-3xl py-8 md:py-12">
-        {/* Result Hero */}
+        {/* Result Hero Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="relative overflow-hidden rounded-2xl mb-8"
+          className="bg-card rounded-2xl border border-border/60 shadow-sm overflow-hidden mb-8"
         >
-          <div className="absolute inset-0">
-            <img src={RESULT_BG} alt="" className="w-full h-full object-cover opacity-30" />
-          </div>
-          <div className="relative p-8 md:p-12 text-center">
+          {/* Level color stripe at top */}
+          <div className="h-1.5" style={{ backgroundColor: result.color }} />
+          <div className="p-8 md:p-10 text-center">
             {/* Score Circle */}
-            <div className="relative w-36 h-36 mx-auto mb-6">
+            <div className="relative w-32 h-32 mx-auto mb-6">
               <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" strokeWidth="6" className="text-border" />
+                <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" strokeWidth="5" className="text-secondary" />
                 <motion.circle
                   cx="50" cy="50" r="42"
                   fill="none"
                   stroke={result.color}
-                  strokeWidth="6"
+                  strokeWidth="5"
                   strokeLinecap="round"
                   strokeDasharray={`${2 * Math.PI * 42}`}
                   initial={{ strokeDashoffset: 2 * Math.PI * 42 }}
@@ -219,20 +215,33 @@ export default function Result() {
               </div>
             </div>
 
-            <h1 className="text-2xl md:text-3xl font-serif font-bold text-foreground mb-3">{result.title}</h1>
-            <p className="text-muted-foreground leading-relaxed max-w-lg mx-auto">{result.description}</p>
+            {/* Level badge */}
+            <div className="flex items-center justify-center mb-3">
+              <span
+                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
+                style={{
+                  backgroundColor: `${result.color}15`,
+                  color: result.color,
+                  border: `1px solid ${result.color}30`,
+                }}
+              >
+                {type === "adult" ? "성인 자가체크" : "아동 선별검사"}
+              </span>
+            </div>
+            <h1 className="text-xl md:text-2xl font-serif font-bold text-foreground mb-3">{result.title}</h1>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-lg mx-auto">{result.description}</p>
           </div>
         </motion.div>
 
-        {/* ── PDF 다운로드 CTA ── */}
+        {/* PDF 다운로드 CTA */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="flex flex-col sm:flex-row items-center gap-3 bg-card border border-primary/20 rounded-2xl p-5 mb-8 no-print"
+          className="flex flex-col sm:flex-row items-center gap-3 bg-card border border-border/60 rounded-2xl p-5 mb-8 no-print shadow-sm"
         >
           <div className="flex items-center gap-3 flex-1">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-primary/8 border border-primary/15 flex items-center justify-center shrink-0">
               <Download className="w-5 h-5 text-primary" />
             </div>
             <div>
@@ -253,6 +262,7 @@ export default function Result() {
           </Button>
         </motion.div>
 
+        {/* 서버 저장 상태 */}
         {(saveConsent || remoteResult || remoteSaveError) && (
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -262,9 +272,7 @@ export default function Result() {
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-sm font-semibold text-foreground">
-                  서버 결과 저장
-                </p>
+                <p className="text-sm font-semibold text-foreground">서버 결과 저장</p>
                 <p className="text-xs text-muted-foreground leading-relaxed mt-1">
                   저장 항목은 닉네임, 응답, 영역별 점수, 총점, 위험도, 동의 여부,
                   제출 시각입니다. 실명, 전화번호, 이메일, 주민등록번호는 수집하지 않습니다.
@@ -277,9 +285,7 @@ export default function Result() {
 
             {remoteResult && (
               <div className="mt-3 rounded-xl bg-primary/5 border border-primary/15 px-4 py-3">
-                <p className="text-xs text-primary font-medium">
-                  저장 완료: {remoteResult.id}
-                </p>
+                <p className="text-xs text-primary font-medium">저장 완료: {remoteResult.id}</p>
               </div>
             )}
 
@@ -291,61 +297,57 @@ export default function Result() {
           </motion.div>
         )}
 
-        {/* ── 이전 결과 비교 섹션 ── */}
+        {/* 이전 결과 비교 */}
         {prevRecord && scoreDiff && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            className="bg-card rounded-2xl border border-border/50 p-6 mb-8"
+            className="bg-card rounded-2xl border border-border/60 shadow-sm p-6 mb-8"
           >
             <div className="flex items-center gap-2 mb-4">
-              <History className="w-5 h-5 text-primary" />
-              <h2 className="text-lg font-serif font-bold text-foreground">이전 검사와 비교</h2>
+              <History className="w-4 h-4 text-primary" />
+              <h2 className="text-base font-serif font-bold text-foreground">이전 검사와 비교</h2>
             </div>
 
-            <div className="grid grid-cols-3 gap-4 mb-5">
-              {/* 이전 점수 */}
+            <div className="grid grid-cols-3 gap-3 mb-5">
               <div className="text-center p-4 rounded-xl bg-secondary/40">
                 <p className="text-xs text-muted-foreground mb-1">이전 검사</p>
                 <p className="text-2xl font-serif font-bold text-muted-foreground">{prevRecord.score}</p>
                 <p className="text-xs text-muted-foreground mt-1">{formatDate(prevRecord.date)}</p>
               </div>
 
-              {/* 변화량 */}
               <div className="text-center p-4 rounded-xl bg-secondary/40 flex flex-col items-center justify-center">
                 {scoreDiff.direction === "up" && (
                   <>
-                    <TrendingUp className="w-6 h-6 text-red-500 mb-1" />
-                    <p className="text-xl font-bold text-red-500">+{scoreDiff.diff}</p>
+                    <TrendingUp className="w-5 h-5 text-amber-600 mb-1" />
+                    <p className="text-xl font-bold text-amber-600">+{scoreDiff.diff}</p>
                     <p className="text-xs text-muted-foreground">점 상승</p>
                   </>
                 )}
                 {scoreDiff.direction === "down" && (
                   <>
-                    <TrendingDown className="w-6 h-6 text-green-600 mb-1" />
-                    <p className="text-xl font-bold text-green-600">-{scoreDiff.diff}</p>
+                    <TrendingDown className="w-5 h-5 text-emerald-600 mb-1" />
+                    <p className="text-xl font-bold text-emerald-600">-{scoreDiff.diff}</p>
                     <p className="text-xs text-muted-foreground">점 하락</p>
                   </>
                 )}
                 {scoreDiff.direction === "same" && (
                   <>
-                    <Minus className="w-6 h-6 text-muted-foreground mb-1" />
+                    <Minus className="w-5 h-5 text-muted-foreground mb-1" />
                     <p className="text-xl font-bold text-muted-foreground">0</p>
                     <p className="text-xs text-muted-foreground">변화 없음</p>
                   </>
                 )}
               </div>
 
-              {/* 현재 점수 */}
-              <div className="text-center p-4 rounded-xl" style={{ backgroundColor: `${result.color}15`, border: `1px solid ${result.color}30` }}>
+              <div className="text-center p-4 rounded-xl" style={{ backgroundColor: `${result.color}12`, border: `1px solid ${result.color}25` }}>
                 <p className="text-xs text-muted-foreground mb-1">이번 검사</p>
                 <p className="text-2xl font-serif font-bold text-foreground">{score}</p>
                 <p className="text-xs text-muted-foreground mt-1">오늘</p>
               </div>
             </div>
 
-            {/* 영역별 비교 바 */}
             <div className="space-y-3">
               {Object.entries(categoryScores).map(([category, { score: catScore, max }]) => {
                 const prevCatScore = prevRecord.categoryScores?.[category];
@@ -359,24 +361,22 @@ export default function Result() {
                       <span className="text-xs text-muted-foreground">
                         {catScore}/{max}
                         {prevCatScore && (
-                          <span className={`ml-2 font-medium ${catScore > prevCatScore.score ? "text-red-500" : catScore < prevCatScore.score ? "text-green-600" : "text-muted-foreground"}`}>
+                          <span className={`ml-2 font-medium ${catScore > prevCatScore.score ? "text-amber-600" : catScore < prevCatScore.score ? "text-emerald-600" : "text-muted-foreground"}`}>
                             {catScore > prevCatScore.score ? `+${catScore - prevCatScore.score}` : catScore < prevCatScore.score ? `${catScore - prevCatScore.score}` : "±0"}
                           </span>
                         )}
                       </span>
                     </div>
-                    <div className="relative h-2.5 bg-secondary rounded-full overflow-hidden">
-                      {/* 이전 결과 (반투명) */}
+                    <div className="relative h-2 bg-secondary rounded-full overflow-hidden">
                       {prevCatPct !== null && (
                         <div
-                          className="absolute top-0 left-0 h-full rounded-full opacity-30"
+                          className="absolute top-0 left-0 h-full rounded-full opacity-25"
                           style={{ width: `${prevCatPct}%`, backgroundColor: result.color }}
                         />
                       )}
-                      {/* 현재 결과 */}
                       <motion.div
                         className="absolute top-0 left-0 h-full rounded-full"
-                        style={{ backgroundColor: catPct > 60 ? result.color : "oklch(0.55 0.12 250)" }}
+                        style={{ backgroundColor: catPct > 60 ? result.color : "oklch(0.55 0.10 240)" }}
                         initial={{ width: 0 }}
                         animate={{ width: `${catPct}%` }}
                         transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
@@ -387,27 +387,24 @@ export default function Result() {
               })}
             </div>
 
-            {/* 이전 결과 등급 */}
             <div className="mt-4 pt-4 border-t border-border/50 flex items-center justify-between text-xs text-muted-foreground">
-              <span>이전 결과 등급: <strong>{prevRecord.levelTitle}</strong></span>
-              <span>현재 결과 등급: <strong style={{ color: result.color }}>{result.title}</strong></span>
+              <span>이전 등급: <strong>{prevRecord.levelTitle}</strong></span>
+              <span>현재 등급: <strong style={{ color: result.color }}>{result.title}</strong></span>
             </div>
-
-            {/* 점수 방향 해석 안내 */}
-            <p className="text-xs text-muted-foreground mt-3 text-center">
-              * 이 검사에서 점수가 <strong>높을수록</strong> 어려움이 많이 관찰됨을 의미합니다.
+            <p className="text-xs text-muted-foreground mt-2 text-center">
+              * 점수가 <strong>높을수록</strong> 어려움이 많이 관찰됨을 의미합니다.
             </p>
           </motion.div>
         )}
 
-        {/* Category Breakdown */}
+        {/* 영역별 분석 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="bg-card rounded-2xl border border-border/50 p-6 md:p-8 mb-8"
+          className="bg-card rounded-2xl border border-border/60 shadow-sm p-6 md:p-8 mb-8"
         >
-          <h2 className="text-lg font-serif font-bold text-foreground mb-6">영역별 분석</h2>
+          <h2 className="text-base font-serif font-bold text-foreground mb-5">영역별 분석</h2>
           <div className="space-y-4">
             {Object.entries(categoryScores).map(([category, { score: catScore, max }]) => {
               const catPercentage = Math.round((catScore / max) * 100);
@@ -417,10 +414,10 @@ export default function Result() {
                     <span className="text-sm font-medium text-foreground">{category}</span>
                     <span className="text-xs text-muted-foreground">{catScore}/{max}</span>
                   </div>
-                  <div className="h-2.5 bg-secondary rounded-full overflow-hidden">
+                  <div className="h-2 bg-secondary rounded-full overflow-hidden">
                     <motion.div
                       className="h-full rounded-full"
-                      style={{ backgroundColor: catPercentage > 60 ? result.color : "oklch(0.55 0.12 250)" }}
+                      style={{ backgroundColor: catPercentage > 60 ? result.color : "oklch(0.55 0.10 240)" }}
                       initial={{ width: 0 }}
                       animate={{ width: `${catPercentage}%` }}
                       transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
@@ -432,37 +429,42 @@ export default function Result() {
           </div>
         </motion.div>
 
-        {/* Recommendation */}
+        {/* 권장 사항 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="bg-card rounded-2xl border border-border/50 p-6 md:p-8 mb-8"
+          className="bg-card rounded-2xl border border-border/60 shadow-sm p-6 md:p-8 mb-8"
         >
-          <h2 className="text-lg font-serif font-bold text-foreground mb-4">권장 사항</h2>
-          <div className="bg-secondary/50 rounded-xl p-5">
+          <h2 className="text-base font-serif font-bold text-foreground mb-4">권장 사항</h2>
+          <div className="bg-secondary/40 rounded-xl p-5 border border-border/40">
             <p className="text-sm text-foreground leading-relaxed">{result.recommendation}</p>
           </div>
         </motion.div>
 
-        {/* Support Resources */}
-        {(result.level === "moderate" || result.level === "high") && (
+        {/* 도움받을 수 있는 곳 - 차분하게 표시 */}
+        {shouldShowSupportResources(result.level) && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="bg-card rounded-2xl border border-border/50 p-6 md:p-8 mb-8"
+            className="bg-card rounded-2xl border border-border/60 shadow-sm p-6 md:p-8 mb-8"
           >
-            <h2 className="text-lg font-serif font-bold text-foreground mb-4">도움받을 수 있는 곳</h2>
-            <div className="space-y-3">
+            <div className="mb-4">
+              <h2 className="text-base font-serif font-bold text-foreground mb-1">도움받을 수 있는 곳</h2>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                아래 기관에서 더 자세한 평가와 지원 정보를 안내받으실 수 있습니다.
+              </p>
+            </div>
+            <div className="space-y-2.5">
               {supportResources.map((resource, i) => (
-                <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-secondary/30 hover:bg-secondary/50 transition-colors">
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                <div key={i} className="flex items-start gap-3 p-3.5 rounded-xl bg-secondary/30 border border-border/40 hover:bg-secondary/50 transition-colors">
+                  <div className="w-8 h-8 rounded-lg bg-primary/8 border border-primary/15 flex items-center justify-center shrink-0 mt-0.5">
                     {resource.phone ? <Phone className="w-4 h-4 text-primary" /> : <ExternalLink className="w-4 h-4 text-primary" />}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-foreground">{resource.name}</p>
-                    <p className="text-xs text-muted-foreground">{resource.description}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{resource.description}</p>
                     {resource.phone && (
                       <a href={`tel:${resource.phone}`} className="text-xs text-primary font-medium mt-1 inline-block">{resource.phone}</a>
                     )}
@@ -476,17 +478,17 @@ export default function Result() {
           </motion.div>
         )}
 
-        {/* Feedback Widget */}
+        {/* 피드백 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.75 }}
-          className="bg-card rounded-2xl border border-border/50 px-6 mb-6"
+          className="bg-card rounded-2xl border border-border/60 shadow-sm px-6 mb-6"
         >
           <FeedbackWidget testType={type} resultLevel={result.level} />
         </motion.div>
 
-        {/* Email Notify */}
+        {/* 이메일 알림 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -496,12 +498,12 @@ export default function Result() {
           <EmailNotifyWidget />
         </motion.div>
 
-        {/* Disclaimer */}
+        {/* 주의사항 */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="bg-secondary/30 rounded-xl p-5 mb-8"
+          className="bg-secondary/30 rounded-xl p-5 mb-8 border border-border/40"
         >
           <p className="text-xs text-muted-foreground leading-relaxed text-center">
             <strong>주의:</strong> 본 결과는 진단 도구가 아니라 선별 목적의 참고 자료입니다.
@@ -510,7 +512,7 @@ export default function Result() {
           </p>
         </motion.div>
 
-        {/* Actions */}
+        {/* 액션 버튼들 */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center flex-wrap no-print">
           <Button
             onClick={handleDownloadPdf}
@@ -523,7 +525,7 @@ export default function Result() {
           <Button
             variant="outline"
             onClick={() => window.print()}
-            className="w-full sm:w-auto min-h-[44px] gap-2 border-border text-foreground hover:bg-secondary"
+            className="w-full sm:w-auto min-h-[44px] gap-2"
           >
             <Printer className="w-4 h-4" />
             인쇄하기
@@ -533,7 +535,7 @@ export default function Result() {
             onClick={handleCopyLink}
             className={`w-full sm:w-auto min-h-[44px] gap-2 transition-all ${
               isCopied
-                ? "border-green-500 text-green-700 bg-green-50"
+                ? "border-emerald-500 text-emerald-700 bg-emerald-50"
                 : "border-border text-foreground hover:bg-secondary"
             }`}
           >

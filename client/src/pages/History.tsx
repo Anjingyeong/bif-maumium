@@ -30,17 +30,11 @@ import {
 } from "recharts";
 import { Button } from "@/components/ui/button";
 import { getHistory, clearHistory, formatDate, TestRecord } from "@/lib/history";
+import { getRiskBadgeColor, getRiskBadgeLabel } from "@/lib/riskLevels";
 
 const TYPE_LABEL: Record<string, string> = {
   adult: "성인 자가체크",
   child: "아동 선별검사",
-};
-
-const LEVEL_COLOR: Record<string, string> = {
-  normal: "#22c55e",
-  mild: "#eab308",
-  moderate: "#f97316",
-  high: "#ef4444",
 };
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -56,20 +50,14 @@ const CATEGORY_LABEL: Record<string, string> = {
 };
 
 function ScoreBadge({ level }: { level: string }) {
-  const color = LEVEL_COLOR[level] ?? "#94a3b8";
-  const label: Record<string, string> = {
-    low: "일상생활 잘 유지 중",
-    normal: "일상생활 잘 유지 중",
-    mild: "가벼운 어려움 있음",
-    moderate: "전문가 상담 권장",
-    high: "전문가 상담 적극 권장",
-  };
+  const color = getRiskBadgeColor(level);
+  const label = getRiskBadgeLabel(level);
   return (
     <span
       className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
       style={{ background: `${color}20`, color }}
     >
-      {label[level] ?? level}
+      {label}
     </span>
   );
 }
@@ -151,7 +139,7 @@ export default function History() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-md border-b border-border/50">
+      <header className="sticky top-0 z-40 bg-card/95 backdrop-blur-md border-b border-border/60 shadow-sm">
         <div className="container flex items-center justify-between h-14">
           <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="w-4 h-4" />

@@ -35,7 +35,7 @@ export default function NavBar({ onStartTest }: NavBarProps) {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/88 backdrop-blur-md border-b border-border/60 shadow-sm shadow-background/40">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-b border-border/60 shadow-sm">
         <div className="container flex items-center justify-between h-16">
           {/* 로고 */}
           <Link href="/" className="flex items-center gap-1.5 flex-shrink-0">
@@ -64,14 +64,18 @@ export default function NavBar({ onStartTest }: NavBarProps) {
                 {link.label}
               </Link>
             ))}
-            <Button variant="outline" size="sm" onClick={onStartTest}>
+            <Button
+              size="sm"
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+              onClick={onStartTest}
+            >
               검사 시작
             </Button>
           </div>
 
           {/* 모바일 햄버거 버튼 */}
           <button
-            className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-accent transition-colors"
+            className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-secondary transition-colors"
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
           >
@@ -108,7 +112,7 @@ export default function NavBar({ onStartTest }: NavBarProps) {
             {/* 드로어 패널 */}
             <motion.div
               key="drawer"
-              className="fixed top-16 left-0 right-0 z-40 bg-background border-b border-border shadow-xl md:hidden"
+              className="fixed top-16 left-0 right-0 z-40 bg-card border-b border-border shadow-xl md:hidden"
               initial={{ opacity: 0, y: -12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
@@ -124,7 +128,11 @@ export default function NavBar({ onStartTest }: NavBarProps) {
                   >
                     <Link
                       href={link.href}
-                      className="flex items-center gap-2 px-3 py-3 rounded-lg text-sm font-medium text-foreground hover:bg-accent transition-colors"
+                      className={`flex items-center gap-2 px-3 py-3 rounded-lg text-sm font-medium transition-colors ${
+                        location === link.href
+                          ? "bg-primary/10 text-primary"
+                          : "text-foreground hover:bg-secondary"
+                      }`}
                     >
                       {link.icon}
                       {link.label}

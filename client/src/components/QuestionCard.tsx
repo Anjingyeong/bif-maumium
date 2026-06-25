@@ -1,10 +1,9 @@
 /**
  * QuestionCard Component
- * Design: Warm Guidance - improved UX with progress, estimated time, mobile touch optimization
+ * Design: Calm & Trustworthy - 신뢰감 있는 상담 서비스 스타일
  * Improvements:
- * - Larger touch targets for mobile (min 52px height buttons)
- * - Estimated remaining time display
- * - Animated progress fraction (current/total)
+ * - Larger touch targets for mobile (min 56px height buttons)
+ * - Selected state: border + tinted background (덜 무거운 선택 표시)
  * - Smooth slide animation between questions
  * - Visual feedback on selection (checkmark icon)
  */
@@ -31,7 +30,7 @@ export default function QuestionCard({
   direction = 1,
 }: QuestionCardProps) {
   const remaining = total - index;
-  const estimatedMinutes = Math.ceil(remaining * 0.2); // ~12초/문항
+  const estimatedMinutes = Math.ceil(remaining * 0.2);
 
   return (
     <motion.div
@@ -39,10 +38,10 @@ export default function QuestionCard({
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: direction * -40 }}
       transition={{ duration: 0.28, ease: "easeOut" }}
-      className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden"
+      className="bg-card rounded-2xl border border-border/60 shadow-sm overflow-hidden"
     >
-      {/* Card Header - progress bar inside card */}
-      <div className="h-1 bg-border/40">
+      {/* Progress bar inside card */}
+      <div className="h-1 bg-border/30">
         <motion.div
           className="h-full bg-primary"
           initial={{ width: 0 }}
@@ -53,18 +52,16 @@ export default function QuestionCard({
 
       <div className="p-6 md:p-8">
         {/* Meta row */}
-        <div className="flex items-center justify-between mb-5">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full">
-              {question.category}
-            </span>
-          </div>
+        <div className="flex items-center justify-between mb-6">
+          <span className="text-xs font-medium text-primary bg-primary/8 px-3 py-1.5 rounded-full border border-primary/15">
+            {question.category}
+          </span>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <Clock className="w-3 h-3" />
               <span>약 {estimatedMinutes}분 남음</span>
             </div>
-            <span className="text-xs font-bold text-foreground bg-secondary px-2.5 py-1 rounded-full">
+            <span className="text-xs font-semibold text-foreground bg-secondary px-2.5 py-1 rounded-full">
               {index + 1}
               <span className="text-muted-foreground font-normal"> / {total}</span>
             </span>
@@ -72,12 +69,12 @@ export default function QuestionCard({
         </div>
 
         {/* Question text */}
-        <h3 className="text-lg md:text-xl font-medium text-foreground leading-relaxed mb-7">
+        <p className="text-base md:text-lg font-medium text-foreground leading-relaxed mb-7">
           {question.text}
-        </h3>
+        </p>
 
-        {/* Answer options - 2 columns on desktop, 1 column on mobile */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {/* Answer options */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           {answerOptions.map((option) => {
             const isSelected = currentAnswer === option.value;
             return (
@@ -85,22 +82,19 @@ export default function QuestionCard({
                 key={option.value}
                 onClick={() => onAnswer(question.id, option.value)}
                 className={cn(
-                  // Base: large touch target, smooth transition
                   "relative flex items-center gap-3 px-4 rounded-xl text-sm font-medium transition-all duration-200 border text-left",
-                  // Mobile: min 52px height for comfortable touch
-                  "min-h-[52px] md:min-h-[48px]",
+                  "min-h-[56px] md:min-h-[52px]",
                   isSelected
-                    ? "bg-primary text-primary-foreground border-primary shadow-md scale-[1.02]"
-                    : "bg-secondary/40 text-foreground border-border/50 hover:bg-secondary hover:border-primary/30 active:scale-[0.98]"
+                    ? "bg-primary/8 text-primary border-primary/50 ring-1 ring-primary/20"
+                    : "bg-secondary/30 text-foreground border-border/50 hover:bg-secondary/60 hover:border-border active:scale-[0.99]"
                 )}
               >
-                {/* Selection indicator */}
                 <div
                   className={cn(
                     "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200",
                     isSelected
-                      ? "border-primary-foreground bg-primary-foreground/20"
-                      : "border-border/60"
+                      ? "border-primary bg-primary"
+                      : "border-border/60 bg-background"
                   )}
                 >
                   {isSelected && (
@@ -113,7 +107,7 @@ export default function QuestionCard({
                     </motion.div>
                   )}
                 </div>
-                <span className="flex-1">{option.label}</span>
+                <span className="flex-1 leading-snug">{option.label}</span>
               </button>
             );
           })}
@@ -124,8 +118,9 @@ export default function QuestionCard({
           <motion.p
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-xs text-muted-foreground text-center mt-4"
+            className="text-xs text-muted-foreground text-center mt-5 flex items-center justify-center gap-1.5"
           >
+            <CheckCircle2 className="w-3.5 h-3.5 text-primary/60" />
             선택 완료 — 다음 문항으로 자동 이동합니다
           </motion.p>
         )}

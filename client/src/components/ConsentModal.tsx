@@ -201,25 +201,22 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
                     </ul>
 
                     {/* Toggle */}
-                    <div className="flex items-center justify-between p-3 rounded-xl border border-border bg-secondary/30 mb-4">
+                    <div className="flex items-center justify-between p-3 rounded-xl border border-border bg-secondary/30 mb-4 cursor-pointer" onClick={handleAllowDataToggle}>
                       <span className="text-xs text-foreground font-medium">익명 데이터 수집에 동의합니다</span>
                       <button
                         type="button"
                         onPointerDown={event => event.stopPropagation()}
-                        onClick={handleAllowDataToggle}
-                        className={`relative w-10 h-5.5 rounded-full transition-colors duration-200 ${
-                          allowData ? "bg-primary" : "bg-border"
+                        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                          allowData ? "bg-primary" : "bg-input"
                         }`}
-                        style={{ height: "22px", width: "40px" }}
                         role="switch"
                         aria-checked={allowData}
                         aria-label="익명 데이터 수집 동의"
                       >
                         <span
-                          className={`absolute top-0.5 w-4.5 h-4.5 rounded-full bg-white shadow transition-transform duration-200 ${
-                            allowData ? "translate-x-5" : "translate-x-0.5"
+                          className={`pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform ${
+                            allowData ? "translate-x-5" : "translate-x-0"
                           }`}
-                          style={{ width: "18px", height: "18px", top: "2px" }}
                         />
                       </button>
                     </div>

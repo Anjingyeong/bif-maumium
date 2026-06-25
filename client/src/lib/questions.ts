@@ -9,6 +9,13 @@
  * 표준화 지능검사와 적응행동검사, 면담을 통해 이루어져야 합니다.
  */
 
+import {
+  DIFFERENTIAL_GUIDANCE,
+  SCREENING_DISCLAIMER,
+  getRiskLevelDisplay,
+  getRiskResultDescription,
+} from "./riskLevels";
+
 export interface Question {
   id: number;
   text: string;
@@ -22,10 +29,6 @@ export interface QuestionSet {
   questions: Question[];
   disclaimer: string;
 }
-
-export const SCREENING_DISCLAIMER = "본 결과는 진단이 아닌 참고용 선별 결과입니다. 정확한 평가는 임상심리사, 정신건강의학과, 특수교육 전문가 등이 실시하는 표준화 지능검사와 적응행동검사, 면담을 통해 이루어져야 합니다. 본 결과만으로 경계선 지능 여부를 확정하지 않습니다.";
-
-export const DIFFERENTIAL_GUIDANCE = "주의력 문제, 우울·불안, 수면부족, 스트레스, 학습장애, 환경 변화 등도 응답에 영향을 줄 수 있으므로 결과는 현재 상태를 살펴보는 참고 자료로만 활용해 주세요.";
 
 export const adultQuestions: QuestionSet = {
   title: "성인 학습·인지·적응기능 자가체크",
@@ -101,26 +104,26 @@ export const adultResultLevels: ResultLevel[] = [
   {
     min: 0, max: 10,
     level: "low",
-    title: "낮음 — 현재 응답상 어려움 가능성 낮음",
-    description: `총점이 낮음 단계에 해당합니다. 현재 응답만으로는 학습·인지·적응기능 어려움 가능성이 낮아 보입니다. ${SCREENING_DISCLAIMER}`,
+    title: getRiskLevelDisplay("low").resultTitle,
+    description: getRiskResultDescription("low", "adult"),
     recommendation: `지금처럼 일상 루틴과 강점을 유지해 주세요. 특정 어려움이 새로 생기거나 오래 지속된다면 상담이나 평가를 통해 원인을 확인할 수 있습니다. ${DIFFERENTIAL_GUIDANCE}`,
-    color: "oklch(0.65 0.15 145)"
+    color: getRiskLevelDisplay("low").resultColor
   },
   {
     min: 11, max: 22,
     level: "caution",
-    title: "주의 — 일부 영역 점검 필요",
-    description: `총점이 주의 단계에 해당합니다. 일부 영역에서 어려움이 나타나며, 피로·스트레스·수면·주의력·정서 상태에 따라 일시적으로 높게 나타날 수도 있습니다. ${SCREENING_DISCLAIMER}`,
+    title: getRiskLevelDisplay("caution").resultTitle,
+    description: getRiskResultDescription("caution", "adult"),
     recommendation: "어려움이 반복되거나 학업·직업·대인관계에 영향을 준다면 상담이나 검사를 권합니다. 최근 컨디션과 생활 변화도 함께 기록해 보세요.",
-    color: "oklch(0.7 0.12 85)"
+    color: getRiskLevelDisplay("caution").resultColor
   },
   {
     min: 23, max: 45,
     level: "consult",
-    title: "상담 권장 — 전문 상담 또는 평가 고려",
-    description: `총점이 상담 권장 단계에 해당합니다. 여러 영역에서 어려움이 관찰되어 현재 기능 수준을 더 자세히 살펴볼 필요가 있습니다. ${SCREENING_DISCLAIMER}`,
+    title: getRiskLevelDisplay("consult").resultTitle,
+    description: getRiskResultDescription("consult", "adult"),
     recommendation: "임상심리사, 정신건강의학과, 상담센터 등에서 표준화 지능검사와 적응행동검사, 면담을 포함한 평가를 받아보는 것을 권합니다. 필요한 지원을 찾기 위한 참고 자료로 활용해 주세요.",
-    color: "oklch(0.55 0.2 25)"
+    color: getRiskLevelDisplay("consult").resultColor
   },
 ];
 
@@ -128,26 +131,26 @@ export const childResultLevels: ResultLevel[] = [
   {
     min: 0, max: 12,
     level: "low",
-    title: "낮음 — 현재 응답상 어려움 가능성 낮음",
-    description: `보호자 해석: 총점이 낮음 단계에 해당합니다. 현재 응답만으로는 자녀의 학습·인지·적응기능 어려움 가능성이 낮아 보입니다. ${SCREENING_DISCLAIMER}`,
+    title: getRiskLevelDisplay("low").resultTitle,
+    description: getRiskResultDescription("low", "child"),
     recommendation: `지금처럼 자녀의 강점과 작은 성취를 지지해 주세요. 어려움이 새로 생기거나 오래 지속된다면 담임교사나 전문가와 상의할 수 있습니다. ${DIFFERENTIAL_GUIDANCE}`,
-    color: "oklch(0.65 0.15 145)"
+    color: getRiskLevelDisplay("low").resultColor
   },
   {
     min: 13, max: 26,
     level: "caution",
-    title: "주의 — 일부 영역 점검 필요",
-    description: `보호자 해석: 총점이 주의 단계에 해당합니다. 일부 영역에서 어려움이 나타나며 수면, 정서, 주의집중, 학습 환경, 과제 난이도에 따라 응답이 높아질 수 있습니다. ${SCREENING_DISCLAIMER}`,
+    title: getRiskLevelDisplay("caution").resultTitle,
+    description: getRiskResultDescription("caution", "child"),
     recommendation: "어려움이 지속된다면 담임교사, Wee센터, 발달센터 등과 상담해 보세요. 가정에서는 반복 안내, 시각 단서, 칭찬 중심의 지원이 도움이 될 수 있습니다.",
-    color: "oklch(0.7 0.12 85)"
+    color: getRiskLevelDisplay("caution").resultColor
   },
   {
     min: 27, max: 54,
     level: "consult",
-    title: "상담 권장 — 전문 상담 또는 평가 고려",
-    description: `보호자 해석: 총점이 상담 권장 단계에 해당합니다. 여러 영역에서 어려움이 관찰되어 자녀의 학습·인지·적응기능을 더 자세히 살펴볼 필요가 있습니다. ${SCREENING_DISCLAIMER}`,
+    title: getRiskLevelDisplay("consult").resultTitle,
+    description: getRiskResultDescription("consult", "child"),
     recommendation: "가능하면 소아정신건강의학과, 임상심리사, 특수교육 전문가와 상의해 K-WISC 등 표준화 지능검사, Vineland·ABAS·NISE-K·ABS 등 적응행동검사, 면담을 포함한 평가를 받아보세요. 결과는 자녀에게 맞는 지원을 찾기 위한 참고 자료로 활용해 주세요.",
-    color: "oklch(0.55 0.2 25)"
+    color: getRiskLevelDisplay("consult").resultColor
   },
 ];
 

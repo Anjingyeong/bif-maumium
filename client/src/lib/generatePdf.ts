@@ -17,6 +17,7 @@ import {
   getCategoryScores,
   answerOptions,
 } from "./questions";
+import { getRiskPdfColor } from "./riskLevels";
 
 export interface GeneratePdfParams {
   type: "adult" | "child";
@@ -156,13 +157,7 @@ export async function generateResultPdf(params: GeneratePdfParams): Promise<void
   });
   const typeLabel = type === "adult" ? "성인 자가진단" : "아동 선별검사 (학부모용)";
 
-  const levelColorMap: Record<string, string> = {
-    low: "#4caf82",
-    mild: "#d4a017",
-    moderate: "#e07030",
-    high: "#c83232",
-  };
-  const accentColor = levelColorMap[result.level] || "#5070c8";
+  const accentColor = getRiskPdfColor(result.level);
 
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const pageW = 210;

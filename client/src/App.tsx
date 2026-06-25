@@ -15,6 +15,7 @@ import History from "./pages/History";
 import TermDiff from "./pages/TermDiff";
 import Privacy from "./pages/Privacy";
 import KeywordLanding from "./pages/KeywordLanding";
+import AdminResults from "./pages/AdminResults";
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
@@ -29,6 +30,7 @@ function Router() {
       <Route path="/history" component={History} />
       <Route path="/term-diff" component={TermDiff} />
       <Route path="/privacy" component={Privacy} />
+      <Route path="/admin/results" component={AdminResults} />
       <Route path="/slow-learner-test" component={KeywordLanding} />
       <Route path="/borderline-iq-test" component={KeywordLanding} />
       <Route path="/slow-learner-checklist" component={KeywordLanding} />

@@ -93,7 +93,7 @@ export default function ChildTest() {
   return (
     <div className="min-h-screen bg-background">
       {/* Sticky Header */}
-      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-border/50">
+      <header className="sticky top-0 z-40 bg-card/95 backdrop-blur-md border-b border-border/60 shadow-sm">
         <div className="container flex items-center justify-between h-14">
           <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="w-4 h-4" />
@@ -103,27 +103,26 @@ export default function ChildTest() {
           {/* Center: title + progress fraction */}
           <div className="flex flex-col items-center gap-0.5">
             <div className="flex items-center gap-1.5">
-              <Heart className="w-4 h-4 text-rose-500" />
+              <Heart className="w-4 h-4 text-accent" />
               <span className="text-sm font-semibold text-foreground">아동 선별검사</span>
             </div>
-            <span className="text-xs text-muted-foreground">
-              {currentIndex + 1}번째 문항 · 총 {questions.length}문항 · 약 {totalMinutes}분
+            <span className="text-[11px] text-muted-foreground">
+              {currentIndex + 1} / {questions.length}문항 · 약 {totalMinutes}분
             </span>
           </div>
 
           {/* Right: answered count badge */}
           <div className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-4 h-4 text-rose-400/70" />
-            <span className="text-xs font-medium text-muted-foreground">
+            <span className="text-xs font-medium text-accent bg-accent/8 border border-accent/15 px-2.5 py-1 rounded-full">
               {answeredCount}/{questions.length}
             </span>
           </div>
         </div>
 
-        {/* Progress bar - rose tint for child test */}
-        <div className="h-1.5 bg-border/40">
+        {/* Progress bar - teal for child test */}
+        <div className="h-1 bg-border/30">
           <motion.div
-            className="h-full bg-rose-500"
+            className="h-full bg-accent"
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.4, ease: "easeOut" }}
           />
@@ -134,10 +133,10 @@ export default function ChildTest() {
       <main className="container max-w-2xl py-6 md:py-10">
 
         {/* Parent guidance note */}
-        <div className="mb-5 bg-rose-50 border border-rose-100 rounded-xl px-4 py-3 flex items-start gap-3">
-          <Heart className="w-4 h-4 text-rose-400 mt-0.5 flex-shrink-0" />
-          <p className="text-xs text-rose-700 leading-relaxed">
-            <strong>학부모 안내:</strong> 지난 6개월간 자녀의 행동을 관찰한 내용을 바탕으로 응답해 주세요.
+        <div className="mb-5 bg-secondary/40 border border-border/60 rounded-xl px-4 py-3 flex items-start gap-3">
+          <Heart className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
+          <p className="text-xs text-foreground/75 leading-relaxed">
+            <strong className="text-foreground">학부모 안내:</strong> 지난 6개월간 자녀의 행동을 관찰한 내용을 바탕으로 응답해 주세요.
           </p>
         </div>
 
@@ -158,11 +157,11 @@ export default function ChildTest() {
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-6 rounded-2xl border border-rose-100 bg-card p-5"
+            className="mt-6 rounded-2xl border border-border/60 bg-card p-5 shadow-sm"
           >
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center shrink-0">
-                <Shield className="w-5 h-5 text-rose-500" />
+              <div className="w-10 h-10 rounded-xl bg-accent/8 border border-accent/15 flex items-center justify-center shrink-0">
+                <Shield className="w-5 h-5 text-accent" />
               </div>
               <div className="space-y-3 flex-1">
                 <div>
@@ -181,7 +180,7 @@ export default function ChildTest() {
                     id="child-save-consent"
                     checked={saveConsent}
                     onCheckedChange={checked => setSaveConsent(checked === true)}
-                    className="mt-0.5 data-[state=checked]:bg-rose-500 data-[state=checked]:border-rose-500"
+                    className="mt-0.5"
                   />
                   <Label
                     htmlFor="child-save-consent"
@@ -227,7 +226,7 @@ export default function ChildTest() {
             <Button
               onClick={handleSubmit}
               disabled={!canSubmit}
-              className="gap-2 min-h-[44px] px-6 bg-rose-500 hover:bg-rose-600 text-white font-semibold"
+              className="gap-2 min-h-[44px] px-6 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
             >
               결과 보기
               <ArrowRight className="w-4 h-4" />
@@ -253,9 +252,9 @@ export default function ChildTest() {
               title={`${i + 1}번 문항${answers[q.id] !== undefined ? " (답변 완료)" : ""}`}
               className={`transition-all duration-200 rounded-full ${
                 i === currentIndex
-                  ? "w-5 h-3 bg-rose-500"
+                  ? "w-5 h-3 bg-accent"
                   : answers[q.id] !== undefined
-                  ? "w-3 h-3 bg-rose-300"
+                  ? "w-3 h-3 bg-accent/50"
                   : "w-3 h-3 bg-border hover:bg-border/70"
               }`}
             />
@@ -267,7 +266,7 @@ export default function ChildTest() {
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-5 flex items-center justify-center gap-2 text-sm text-rose-600 bg-rose-50 rounded-xl py-3 px-4 border border-rose-100"
+            className="mt-5 flex items-center justify-center gap-2 text-sm text-accent bg-accent/6 rounded-xl py-3 px-4 border border-accent/15"
           >
             <CheckCircle2 className="w-4 h-4" />
             <span>모든 문항 완료! 마지막 문항에서 결과를 확인하세요.</span>

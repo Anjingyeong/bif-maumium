@@ -73,8 +73,8 @@ export default function Home() {
       <section className="relative pt-16 overflow-hidden">
         <div className="absolute inset-0">
           <img src={HERO_BG} alt="" className="w-full h-full object-cover object-[62%_58%] md:object-[70%_52%]" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/35" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/45 via-background/25 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/88 to-background/30" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/20 to-background" />
         </div>
         <div className="relative container py-24 md:py-36 lg:py-44">
           <motion.div
@@ -83,18 +83,21 @@ export default function Home() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="w-full max-w-[43rem] min-w-0"
           >
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-foreground leading-tight mb-6 [text-shadow:0_1px_2px_rgba(255,255,255,0.9)]">
+            <p className="text-xs font-medium text-primary bg-primary/8 px-3 py-1.5 rounded-full inline-flex mb-4 border border-primary/15">
+              선별용 자가체크 서비스
+            </p>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-foreground leading-tight mb-5">
               느린학습자·경계선 지능<br />
-              <span className="text-primary">자가진단 테스트</span>
+              <span className="text-primary">자가체크 테스트</span>
             </h1>
-            <p className="text-lg md:text-xl text-foreground/75 leading-relaxed mb-4 max-w-[36rem]">
-              마음이음은 느린학습자와 경계선 지능 특성을 간단한 문항으로 확인해보는 참고용 자가진단 테스트입니다.
+            <p className="text-base md:text-lg text-foreground/75 leading-relaxed mb-5 max-w-[36rem]">
+              마음이음은 느린학습자와 경계선 지능 특성을 간단한 문항으로 확인해보는 참고용 자가체크입니다.
               결과는 이해를 돕기 위한 자료이며 전문가 상담이나 검사를 대체하지 않습니다.
             </p>
-            <div className="w-full max-w-[36rem] mb-8 rounded-xl border border-amber-200/70 bg-white/70 px-4 py-3 text-[11px] sm:text-xs text-muted-foreground leading-relaxed shadow-sm shadow-background/40 break-words">
-              <strong>안내:</strong> 본 검사는 선별용 자가체크입니다. 결과는 가능성 참고용이며, 필요한 경우 전문가 평가를 권장합니다.
+            <div className="w-full max-w-[36rem] mb-8 rounded-xl border border-border bg-card/80 px-4 py-3 text-xs text-muted-foreground leading-relaxed shadow-sm">
+              <strong className="text-foreground">안내:</strong> 본 검사는 선별용 자가체크입니다. 결과는 가능성 참고용이며, 필요한 경우 전문가 평가를 권장합니다.
             </div>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 size="lg"
                 className="w-full sm:w-auto max-w-full bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-primary/40 px-8 gap-2 shadow-sm"
@@ -105,7 +108,8 @@ export default function Home() {
               </Button>
               <Button
                 size="lg"
-                className="w-full sm:w-auto max-w-full bg-accent text-accent-foreground hover:bg-accent/90 focus-visible:ring-accent/40 px-8 gap-2 shadow-sm"
+                variant="outline"
+                className="w-full sm:w-auto max-w-full border-primary/40 text-primary hover:bg-primary/5 focus-visible:ring-primary/30 px-8 gap-2"
                 onClick={() => openConsent("child")}
               >
                 아동 선별검사
@@ -252,28 +256,28 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-secondary/30">
+      <section className="py-20 bg-secondary/20">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            className="grid grid-cols-1 md:grid-cols-3 gap-6"
           >
             {[
               {
-                icon: <Shield className="w-6 h-6 text-primary" />,
+                icon: <Shield className="w-5 h-5 text-primary" />,
                 title: "개인정보 보호",
                 desc: "모든 검사는 브라우저 내에서만 처리됩니다. 개인 식별 정보는 수집하지 않습니다.",
               },
               {
-                icon: <ClipboardCheck className="w-6 h-6 text-primary" />,
+                icon: <ClipboardCheck className="w-5 h-5 text-primary" />,
                 title: "영역별 상세 분석",
                 desc: "학습/개념 이해, 작업기억, 처리속도, 실행기능, 사회적 판단, 일상 적응 등 영역별 분석을 제공합니다.",
               },
               {
-                icon: <Users className="w-6 h-6 text-primary" />,
+                icon: <Users className="w-5 h-5 text-primary" />,
                 title: "전문기관 연계",
                 desc: "결과 수준에 따라 전문 평가와 지원 정보를 안내합니다.",
               },
@@ -284,9 +288,9 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.1 }}
-                className="flex flex-col items-center text-center p-6 rounded-2xl bg-card border border-border/50"
+                className="flex flex-col items-start p-6 rounded-2xl bg-card border border-border/60 shadow-sm"
               >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                <div className="w-10 h-10 rounded-xl bg-primary/8 border border-primary/15 flex items-center justify-center mb-4">
                   {item.icon}
                 </div>
                 <h3 className="font-serif font-bold text-foreground mb-2">{item.title}</h3>
@@ -496,25 +500,29 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="bg-primary rounded-3xl p-10 md:p-16 text-center"
+            className="bg-primary/6 border border-primary/15 rounded-3xl p-10 md:p-16 text-center"
           >
-            <h2 className="text-2xl md:text-3xl font-serif font-bold text-primary-foreground mb-4">
+            <p className="text-xs font-medium text-primary bg-primary/10 px-3 py-1 rounded-full inline-flex mb-4">
+              지금 바로 시작해보세요
+            </p>
+            <h2 className="text-2xl md:text-3xl font-serif font-bold text-foreground mb-4">
               지금 바로 확인해보세요
             </h2>
-            <p className="text-primary-foreground/80 mb-8 max-w-md mx-auto">
+            <p className="text-muted-foreground mb-8 max-w-md mx-auto text-sm leading-relaxed">
               5~10분으로 학습·인지·적응기능 어려움 가능성을 점검하고, 상세 PDF 리포트를 받아보세요.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button
                 size="lg"
-                className="bg-white text-primary hover:bg-white/90 focus-visible:ring-white/50 px-8 gap-2"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-primary/40 px-8 gap-2"
                 onClick={() => openConsent("adult")}
               >
                 성인 자가체크 시작 <ArrowRight className="w-4 h-4" />
               </Button>
               <Button
                 size="lg"
-                className="bg-accent text-accent-foreground hover:bg-accent/90 focus-visible:ring-white/50 px-8 gap-2"
+                variant="outline"
+                className="border-primary/40 text-primary hover:bg-primary/5 px-8 gap-2"
                 onClick={() => openConsent("child")}
               >
                 아동 선별검사 시작 <ArrowRight className="w-4 h-4" />

@@ -40,57 +40,100 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --font-serif: 'Noto Serif KR', serif;
-  --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  /* Typography: Pretendard → Noto Sans KR → system-ui fallback */
+  --font-sans: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-serif: 'Noto Serif KR', Georgia, serif;
 }
 
 :root {
-  /* Deep Navy + Warm Sand + Soft Coral palette */
-  --primary: oklch(0.35 0.08 250); /* Deep Navy */
-  --primary-foreground: oklch(0.98 0.005 80); /* Warm White */
-  --sidebar-primary: oklch(0.35 0.08 250);
-  --sidebar-primary-foreground: oklch(0.98 0.005 80);
-  --chart-1: oklch(0.55 0.12 250);
-  --chart-2: oklch(0.65 0.08 250);
-  --chart-3: oklch(0.75 0.06 80);
-  --chart-4: oklch(0.7 0.12 30);
-  --chart-5: oklch(0.45 0.1 250);
-  --radius: 0.75rem;
-  --background: oklch(0.98 0.008 80); /* Warm Cream */
-  --foreground: oklch(0.25 0.04 250); /* Deep Navy Text */
-  --card: oklch(1 0.003 80); /* Slightly warm white */
-  --card-foreground: oklch(0.25 0.04 250);
-  --popover: oklch(1 0.003 80);
-  --popover-foreground: oklch(0.25 0.04 250);
-  --secondary: oklch(0.94 0.015 80); /* Warm Sand Light */
-  --secondary-foreground: oklch(0.35 0.04 250);
-  --muted: oklch(0.95 0.01 80);
-  --muted-foreground: oklch(0.5 0.03 250);
-  --accent: oklch(0.72 0.12 30); /* Soft Coral */
-  --accent-foreground: oklch(0.98 0.005 80);
-  --destructive: oklch(0.577 0.245 27.325);
+  /* ===== 신뢰감 있는 상담/의료 서비스 색상 팔레트 =====
+   * Primary: 차분한 슬레이트 블루 (공공기관 느낌)
+   * Background: 부드러운 웜 화이트 (눈에 피로 없는 오프화이트)
+   * Accent: 부드러운 틸/민트 (보조 CTA)
+   * 과한 채도/네온 색상 없음
+   */
+
+  /* Slate Blue Primary (차분하고 신뢰감 있는 블루) */
+  --primary: oklch(0.40 0.10 240);
+  --primary-foreground: oklch(0.98 0.005 240);
+
+  /* Sidebar */
+  --sidebar-primary: oklch(0.40 0.10 240);
+  --sidebar-primary-foreground: oklch(0.98 0.005 240);
+
+  /* Chart colors - 과하지 않은 파스텔 계열 */
+  --chart-1: oklch(0.50 0.11 240);
+  --chart-2: oklch(0.62 0.09 170);
+  --chart-3: oklch(0.72 0.08 85);
+  --chart-4: oklch(0.65 0.10 25);
+  --chart-5: oklch(0.45 0.09 280);
+
+  /* Border radius: 적당히 둥글게 */
+  --radius: 0.625rem;
+
+  /* Background: 따뜻한 미색 오프화이트 */
+  --background: oklch(0.985 0.004 75);
+  --foreground: oklch(0.22 0.03 240);
+
+  /* Card: 순백에 가까운 따뜻한 화이트 */
+  --card: oklch(0.998 0.002 75);
+  --card-foreground: oklch(0.22 0.03 240);
+
+  /* Popover */
+  --popover: oklch(0.998 0.002 75);
+  --popover-foreground: oklch(0.22 0.03 240);
+
+  /* Secondary: 부드러운 쿨 그레이 */
+  --secondary: oklch(0.95 0.008 240);
+  --secondary-foreground: oklch(0.35 0.04 240);
+
+  /* Muted */
+  --muted: oklch(0.96 0.006 240);
+  --muted-foreground: oklch(0.52 0.03 240);
+
+  /* Accent: 차분한 틸/민트 (아동 검사, 보조 액션) */
+  --accent: oklch(0.55 0.10 180);
+  --accent-foreground: oklch(0.98 0.005 180);
+
+  /* Destructive */
+  --destructive: oklch(0.57 0.22 27);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.9 0.015 80);
-  --input: oklch(0.92 0.01 80);
-  --ring: oklch(0.45 0.1 250);
-  --sidebar: oklch(0.98 0.008 80);
-  --sidebar-foreground: oklch(0.25 0.04 250);
-  --sidebar-accent: oklch(0.94 0.015 80);
-  --sidebar-accent-foreground: oklch(0.25 0.04 250);
-  --sidebar-border: oklch(0.9 0.015 80);
-  --sidebar-ring: oklch(0.45 0.1 250);
+
+  /* Border / Input */
+  --border: oklch(0.88 0.01 240);
+  --input: oklch(0.93 0.008 240);
+  --ring: oklch(0.50 0.11 240);
+
+  /* Sidebar */
+  --sidebar: oklch(0.985 0.004 75);
+  --sidebar-foreground: oklch(0.22 0.03 240);
+  --sidebar-accent: oklch(0.95 0.008 240);
+  --sidebar-accent-foreground: oklch(0.22 0.03 240);
+  --sidebar-border: oklch(0.88 0.01 240);
+  --sidebar-ring: oklch(0.50 0.11 240);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Noto Serif KR', serif;
+    font-family: var(--font-serif);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
   }
+
+  /* 버튼/링크 커서 */
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
   [type="button"]:not(:disabled),
@@ -105,12 +148,13 @@
 }
 
 @layer components {
+  /* Container: 모바일 우선, 데스크톱 max-width */
   .container {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
   }
 
   .flex {
@@ -125,30 +169,54 @@
     }
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 768px) {
     .container {
       padding-left: 2rem;
       padding-right: 2rem;
-      max-width: 1280px;
     }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2.5rem;
+      padding-right: 2.5rem;
+      max-width: 1200px;
+    }
+  }
+
+  /* ===== 공통 카드 스타일 ===== */
+  .ui-card {
+    @apply bg-card rounded-2xl border border-border/60 shadow-sm;
+  }
+
+  /* ===== 위험도 배지 공통 ===== */
+  .risk-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  }
+
+  /* ===== 섹션 제목 ===== */
+  .section-title {
+    @apply text-2xl md:text-3xl font-serif font-bold text-foreground;
+    letter-spacing: -0.02em;
+  }
+
+  .section-subtitle {
+    @apply text-sm text-muted-foreground leading-relaxed;
   }
 }
 
 /* ===== Mobile Touch Optimization ===== */
 @layer base {
-  /* Prevent text size adjustment on orientation change */
   html {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
   }
 
-  /* Improve tap highlight on mobile */
   button, a, [role="button"] {
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
   }
 
-  /* Prevent double-tap zoom on buttons */
   button {
     touch-action: manipulation;
   }
@@ -156,7 +224,6 @@
 
 /* ===== Print Styles for Result Page ===== */
 @media print {
-  /* Hide non-essential UI */
   header,
   nav,
   .no-print,
@@ -165,21 +232,18 @@
     display: none !important;
   }
 
-  /* Reset backgrounds for print */
   body {
     background: white !important;
     color: black !important;
     font-size: 12pt;
   }
 
-  /* Result page: show full content */
   .print-container {
     max-width: 100% !important;
     padding: 0 !important;
     margin: 0 !important;
   }
 
-  /* Cards: clean borders for print */
   .print-card {
     border: 1px solid #ccc !important;
     box-shadow: none !important;
@@ -187,13 +251,11 @@
     page-break-inside: avoid;
   }
 
-  /* Score circle: ensure colors print */
   .print-score {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
-  /* Progress bars: ensure colors print */
   [class*="bg-primary"],
   [class*="bg-rose"],
   [class*="bg-teal"],
@@ -202,24 +264,20 @@
     print-color-adjust: exact;
   }
 
-  /* Page breaks */
   .print-break-before {
     page-break-before: always;
   }
 
-  /* Footer with URL and date */
   @page {
     margin: 1.5cm;
   }
 
-  /* Ensure links show URL in print */
   a[href]::after {
     content: " (" attr(href) ")";
     font-size: 10pt;
     color: #666;
   }
 
-  /* Hide decorative images */
   img[alt="decoration"],
   img[alt="background"] {
     display: none !important;
@@ -228,7 +286,7 @@
 
 /* ===== Responsive touch improvements ===== */
 @layer components {
-  /* Ensure minimum touch target size (44px) per WCAG 2.5.5 */
+  /* WCAG 2.5.5: minimum 44px touch target */
   .touch-target {
     min-height: 44px;
     min-width: 44px;
