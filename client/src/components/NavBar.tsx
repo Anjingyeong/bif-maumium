@@ -69,7 +69,7 @@ export default function NavBar({ onStartTest }: NavBarProps) {
               className="bg-primary text-primary-foreground hover:bg-primary/90"
               onClick={onStartTest}
             >
-              검사 시작
+              자가체크 시작하기
             </Button>
           </div>
 
@@ -154,7 +154,7 @@ export default function NavBar({ onStartTest }: NavBarProps) {
                     className="w-full min-h-[48px] text-sm"
                     onClick={() => { setOpen(false); onStartTest(); }}
                   >
-                    검사 시작
+                    자가체크 시작하기
                   </Button>
                 </motion.div>
               </div>

@@ -103,7 +103,7 @@ export default function Home() {
                 className="w-full sm:w-auto max-w-full bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-primary/40 px-8 gap-2 shadow-sm"
                 onClick={() => openConsent("adult")}
               >
-                성인 자가체크
+                성인용 자가체크 시작하기
                 <ArrowRight className="w-4 h-4" />
               </Button>
               <Button
@@ -112,7 +112,7 @@ export default function Home() {
                 className="w-full sm:w-auto max-w-full border-primary/40 text-primary hover:bg-primary/5 focus-visible:ring-primary/30 px-8 gap-2"
                 onClick={() => openConsent("child")}
               >
-                아동 선별검사
+                우리 아이 발달 상태 살펴보기
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </div>

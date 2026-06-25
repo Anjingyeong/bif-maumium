@@ -216,7 +216,8 @@ export default function AdultTest() {
             className="gap-2 min-h-[44px] px-5"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>이전</span>
+            <span className="hidden sm:inline">이전 문항</span>
+            <span className="sm:hidden">이전</span>
           </Button>
 
           {isLastQuestion ? (
@@ -225,7 +226,8 @@ export default function AdultTest() {
               disabled={!canSubmit}
               className="gap-2 min-h-[44px] px-6 bg-primary text-primary-foreground font-semibold"
             >
-              결과 보기
+              <span className="hidden sm:inline">응답을 마치고 결과 확인</span>
+              <span className="sm:hidden">결과 확인</span>
               <ArrowRight className="w-4 h-4" />
             </Button>
           ) : (
@@ -234,7 +236,8 @@ export default function AdultTest() {
               onClick={() => goTo(Math.min(questions.length - 1, currentIndex + 1))}
               className="gap-2 min-h-[44px] px-5"
             >
-              <span>다음</span>
+              <span className="hidden sm:inline">다음 문항</span>
+              <span className="sm:hidden">다음</span>
               <ArrowRight className="w-4 h-4" />
             </Button>
           )}

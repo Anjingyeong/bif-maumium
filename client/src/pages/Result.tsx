@@ -547,12 +547,12 @@ export default function Result() {
           </Button>
           <Link href={`/test/${type}?run=${Date.now().toString(36)}`}>
             <Button variant="outline" className="w-full sm:w-auto min-h-[44px] gap-2">
-              <RotateCcw className="w-4 h-4" /> 다시 검사하기
+              <RotateCcw className="w-4 h-4" /> 새로운 응답으로 다시 점검하기
             </Button>
           </Link>
           <Link href="/info">
             <Button variant="outline" className="w-full sm:w-auto min-h-[44px] gap-2">
-              <BookOpen className="w-4 h-4" /> 경계선 지능 알아보기
+              <BookOpen className="w-4 h-4" /> 필요한 지원 정보 살펴보기
             </Button>
           </Link>
         </div>
