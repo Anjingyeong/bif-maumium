@@ -23,6 +23,4 @@ export const users = mysqlTable("users", {
 });
 
 export type User = typeof users.$inferSelect;
-export type InsertUser = typeof users.$inferInsert;
-
-// TODO: Add your tables here
+export type InsertUser = typeof users.$inferInsert;

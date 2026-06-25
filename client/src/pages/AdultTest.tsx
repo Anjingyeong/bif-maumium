@@ -28,6 +28,7 @@ export default function AdultTest() {
   const [answers, setAnswers] = useState<Record<number, AnswerValue>>({});
   const [direction, setDirection] = useState(1);
   const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
   const [saveConsent, setSaveConsent] = useState(false);
   const autoAdvanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -47,6 +48,7 @@ export default function AdultTest() {
     setAnswers({});
     setDirection(1);
     setNickname("");
+    setEmail("");
     setSaveConsent(false);
   }, []);
 
@@ -89,11 +91,14 @@ export default function AdultTest() {
       });
       if (saveConsent) {
         params.set("nickname", nickname.trim());
+        if (email.trim()) {
+          params.set("email", email.trim());
+        }
       }
       setLocation(`/result?${params.toString()}`);
       return currentAnswers;
     });
-  }, [nickname, saveConsent, setLocation]);
+  }, [nickname, email, saveConsent, setLocation]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -167,7 +172,7 @@ export default function AdultTest() {
                   </h2>
                   <p className="text-xs text-muted-foreground leading-relaxed mt-1">
                     저장에 동의하면 닉네임과 검사 결과가 서버에 보관됩니다. 실명,
-                    전화번호, 이메일, 주민등록번호 등 직접 식별 가능한 정보는
+                    전화번호, 주민등록번호 등 식별 가능한 정보는
                     입력하지 마세요. 본 검사는 진단 도구가 아닌 선별용 자가체크입니다.
                   </p>
                 </div>
@@ -188,19 +193,39 @@ export default function AdultTest() {
                 </div>
 
                 {saveConsent && (
-                  <div className="space-y-1.5">
-                    <Label htmlFor="adult-nickname" className="text-xs">
-                      닉네임
-                    </Label>
-                    <Input
-                      id="adult-nickname"
-                      value={nickname}
-                      onChange={event => setNickname(event.target.value)}
-                      maxLength={40}
-                      placeholder="예: 마음이음01"
-                      className="min-h-[44px]"
-                    />
-                  </div>
+                  <>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="adult-nickname" className="text-xs">
+                        닉네임
+                      </Label>
+                      <Input
+                        id="adult-nickname"
+                        value={nickname}
+                        onChange={event => setNickname(event.target.value)}
+                        maxLength={40}
+                        placeholder="예: 마음이음01"
+                        className="min-h-[44px]"
+                      />
+                    </div>
+                    
+                    <div className="space-y-1.5 mt-3">
+                      <Label htmlFor="adult-email" className="text-xs">
+                        이메일 (선택)
+                      </Label>
+                      <Input
+                        id="adult-email"
+                        type="email"
+                        value={email}
+                        onChange={event => setEmail(event.target.value)}
+                        maxLength={255}
+                        placeholder="결과 확인 또는 문의를 위한 이메일"
+                        className="min-h-[44px]"
+                      />
+                      <p className="text-[11px] text-muted-foreground leading-relaxed mt-1">
+                        이메일은 결과 확인 또는 문의 응대를 위해 선택적으로 수집됩니다. 입력하지 않아도 자가체크 이용이 가능합니다.
+                      </p>
+                    </div>
+                  </>
                 )}
               </div>
             </div>

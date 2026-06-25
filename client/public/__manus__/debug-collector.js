@@ -598,7 +598,7 @@
   var originalXHRSend = XMLHttpRequest.prototype.send;
 
   XMLHttpRequest.prototype.open = function (method, url) {
-    this._manusData = {
+    this._screeningData = {
       method: (method || "GET").toUpperCase(),
       url: url,
       startTime: null,
@@ -610,12 +610,12 @@
     var xhr = this;
 
     if (
-      xhr._manusData &&
-      xhr._manusData.url &&
-      xhr._manusData.url.indexOf("/__manus__/") !== 0
+      xhr._screeningData &&
+      xhr._screeningData.url &&
+      xhr._screeningData.url.indexOf("/__manus__/") !== 0
     ) {
-      xhr._manusData.startTime = Date.now();
-      xhr._manusData.requestBody = body ? sanitizeValue(tryParseJson(body)) : null;
+      xhr._screeningData.startTime = Date.now();
+      xhr._screeningData.requestBody = body ? sanitizeValue(tryParseJson(body)) : null;
 
       xhr.addEventListener("load", function () {
         var contentType = (xhr.getResponseHeader("content-type") || "").toLowerCase();
@@ -654,17 +654,17 @@
         }
 
         var entry = {
-          timestamp: xhr._manusData.startTime,
+          timestamp: xhr._screeningData.startTime,
           type: "xhr",
-          method: xhr._manusData.method,
-          url: xhr._manusData.url,
-          request: { body: xhr._manusData.requestBody },
+          method: xhr._screeningData.method,
+          url: xhr._screeningData.url,
+          request: { body: xhr._screeningData.requestBody },
           response: {
             status: xhr.status,
             statusText: xhr.statusText,
             body: responseBody,
           },
-          duration: Date.now() - xhr._manusData.startTime,
+          duration: Date.now() - xhr._screeningData.startTime,
           error: null,
         };
 
@@ -684,13 +684,13 @@
 
       xhr.addEventListener("error", function () {
         var entry = {
-          timestamp: xhr._manusData.startTime,
+          timestamp: xhr._screeningData.startTime,
           type: "xhr",
-          method: xhr._manusData.method,
-          url: xhr._manusData.url,
-          request: { body: xhr._manusData.requestBody },
+          method: xhr._screeningData.method,
+          url: xhr._screeningData.url,
+          request: { body: xhr._screeningData.requestBody },
           response: null,
-          duration: Date.now() - xhr._manusData.startTime,
+          duration: Date.now() - xhr._screeningData.startTime,
           error: { message: "Network error" },
         };
 

@@ -10,6 +10,7 @@ datasource db {
 model ScreeningResult {
   id             String   @id @default(uuid()) @db.Uuid
   nickname       String   @db.VarChar(40)
+  email          String?  @db.VarChar(255)
   testType       String   @db.VarChar(16)
   answers        Json
   categoryScores Json
@@ -24,3 +25,10 @@ model ScreeningResult {
   @@index([testType])
   @@index([riskLevel])
 }
+
+model Subscription {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String   @unique @db.VarChar(255)
+  createdAt DateTime @default(now())
+}
+

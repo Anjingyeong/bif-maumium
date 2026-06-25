@@ -35,11 +35,12 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
     handleReset();
   };
 
-  const handleAllowDataToggle = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleAllowDataToggle = (event: MouseEvent<HTMLElement>) => {
     event.preventDefault();
     event.stopPropagation();
     setAllowData(v => !v);
   };
+
 
   return (
     <AnimatePresence>

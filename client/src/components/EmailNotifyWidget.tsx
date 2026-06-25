@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { AlertCircle, ArrowRight, Bell, CheckCircle2, Loader2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { subscribeEmail } from "@/lib/subscriptionApi";
 
 const STORAGE_KEY = "bif_notify_email";
 
@@ -23,7 +24,7 @@ function validateEmail(email: string): ValidationResult {
     return { state: "invalid", message: "이메일 주소 형식을 다시 확인해 주세요." };
   }
 
-  return { state: "valid", message: "저장 가능한 이메일 주소입니다." };
+  return { state: "valid", message: "신청 가능한 이메일 주소입니다." };
 }
 
 function getStoredEmail() {
@@ -44,16 +45,16 @@ function SuccessState({ email }: { email: string }) {
       </div>
 
       <div>
-        <p className="text-lg font-bold text-foreground">관심 이메일 저장 완료</p>
+        <p className="text-lg font-bold text-foreground">알림 신청 완료</p>
         <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
           <span className="font-semibold text-primary">{email}</span>
           <br />
-          현재 이 브라우저에만 저장되어 있으며, 외부 서버로 전송되지 않았습니다.
+          마음이음 오픈 및 주요 업데이트 알림 신청이 정상적으로 완료되었습니다.
         </p>
       </div>
 
       <div className="flex flex-wrap gap-2 justify-center">
-        {["오픈 알림 관심", "브라우저 보관", "서버 미전송"].map((text) => (
+        {["오픈/업데이트 안내 신청", "알림 신청 완료"].map((text) => (
           <span
             key={text}
             className="bg-primary/10 text-primary text-xs font-medium px-3 py-1.5 rounded-full"
@@ -72,6 +73,7 @@ export default function EmailNotifyWidget() {
   const [isLoading, setIsLoading] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState(getStoredEmail);
   const [isDone, setIsDone] = useState(() => !!getStoredEmail());
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const validation = validateEmail(email);
   const showError = touched && validation.state === "invalid";
@@ -79,7 +81,7 @@ export default function EmailNotifyWidget() {
 
   const inputBorderClass = !touched
     ? "border-border/60"
-    : showError
+    : showError || submitError
     ? "border-destructive focus-visible:ring-destructive/30"
     : showSuccess
     ? "border-emerald-500 focus-visible:ring-emerald-500/30"
@@ -88,17 +90,27 @@ export default function EmailNotifyWidget() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setTouched(true);
+    setSubmitError(null);
 
     if (validation.state !== "valid") return;
 
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 500));
 
     const trimmedEmail = email.trim();
-    window.localStorage.setItem(STORAGE_KEY, trimmedEmail);
-    setRegisteredEmail(trimmedEmail);
+    const result = await subscribeEmail(trimmedEmail);
+
+    if (result.ok) {
+      window.localStorage.setItem(STORAGE_KEY, trimmedEmail);
+      setRegisteredEmail(trimmedEmail);
+      setIsDone(true);
+    } else {
+      if (result.error === "invalid_email") {
+        setSubmitError("올바른 이메일 주소 형식을 입력해 주세요.");
+      } else {
+        setSubmitError("서버 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+      }
+    }
     setIsLoading(false);
-    setIsDone(true);
   };
 
   return (
@@ -134,13 +146,13 @@ export default function EmailNotifyWidget() {
               <div>
                 <h3 className="font-semibold text-foreground text-base">오픈 알림과 업데이트 소식</h3>
                 <p className="text-sm text-muted-foreground mt-0.5 leading-relaxed">
-                  마음이음의 정식 오픈 소식과 주요 업데이트를 받을 이메일을 저장해둘 수 있습니다.
+                  마음이음의 정식 오픈 소식과 주요 업데이트를 받을 이메일을 등록하실 수 있습니다.
                 </p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-5">
-              {["오픈 소식", "주요 업데이트", "브라우저 저장"].map((text) => (
+              {["오픈 소식", "주요 업데이트", "오픈/업데이트 안내"].map((text) => (
                 <div
                   key={text}
                   className="flex items-center gap-2 bg-background/60 rounded-lg px-3 py-2 text-xs text-muted-foreground"
@@ -161,6 +173,7 @@ export default function EmailNotifyWidget() {
                     value={email}
                     onChange={(e) => {
                       setEmail(e.target.value);
+                      setSubmitError(null);
                       if (!touched && e.target.value.length > 0) setTouched(true);
                     }}
                     onBlur={() => {
@@ -172,7 +185,7 @@ export default function EmailNotifyWidget() {
                   />
 
                   <AnimatePresence>
-                    {showError && (
+                    {(showError || submitError) && (
                       <motion.div
                         key="err-icon"
                         initial={{ opacity: 0, scale: 0.5 }}
@@ -183,7 +196,7 @@ export default function EmailNotifyWidget() {
                         <AlertCircle className="w-4 h-4 text-destructive" />
                       </motion.div>
                     )}
-                    {showSuccess && (
+                    {showSuccess && !submitError && (
                       <motion.div
                         key="ok-icon"
                         initial={{ opacity: 0, scale: 0.5 }}
@@ -206,7 +219,7 @@ export default function EmailNotifyWidget() {
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <>
-                      이메일 저장
+                      알림 신청
                       <ArrowRight className="w-4 h-4" />
                     </>
                   )}
@@ -214,31 +227,30 @@ export default function EmailNotifyWidget() {
               </div>
 
               <AnimatePresence mode="wait">
-                {(showError || showSuccess) && (
+                {(showError || showSuccess || submitError) && (
                   <motion.p
-                    key={showError ? "error-msg" : "success-msg"}
+                    key={submitError ? "submit-error-msg" : showError ? "error-msg" : "success-msg"}
                     initial={{ opacity: 0, y: -4, height: 0 }}
                     animate={{ opacity: 1, y: 0, height: "auto" }}
                     exit={{ opacity: 0, y: -4, height: 0 }}
                     transition={{ duration: 0.2 }}
                     className={`flex items-center gap-1.5 text-xs px-1 ${
-                      showError ? "text-destructive" : "text-emerald-600"
+                      showError || submitError ? "text-destructive" : "text-emerald-600"
                     }`}
                   >
-                    {showError ? (
+                    {showError || submitError ? (
                       <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
                     ) : (
                       <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0" />
                     )}
-                    {validation.message}
+                    {submitError || validation.message}
                   </motion.p>
                 )}
               </AnimatePresence>
             </form>
 
             <p className="text-xs text-muted-foreground mt-4 leading-relaxed">
-              수집 목적은 정식 오픈 및 주요 업데이트 알림 신청 의사 확인이며, 이용 항목은 이메일 주소입니다.
-              현재 입력 정보는 이 브라우저에만 저장되고 서버/DB로 전송되지 않습니다. 저장된 정보는 브라우저 데이터 삭제로 제거할 수 있습니다.
+              입력하신 이메일은 오픈 및 업데이트 안내를 위해 저장됩니다. 알림 신청 외 목적으로 사용하지 않으며, 언제든 수신을 원하지 않으면 안내 메일을 통해 중단할 수 있습니다.
             </p>
           </motion.div>
         )}

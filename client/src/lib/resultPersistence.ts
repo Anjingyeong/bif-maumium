@@ -6,6 +6,7 @@ export type CategoryScores = Record<string, { score: number; max: number }>;
 
 export interface ResultSavePayload {
   nickname: string;
+  email?: string;
   testType: TestType;
   answers: Record<number, AnswerValue>;
   domainScores: CategoryScores;
@@ -20,6 +21,7 @@ export interface ResultSavePayload {
 export interface SavedResultSummary {
   id: string;
   nickname: string;
+  email?: string | null;
   testType: TestType;
   totalScore: number;
   maxScore: number;

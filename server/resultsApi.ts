@@ -8,6 +8,7 @@ const UUID_RE =
 
 type ResultPayload = {
   nickname?: unknown;
+  email?: unknown;
   testType?: unknown;
   answers?: unknown;
   categoryScores?: unknown;
@@ -32,6 +33,13 @@ function normalizeNickname(value: unknown): string | null {
   if (nickname.length < 1 || nickname.length > 40) return null;
   if (/[<>]/.test(nickname)) return null;
   return nickname;
+}
+
+function validateEmail(value: unknown): string | null {
+  if (typeof value !== "string" || !value.trim()) return null;
+  const email = value.trim();
+  if (email.length > 255 || !/^.+@.+\..+$/.test(email)) return null;
+  return email;
 }
 
 function validateResultPayload(body: ResultPayload) {
@@ -91,6 +99,7 @@ function validateResultPayload(body: ResultPayload) {
   return {
     data: {
       nickname,
+      email: validateEmail(body.email),
       testType: body.testType,
       answers: body.answers as Prisma.InputJsonValue,
       categoryScores: body.categoryScores as Prisma.InputJsonValue,
@@ -144,6 +153,7 @@ function formatKst(value: Date | string): string {
 function toAdminResult(result: {
   id: string;
   nickname: string;
+  email: string | null;
   testType: string;
   answers: Prisma.JsonValue;
   categoryScores: Prisma.JsonValue;
@@ -174,6 +184,7 @@ function toAdminResult(result: {
   return {
     id: result.id,
     nickname: result.nickname,
+    email: result.email,
     testType: result.testType,
     totalScore: result.totalScore,
     maxScore: result.maxScore,
@@ -205,6 +216,7 @@ export function registerResultsApi(app: Express) {
         select: {
           id: true,
           nickname: true,
+          email: true,
           testType: true,
           totalScore: true,
           maxScore: true,
@@ -235,6 +247,7 @@ export function registerResultsApi(app: Express) {
       select: {
         id: true,
         nickname: true,
+        email: true,
         testType: true,
         totalScore: true,
         maxScore: true,
@@ -258,12 +271,37 @@ export function registerResultsApi(app: Express) {
       ? Math.min(Math.max(limitRaw, 1), 100)
       : 50;
 
+    // 로컬 환경에서 DATABASE_URL이 없을 경우 UI 테스트용 목업 데이터를 반환합니다.
+    if (!process.env.DATABASE_URL) {
+      console.warn("No DATABASE_URL found. Returning mock results for testing.");
+      const mockResults = [
+        toAdminResult({
+          id: "11111111-1111-1111-1111-111111111111", nickname: "테스터(낮음)", email: "test1@example.com", testType: "adult",
+          answers: {}, categoryScores: {}, totalScore: 5, maxScore: 36, riskLevel: "low", riskTitle: "낮음", consentGiven: true, submittedAt: new Date()
+        }),
+        toAdminResult({
+          id: "22222222-2222-2222-2222-222222222222", nickname: "테스터(주의)", email: null, testType: "child",
+          answers: {}, categoryScores: {}, totalScore: 15, maxScore: 36, riskLevel: "caution", riskTitle: "주의", consentGiven: true, submittedAt: new Date(Date.now() - 3600000)
+        }),
+        toAdminResult({
+          id: "33333333-3333-3333-3333-333333333333", nickname: "테스터(상담)", email: "test3@test.com", testType: "adult",
+          answers: {}, categoryScores: {}, totalScore: 25, maxScore: 36, riskLevel: "consult", riskTitle: "상담 권장", consentGiven: true, submittedAt: new Date(Date.now() - 7200000)
+        }),
+        toAdminResult({
+          id: "44444444-4444-4444-4444-444444444444", nickname: "테스터(과거데이터)", email: null, testType: "adult",
+          answers: {}, categoryScores: {}, totalScore: 20, maxScore: 36, riskLevel: "moderate", riskTitle: "전문가 상담 권장", consentGiven: true, submittedAt: new Date(Date.now() - 86400000)
+        })
+      ];
+      return res.json({ results: mockResults });
+    }
+
     const results = await prisma.screeningResult.findMany({
       orderBy: { submittedAt: "desc" },
       take: limit,
       select: {
         id: true,
         nickname: true,
+        email: true,
         testType: true,
         answers: true,
         categoryScores: true,
@@ -295,4 +333,72 @@ export function registerResultsApi(app: Express) {
       return sendError(res, 404, "삭제할 결과를 찾을 수 없습니다.");
     }
   });
+
+  app.post("/api/subscriptions", async (req, res) => {
+    const emailRaw = req.body?.email;
+    if (typeof emailRaw !== "string" || !emailRaw.trim()) {
+      return res.status(400).json({ ok: false, error: "invalid_email" });
+    }
+    const email = emailRaw.trim().toLowerCase();
+    if (email.length > 255 || !/^.+@.+\..+$/.test(email)) {
+      return res.status(400).json({ ok: false, error: "invalid_email" });
+    }
+
+    if (!process.env.DATABASE_URL) {
+      console.warn("No DATABASE_URL found. Mocking subscription success.");
+      return res.status(201).json({ ok: true, status: "created" });
+    }
+
+    try {
+      const existing = await prisma.subscription.findUnique({
+        where: { email },
+      });
+      if (existing) {
+        return res.status(200).json({ ok: true, status: "already_exists" });
+      }
+
+      await prisma.subscription.create({
+        data: { email },
+      });
+      return res.status(201).json({ ok: true, status: "created" });
+    } catch (error) {
+      console.error("Failed to save subscription email:", error);
+      return res.status(500).json({ ok: false, error: "server_error" });
+    }
+  });
+
+  app.get("/api/admin/subscriptions", requireAdminToken, async (req, res) => {
+    if (!process.env.DATABASE_URL) {
+      console.warn("No DATABASE_URL found. Returning mock subscriptions for testing.");
+      const mockSubs = [
+        { email: "admin-test1@example.com", created_at: new Date().toISOString(), createdAt: new Date().toISOString() },
+        { email: "user-test2@maumium.com", created_at: new Date(Date.now() - 3600000).toISOString(), createdAt: new Date(Date.now() - 3600000).toISOString() },
+        { email: "hello-world3@gmail.com", created_at: new Date(Date.now() - 86400000).toISOString(), createdAt: new Date(Date.now() - 86400000).toISOString() }
+      ];
+      return res.json({ ok: true, subscriptions: mockSubs });
+    }
+
+    try {
+      const subscriptions = await prisma.subscription.findMany({
+        orderBy: { createdAt: "desc" },
+        select: {
+          email: true,
+          createdAt: true,
+        },
+      });
+
+      const formatted = subscriptions.map(sub => ({
+        email: sub.email,
+        created_at: sub.createdAt.toISOString(),
+        createdAt: sub.createdAt.toISOString()
+      }));
+
+      return res.json({ ok: true, subscriptions: formatted });
+    } catch (error) {
+      console.error("Failed to list subscriptions:", error);
+      return sendError(res, 500, "구독 이메일 목록을 불러오는 중 오류가 발생했습니다.");
+    }
+  });
 }
+
+

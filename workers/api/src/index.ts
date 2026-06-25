@@ -22,10 +22,15 @@ interface Env {
   DB: D1Database;
   ADMIN_TOKEN: string;
   FRONTEND_ORIGIN?: string;
+  RESEND_API_KEY?: string;
+  EMAIL_SENDER_NAME?: string;
+  EMAIL_SENDER_ADDRESS?: string;
+  EMAIL_UNSUBSCRIBE_URL?: string;
 }
 
 interface ResultPayload {
   nickname?: unknown;
+  email?: unknown;
   testType?: unknown;
   answers?: unknown;
   domainScores?: unknown;
@@ -41,6 +46,7 @@ interface ResultPayload {
 
 interface ValidatedPayload {
   nickname: string;
+  email: string | null;
   testType: TestType;
   answersJson: string;
   domainScoresJson: string;
@@ -54,6 +60,7 @@ interface ValidatedPayload {
 interface ScreeningResultRow {
   id: string;
   nickname: string;
+  email: string | null;
   test_type: TestType;
   answers_json: string;
   domain_scores_json: string;
@@ -141,6 +148,13 @@ function normalizeNickname(value: unknown): string | null {
   return nickname;
 }
 
+function validateEmail(value: unknown): string | null {
+  if (typeof value !== "string" || !value.trim()) return null;
+  const email = value.trim();
+  if (email.length > 255 || !/^.+@.+\..+$/.test(email)) return null;
+  return email;
+}
+
 function normalizeCreatedAt(value: unknown): string | null {
   if (typeof value !== "string") return null;
   const date = new Date(value);
@@ -153,6 +167,8 @@ function validatePayload(
 ): { data: ValidatedPayload } | { error: string } {
   const nickname = normalizeNickname(body.nickname);
   if (!nickname) return { error: "nickname must be 1-40 characters." };
+
+  const email = validateEmail(body.email);
 
   if (body.testType !== "adult" && body.testType !== "child") {
     return { error: "testType must be adult or child." };
@@ -211,6 +227,7 @@ function validatePayload(
   return {
     data: {
       nickname,
+      email,
       testType: body.testType,
       answersJson: JSON.stringify(body.answers),
       domainScoresJson: JSON.stringify(domainScores),
@@ -263,6 +280,7 @@ function toResultSummary(row: ScreeningResultRow) {
   return {
     id: row.id,
     nickname: row.nickname,
+    email: row.email,
     testType: row.test_type,
     totalScore: row.total_score,
     maxScore: row.max_score,
@@ -318,13 +336,14 @@ async function saveResult(request: Request, env: Env, corsHeaders: HeadersInit) 
 
   await env.DB.prepare(
     `INSERT INTO screening_results (
-      id, nickname, test_type, answers_json, domain_scores_json,
+      id, nickname, email, test_type, answers_json, domain_scores_json,
       total_score, max_score, risk_level, risk_title, consent_agreed, created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)`
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)`
   )
     .bind(
       id,
       data.nickname,
+      data.email,
       data.testType,
       data.answersJson,
       data.domainScoresJson,
@@ -340,6 +359,7 @@ async function saveResult(request: Request, env: Env, corsHeaders: HeadersInit) 
     {
       id,
       nickname: data.nickname,
+      email: data.email,
       testType: data.testType,
       totalScore: data.totalScore,
       maxScore: data.maxScore,
@@ -428,6 +448,88 @@ async function deleteAdminResult(
   });
 }
 
+async function saveSubscription(
+  request: Request,
+  env: Env,
+  corsHeaders: HeadersInit
+) {
+  try {
+    const body = await request.json().catch(() => null) as { email?: unknown } | null;
+    const emailRaw = body?.email;
+    if (typeof emailRaw !== "string" || !emailRaw.trim()) {
+      return jsonResponse({ ok: false, error: "invalid_email" }, { status: 400 }, corsHeaders);
+    }
+
+    const email = emailRaw.trim().toLowerCase();
+    if (email.length > 255 || !/^.+@.+\..+$/.test(email)) {
+      return jsonResponse({ ok: false, error: "invalid_email" }, { status: 400 }, corsHeaders);
+    }
+
+    const existing = await env.DB.prepare(
+      "SELECT id FROM subscriptions WHERE email = ?"
+    )
+      .bind(email)
+      .first<{ id: string }>();
+
+    if (existing) {
+      return jsonResponse({ ok: true, status: "already_exists" }, { status: 200 }, corsHeaders);
+    }
+
+    const id = crypto.randomUUID();
+    const createdAt = new Date().toISOString();
+
+    try {
+      await env.DB.prepare(
+        "INSERT INTO subscriptions (id, email, created_at) VALUES (?, ?, ?)"
+      )
+        .bind(id, email, createdAt)
+        .run();
+    } catch (err: any) {
+      const errMsg = String(err?.message || err || "");
+      if (errMsg.includes("UNIQUE") || errMsg.includes("constraint failed")) {
+        return jsonResponse({ ok: true, status: "already_exists" }, { status: 200 }, corsHeaders);
+      }
+      throw err;
+    }
+
+    return jsonResponse({ ok: true, status: "created" }, { status: 201 }, corsHeaders);
+  } catch (error) {
+    console.error("Failed to save subscription:", error);
+    return jsonResponse({ ok: false, error: "server_error" }, { status: 500 }, corsHeaders);
+  }
+}
+
+async function listAdminSubscriptions(
+  request: Request,
+  env: Env,
+  corsHeaders: HeadersInit
+) {
+  if (!requireAdmin(request, env)) {
+    return errorResponse("Unauthorized.", 401, corsHeaders);
+  }
+
+  try {
+    const { results = [] } = await env.DB.prepare(
+      "SELECT email, created_at FROM subscriptions ORDER BY created_at DESC"
+    ).all<{ email: string; created_at: string }>();
+
+    const subscriptions = results.map(row => ({
+      email: row.email,
+      created_at: row.created_at,
+      createdAt: row.created_at
+    }));
+
+    return jsonResponse(
+      { ok: true, subscriptions },
+      { status: 200 },
+      corsHeaders
+    );
+  } catch (error) {
+    console.error("Failed to list subscriptions:", error);
+    return errorResponse("server_error", 500, corsHeaders);
+  }
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const corsHeaders = buildCorsHeaders(request, env);
@@ -450,6 +552,14 @@ export default {
 
     if (request.method === "POST" && pathname === "/api/results") {
       return saveResult(request, env, corsHeaders);
+    }
+
+    if (request.method === "POST" && pathname === "/api/subscriptions") {
+      return saveSubscription(request, env, corsHeaders);
+    }
+
+    if (request.method === "GET" && pathname === "/api/admin/subscriptions") {
+      return listAdminSubscriptions(request, env, corsHeaders);
     }
 
     const resultMatch = pathname.match(/^\/api\/results\/([^/]+)$/);

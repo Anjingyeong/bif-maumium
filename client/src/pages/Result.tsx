@@ -37,6 +37,8 @@ import {
   SavedResultSummary,
 } from "@/lib/resultPersistence";
 import { shouldShowSupportResources } from "@/lib/riskLevels";
+import { buildInterpretationReport } from "@/lib/reportInterpretation";
+import { ResultInterpretationSection } from "@/components/ResultInterpretationSection";
 
 export default function Result() {
   const [isPdfLoading, setIsPdfLoading] = useState(false);
@@ -52,6 +54,7 @@ export default function Result() {
   const answersRaw = params.get("answers");
   const saveConsent = params.get("saveConsent") === "true";
   const nickname = (params.get("nickname") || "").trim();
+  const email = (params.get("email") || "").trim();
 
   const answers: Record<number, AnswerValue> = useMemo(() => {
     try {
@@ -66,6 +69,10 @@ export default function Result() {
   const result = getResultLevel(score, type);
   const categoryScores = getCategoryScores(answers, questionSet.questions);
   const percentage = Math.round((score / maxScore) * 100);
+  const interpretationReport = useMemo(
+    () => buildInterpretationReport({ type, score, maxScore, result, categoryScores }),
+    [type, score, maxScore, result, categoryScores]
+  );
 
   useEffect(() => {
     if (savedRef.current) return;
@@ -92,6 +99,7 @@ export default function Result() {
       setIsRemoteSaving(true);
       saveResultToApi({
         nickname,
+        email: email || undefined,
         testType: type,
         answers,
         domainScores: categoryScores,
@@ -140,7 +148,30 @@ export default function Result() {
   const handleDownloadPdf = async () => {
     setIsPdfLoading(true);
     try {
-      await generateResultPdf({ type, score, maxScore, result, answers, questionSet });
+      const pdfBlob = await generateResultPdf({ type, score, maxScore, result, answers, questionSet });
+      const todayShort = new Date().toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" }).replace(/\. /g, "-").replace(".", "");
+      const filename = `마음이음_${type === "adult" ? "성인자가진단" : "아동선별검사"}_${todayShort}.pdf`;
+
+      // 모바일 공유 API (Safari/Chrome 등에서 팝업 차단 방지)
+      if (navigator.share && /mobile|android|iphone|ipad|ipod/i.test(navigator.userAgent)) {
+        const file = new File([pdfBlob], filename, { type: 'application/pdf' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file] });
+          toast.success("PDF 리포트를 공유/저장했습니다.");
+          return;
+        }
+      }
+
+      // 일반 다운로드 폴백
+      const blobUrl = window.URL.createObjectURL(pdfBlob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(blobUrl);
+
       toast.success("PDF 리포트가 다운로드되었습니다.");
     } catch (err) {
       console.error(err);
@@ -274,7 +305,7 @@ export default function Result() {
               <div>
                 <p className="text-sm font-semibold text-foreground">서버 결과 저장</p>
                 <p className="text-xs text-muted-foreground leading-relaxed mt-1">
-                  저장 항목은 닉네임, 응답, 영역별 점수, 총점, 위험도, 동의 여부,
+                  저장 항목은 닉네임, 응답, 영역별 점수, 총점, 해석 단계, 동의 여부,
                   제출 시각입니다. 실명, 전화번호, 이메일, 주민등록번호는 수집하지 않습니다.
                 </p>
               </div>
@@ -397,49 +428,12 @@ export default function Result() {
           </motion.div>
         )}
 
-        {/* 영역별 분석 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="bg-card rounded-2xl border border-border/60 shadow-sm p-6 md:p-8 mb-8"
         >
-          <h2 className="text-base font-serif font-bold text-foreground mb-5">영역별 분석</h2>
-          <div className="space-y-4">
-            {Object.entries(categoryScores).map(([category, { score: catScore, max }]) => {
-              const catPercentage = Math.round((catScore / max) * 100);
-              return (
-                <div key={category}>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-sm font-medium text-foreground">{category}</span>
-                    <span className="text-xs text-muted-foreground">{catScore}/{max}</span>
-                  </div>
-                  <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                    <motion.div
-                      className="h-full rounded-full"
-                      style={{ backgroundColor: catPercentage > 60 ? result.color : "oklch(0.55 0.10 240)" }}
-                      initial={{ width: 0 }}
-                      animate={{ width: `${catPercentage}%` }}
-                      transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </motion.div>
-
-        {/* 권장 사항 */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="bg-card rounded-2xl border border-border/60 shadow-sm p-6 md:p-8 mb-8"
-        >
-          <h2 className="text-base font-serif font-bold text-foreground mb-4">권장 사항</h2>
-          <div className="bg-secondary/40 rounded-xl p-5 border border-border/40">
-            <p className="text-sm text-foreground leading-relaxed">{result.recommendation}</p>
-          </div>
+          <ResultInterpretationSection report={interpretationReport} accentColor={result.color} />
         </motion.div>
 
         {/* 도움받을 수 있는 곳 - 차분하게 표시 */}

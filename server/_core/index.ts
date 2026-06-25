@@ -103,7 +103,7 @@ async function startServer() {
     await setupVite(app, server);
   }
 
-  const preferredPort = parseInt(process.env.PORT || "3000");
+  const preferredPort = parseInt(process.env.PORT || "5173");
   const port = await findAvailablePort(preferredPort);
 
   if (port !== preferredPort) {

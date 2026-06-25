@@ -4,7 +4,7 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "dev": "tsx watch server/_core/index.ts",
+    "dev": "npx -y cross-env NODE_ENV=development tsx server/_core/index.ts",
     "sitemap": "node scripts/generate-sitemap.mjs",
     "sitemap:prod": "node scripts/generate-sitemap.mjs https://maumium.pages.dev",
     "build:pages": "node scripts/generate-sitemap.mjs https://maumium.pages.dev && vite build",
