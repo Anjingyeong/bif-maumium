@@ -27,6 +27,7 @@ const pages = [
   { path: "/blog/bif-self-diagnosis-guide", priority: "0.7", changefreq: "monthly" },
   { path: "/blog/bif-support-policy-2024", priority: "0.7", changefreq: "monthly" },
   { path: "/privacy", priority: "0.3", changefreq: "yearly" },
+  { path: "/terms", priority: "0.3", changefreq: "yearly" },
 ];
 
 const urlEntries = pages

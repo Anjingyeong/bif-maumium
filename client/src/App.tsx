@@ -14,6 +14,7 @@ import BlogPost from "./pages/BlogPost";
 import History from "./pages/History";
 import TermDiff from "./pages/TermDiff";
 import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 import KeywordLanding from "./pages/KeywordLanding";
 import AdminResults from "./pages/AdminResults";
 import AdminSubscriptions from "./pages/AdminSubscriptions";
@@ -32,6 +33,7 @@ function Router() {
       <Route path="/history" component={History} />
       <Route path="/term-diff" component={TermDiff} />
       <Route path="/privacy" component={Privacy} />
+      <Route path="/terms" component={Terms} />
       <Route path="/admin/results" component={AdminResults} />
       <Route path="/admin/subscriptions" component={AdminSubscriptions} />
       <Route path="/slow-learner-test" component={KeywordLanding} />

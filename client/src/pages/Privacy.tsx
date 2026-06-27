@@ -5,10 +5,11 @@
 import { useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { Shield, ArrowLeft, Mail, Lock, Trash2, Eye, AlertCircle } from "lucide-react";
+import { Shield, ArrowLeft, Mail, Lock, Trash2, Eye, AlertCircle, Database, Ban } from "lucide-react";
 
-const LAST_UPDATED = "2026년 5월 12일";
+const LAST_UPDATED = "2026년 6월 27일";
 const SERVICE_NAME = "마음이음";
+const SERVICE_NAME_EN = "maumium";
 const CONTACT_EMAIL = "maumium.service@gmail.com";
 
 const sections = [
@@ -16,9 +17,9 @@ const sections = [
     id: "overview",
     title: "1. 개요",
     icon: <Shield className="w-5 h-5" />,
-    content: `${SERVICE_NAME}(이하 "서비스")는 경계선 지능 가능성 자가체크와 학습·인지·적응기능 선별 정보를 제공하는 웹 서비스입니다. 본 방침은 서비스 이용 과정에서 수집되는 정보의 처리 방법을 안내합니다.
+    content: `${SERVICE_NAME_EN} / ${SERVICE_NAME}(이하 "서비스")는 경계선 지능 가능성, 느린학습자 특성, 학습·인지·적응 어려움을 살펴보는 선별용 자가체크 웹 서비스입니다. 본 방침은 서비스 이용 과정에서 수집되는 정보의 처리 방법을 안내합니다.
 
-본 서비스는 사용자의 개인정보 보호를 최우선으로 하며, 가능한 한 최소한의 정보만 수집합니다. 현재 서비스는 별도의 서버 없이 사용자의 기기(브라우저) 내에서만 데이터를 처리합니다.`,
+본 서비스는 진단, 확정 판정, 장애 판정, IQ 판정을 제공하지 않습니다. 개인정보와 검사 결과는 최소수집 원칙에 따라 처리하며, 결과 저장은 사용자가 명시적으로 동의한 경우에만 이루어집니다.`,
   },
   {
     id: "collect",
@@ -26,14 +27,24 @@ const sections = [
     icon: <Eye className="w-5 h-5" />,
     content: `서비스는 다음과 같이 최소한의 정보만 수집합니다.
 
-■ 자동 수집 정보 (서버 미전송)
+■ 브라우저에 저장될 수 있는 정보
 - 검사 응답 데이터: 자가체크 문항에 대한 응답값 및 점수
 - 검사 이력: 검사 일시, 검사 유형(성인/아동), 총점
 - 동의 기록: 면책 고지 및 데이터 수집 동의 여부
 - 피드백: 서비스 만족도 평가 및 코멘트
 
-■ 선택적 수집 정보 (서버 미전송)
-- 이메일 주소: 전문가 자문 서비스 오픈 알림 신청 시 (선택 사항)
+■ 결과 저장 동의 시 서버에 저장될 수 있는 정보
+- 닉네임 또는 표시 이름
+- 선택 입력 이메일 주소
+- 검사 유형(test_type)
+- 위험도 수준(risk_level)
+- 결과 식별자(result_id 또는 id)
+- 제출 시각(created_at)
+- 문항 응답, 영역별 점수, 총점, 최대 점수
+
+■ 문의 시 수집될 수 있는 정보
+- 문의 이메일 주소
+- 문의 내용
 
 ■ 수집하지 않는 정보
 - 이름, 생년월일, 주소, 전화번호 등 신원 식별 정보
@@ -45,12 +56,12 @@ const sections = [
     id: "storage",
     title: "3. 정보 저장 방식",
     icon: <Lock className="w-5 h-5" />,
-    content: `■ 저장 위치: 사용자의 기기 내 브라우저 로컬스토리지(localStorage)
-■ 외부 전송: 수집된 모든 정보는 외부 서버로 전송되지 않습니다.
-■ 저장 기간: 사용자가 직접 삭제하거나 브라우저 데이터를 초기화할 때까지 보관됩니다.
-■ 암호화: 브라우저 로컬스토리지에 저장되며, 별도의 암호화는 적용되지 않습니다.
+    content: `■ 브라우저 저장: 검사 이력과 일부 설정은 사용자의 기기 내 로컬스토리지(localStorage)에 저장될 수 있습니다.
+■ 서버 저장: 사용자가 결과 저장에 동의한 경우에만 Worker API를 통해 결과 데이터가 저장됩니다.
+■ 저장 기간: 목적 달성 또는 삭제 요청 시 파기합니다. 익명 통계 데이터는 서비스 개선 목적 범위에서 보관될 수 있습니다.
+■ 암호화: 브라우저 로컬스토리지에 저장되는 데이터에는 별도 암호화가 적용되지 않습니다.
 
-※ 향후 서버 기반 서비스(회원가입, 유료 기능 등)가 추가될 경우 본 방침을 개정하여 사전에 안내드립니다.`,
+※ 향후 회원가입, 결제, 유료 기능 등 개인정보 처리 범위가 달라지는 기능이 추가될 경우 본 방침을 개정하여 사전에 안내드립니다.`,
   },
   {
     id: "purpose",
@@ -58,12 +69,13 @@ const sections = [
     icon: <AlertCircle className="w-5 h-5" />,
     content: `수집된 정보는 다음 목적으로만 이용됩니다.
 
-- 검사 결과 표시 및 이전 결과와의 비교 분석
+- 자가체크 결과 제공 및 이전 결과와의 비교 분석
 - 검사 이력 조회 및 점수 추이 시각화
-- 전문가 자문 서비스 오픈 시 이메일 알림 발송 (이메일 등록자에 한함)
-- 서비스 품질 개선을 위한 익명 통계 분석 (동의자에 한함)
+- 문의 응대
+- 오류 확인 및 서비스 안정성 개선
+- 익명 통계 분석 및 서비스 개선 (동의자에 한함)
 
-수집된 정보는 제3자에게 제공, 판매, 공유되지 않습니다.`,
+수집된 정보는 법령상 필요한 경우를 제외하고 제3자에게 제공, 판매, 공유되지 않습니다.`,
   },
   {
     id: "rights",
@@ -74,14 +86,13 @@ const sections = [
 ■ 검사 이력 삭제
 - "내 기록" 페이지 → "전체 기록 삭제" 버튼 클릭
 
-■ 이메일 등록 취소
-- 브라우저 개발자 도구 → Application → Local Storage → 'bif_notify_email' 항목 삭제
-- 또는 브라우저 설정에서 사이트 데이터 전체 삭제
+■ 서버 저장 결과 삭제 요청
+- 결과 식별자 또는 저장 당시 닉네임 등 확인 가능한 정보를 포함해 문의 이메일로 요청
 
 ■ 모든 데이터 삭제
 - 브라우저 설정 → 개인정보 및 보안 → 인터넷 사용 기록 삭제 → 쿠키 및 사이트 데이터 삭제
 
-개인정보 관련 문의 또는 삭제 요청은 아래 연락처로 문의해 주세요.`,
+사용자는 개인정보 열람, 정정, 삭제, 처리정지를 요청할 수 있습니다. 개인정보 관련 문의 또는 삭제 요청은 아래 연락처로 문의해 주세요.`,
   },
   {
     id: "disclaimer",
@@ -100,9 +111,9 @@ const sections = [
     icon: <Eye className="w-5 h-5" />,
     content: `■ 쿠키: 본 서비스는 필수 기능 외 쿠키를 사용하지 않습니다.
 
-■ 방문자 분석: 서비스 개선을 위해 익명 방문자 통계(페이지뷰, 방문 횟수)를 수집할 수 있습니다. 이 데이터는 개인을 식별하지 않으며, 개인정보와 연결되지 않습니다.
+■ 추적 도구: 현재 Google Analytics, Google Tag Manager, Microsoft Clarity 같은 별도의 광고·행태 추적 도구를 사용하지 않습니다.
 
-■ 외부 서비스: 카카오 공유 기능 이용 시 카카오의 개인정보처리방침이 적용됩니다.`,
+■ 분석 동의: 향후 방문자 분석 도구를 도입하는 경우, 필요한 경우 동의 전에는 분석 스크립트를 로드하지 않고 본 방침에 도구명과 목적을 반영하겠습니다.`,
   },
   {
     id: "changes",
@@ -160,38 +171,17 @@ export default function Privacy() {
           {/* 핵심 요약 배너 */}
           <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
-              { icon: "🔒", title: "서버 미전송", desc: "모든 데이터는 기기 내에만 저장" },
-              { icon: "🚫", title: "개인정보 미수집", desc: "이름·전화번호 등 수집 안 함" },
-              { icon: "🗑️", title: "언제든 삭제 가능", desc: "내 기록 페이지에서 즉시 삭제" },
+              { icon: <Lock className="w-5 h-5 text-primary" />, title: "최소수집", desc: "결과 저장은 동의한 경우에만 처리" },
+              { icon: <Ban className="w-5 h-5 text-primary" />, title: "직접 식별정보 지양", desc: "실명·전화번호 등 입력 금지" },
+              { icon: <Database className="w-5 h-5 text-primary" />, title: "삭제 요청 가능", desc: "문의 이메일로 열람·삭제 요청" },
             ].map((item) => (
               <div key={item.title} className="flex items-start gap-3">
-                <span className="text-xl">{item.icon}</span>
+                <span className="shrink-0">{item.icon}</span>
                 <div>
                   <p className="text-sm font-semibold text-foreground">{item.title}</p>
                   <p className="text-xs text-muted-foreground mt-0.5">{item.desc}</p>
                 </div>
               </div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* 목차 */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="mb-8 bg-secondary/40 rounded-xl p-5"
-        >
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">목차</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
-            {sections.map((s) => (
-              <a
-                key={s.id}
-                href={`#${s.id}`}
-                className="text-sm text-muted-foreground hover:text-primary transition-colors py-1"
-              >
-                {s.title}
-              </a>
             ))}
           </div>
         </motion.div>
@@ -266,6 +256,12 @@ export default function Privacy() {
             <Link href="/privacy" onClick={scrollToTop} className="hover:text-foreground transition-colors underline underline-offset-2">
               개인정보처리방침
             </Link>
+            <span className="mx-2">·</span>
+            <Link href="/terms" className="hover:text-foreground transition-colors underline underline-offset-2">
+              이용약관
+            </Link>
+            <span className="mx-2">·</span>
+            문의: {CONTACT_EMAIL}
           </p>
         </div>
       </footer>

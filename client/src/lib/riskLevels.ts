@@ -1,7 +1,7 @@
 export type TestType = "adult" | "child";
 export type RiskLevelKey = "low" | "caution" | "consult";
 
-export const SCREENING_DISCLAIMER = "본 결과는 진단이 아닌 참고용 선별 결과입니다. 정확한 평가는 임상심리사, 정신건강의학과, 특수교육 전문가 등이 실시하는 표준화 지능검사와 적응행동검사, 면담을 통해 이루어져야 합니다. 본 결과만으로 경계선 지능 여부를 확정하지 않습니다.";
+export const SCREENING_DISCLAIMER = "본 결과는 진단이 아닌 참고용 선별 결과입니다. 주의력, 정서, 학습 문제 등 다른 요인이 함께 영향을 줄 수 있습니다. 정확한 평가는 임상심리사, 정신건강의학과, 특수교육 전문가 등이 실시하는 표준화 검사(지능검사, 적응행동검사)와 면담을 통해 이루어져야 합니다. 본 결과만으로 경계선 지능 여부를 판단하지 않습니다.";
 export const DIFFERENTIAL_GUIDANCE = "주의력 문제, 우울·불안, 수면부족, 스트레스, 학습장애, 환경 변화 등도 응답에 영향을 줄 수 있으므로 결과는 현재 상태를 살펴보는 참고 자료로만 활용해 주세요.";
 
 interface RiskLevelDisplay {

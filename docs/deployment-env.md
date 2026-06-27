@@ -17,7 +17,7 @@ Pages routing:
 
 Use `workers/api` for the result storage API and D1 for persistence.
 
-- `FRONTEND_ORIGIN`: Allowed frontend origin for CORS, for example `https://maumium.kr`. Use a comma-separated list only when multiple explicit origins are needed.
+- `FRONTEND_ORIGIN`: Allowed frontend origin for CORS. Keep the production value as `https://maumium.pages.dev`. Use a comma-separated list only when multiple explicit origins are needed.
 - `ADMIN_TOKEN`: Worker secret for administrator-only result APIs. Set with `wrangler secret put ADMIN_TOKEN --config workers/api/wrangler.toml`.
 - `DB`: D1 binding named `DB`, configured in `workers/api/wrangler.toml`.
 
@@ -44,4 +44,4 @@ The previous Express/Prisma backend can still use these variables if that deploy
 
 ## Data Minimization
 
-The result save flow only asks for an anonymous nickname. Do not collect or enter real names, phone numbers, email addresses, resident registration numbers, or other directly identifying information. If a user does not consent to result storage, the frontend does not call the Worker API. The screening remains a self-check tool for preliminary guidance and does not replace standardized professional assessment.
+The result save flow asks for an anonymous nickname and may accept an optional email address only when the user chooses result storage. Do not collect or enter real names, phone numbers, resident registration numbers, or other directly identifying information. If a user does not consent to result storage, the frontend does not call the Worker API. The screening remains a self-check tool for preliminary guidance and does not replace standardized professional assessment.

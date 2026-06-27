@@ -44,7 +44,7 @@ async function startServer() {
   });
   app.use((req, res, next) => {
     const origin = req.header("origin");
-    const configuredOrigins = (process.env.FRONTEND_ORIGIN || "")
+    const configuredOrigins = (process.env.FRONTEND_ORIGIN || "https://maumium.pages.dev")
       .split(",")
       .map(value => value.trim())
       .filter(Boolean);

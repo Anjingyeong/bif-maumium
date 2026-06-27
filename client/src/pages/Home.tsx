@@ -154,10 +154,10 @@ export default function Home() {
               마음이음 참고용 자가체크
             </p>
             <h2 className="text-2xl md:text-3xl font-serif font-bold text-foreground mb-4">
-              느린학습자 테스트와 경계선 지능 자가진단을 한곳에서
+              느린학습자 테스트와 경계선 지능 자가체크를 한곳에서
             </h2>
             <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-              느린학습자 자가진단, 경계선 지능 테스트, 경계선 지능장애 테스트를 찾는 분들이
+              느린학습자 자가체크, 경계선 지능 테스트, 경계선 지능 체크리스트를 찾는 분들이
               부담 없이 살펴볼 수 있도록 성인용 자가체크와 자녀를 위한 보호자 체크를 제공합니다.
               느린학습자 체크리스트는 최근 생활 경험을 기준으로 답하며, 결과는 참고용 안내로만 활용해 주세요.
             </p>
@@ -547,8 +547,8 @@ export default function Home() {
               <Link href="/info" className="hover:text-foreground transition-colors">경계선 지능이란?</Link>
               <Link href="/blog" className="hover:text-foreground transition-colors">정보 센터</Link>
               <Link href="/privacy" className="hover:text-foreground transition-colors">개인정보처리방침</Link>
-              <span>이용약관</span>
-              <a href="mailto:maumim.service@gmail.com" className="hover:text-foreground transition-colors">문의: maumim.service@gmail.com</a>
+              <Link href="/terms" className="hover:text-foreground transition-colors">이용약관</Link>
+              <a href="mailto:maumium.service@gmail.com" className="hover:text-foreground transition-colors">문의: maumium.service@gmail.com</a>
             </div>
           </div>
         </div>

@@ -150,7 +150,7 @@ export default function Result() {
     try {
       const pdfBlob = await generateResultPdf({ type, score, maxScore, result, answers, questionSet });
       const todayShort = new Date().toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" }).replace(/\. /g, "-").replace(".", "");
-      const filename = `마음이음_${type === "adult" ? "성인자가진단" : "아동선별검사"}_${todayShort}.pdf`;
+      const filename = `마음이음_${type === "adult" ? "성인자가체크" : "아동선별검사"}_${todayShort}.pdf`;
 
       // 모바일 공유 API (Safari/Chrome 등에서 팝업 차단 방지)
       if (navigator.share && /mobile|android|iphone|ipad|ipod/i.test(navigator.userAgent)) {

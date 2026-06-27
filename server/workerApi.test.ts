@@ -4,6 +4,7 @@ import worker from "../workers/api/src/index";
 type Row = {
   id: string;
   nickname: string;
+  email: string | null;
   test_type: "adult" | "child";
   answers_json: string;
   domain_scores_json: string;
@@ -47,6 +48,7 @@ class MockStatement {
       const [
         id,
         nickname,
+        email,
         testType,
         answersJson,
         domainScoresJson,
@@ -60,6 +62,7 @@ class MockStatement {
       this.rows.push({
         id: String(id),
         nickname: String(nickname),
+        email: typeof email === "string" ? email : null,
         test_type: testType as "adult" | "child",
         answers_json: String(answersJson),
         domain_scores_json: String(domainScoresJson),

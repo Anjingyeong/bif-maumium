@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ogMeta.ts
  * 결과 페이지(/result) 접근 시 쿼리 파라미터(type, score)를 읽어
  * 결과 유형에 맞는 OG 메타태그가 포함된 HTML을 반환하는 Express 라우트.
@@ -20,32 +20,32 @@ interface OGMeta {
   imageKey: string; // /manus-storage/... 경로
 }
 
-const BASE_URL = "https://maumium.kr";
+const BASE_URL = "https://maumium.pages.dev";
 
 // 성인 결과 레벨별 메타 (score 기준)
 function getAdultMeta(score: number): OGMeta {
   if (score <= 10) {
     return {
-      title: "저위험 수준 — 마음이음 성인 자가진단 결과",
-      description: `경계선 지능 가능성이 낮습니다. 마음이음 성인 자가진단 결과를 확인해 보세요. (점수: ${score}점)`,
+      title: "저위험 수준 — 마음이음 성인 자가체크 결과",
+      description: `경계선 지능 가능성이 낮습니다. 마음이음 성인 자가체크 결과를 확인해 보세요. (점수: ${score}점)`,
       imageKey: "/manus-storage/og-result-adult-low-1200x630_03064a13.png",
     };
   } else if (score <= 22) {
     return {
-      title: "가벼운 어려움 수준 — 마음이음 성인 자가진단 결과",
-      description: `일부 영역에서 가벼운 어려움이 확인됩니다. 마음이음 성인 자가진단 결과를 확인해 보세요. (점수: ${score}점)`,
+      title: "가벼운 어려움 수준 — 마음이음 성인 자가체크 결과",
+      description: `일부 영역에서 가벼운 어려움이 확인됩니다. 마음이음 성인 자가체크 결과를 확인해 보세요. (점수: ${score}점)`,
       imageKey: "/manus-storage/og-result-adult-high-1200x630_dd505b47.png",
     };
   } else if (score <= 33) {
     return {
-      title: "주의 수준 — 마음이음 성인 자가진단 결과",
-      description: `전문가 상담이 권장됩니다. 마음이음 성인 자가진단 결과를 확인해 보세요. (점수: ${score}점)`,
+      title: "주의 수준 — 마음이음 성인 자가체크 결과",
+      description: `전문가 상담이 권장됩니다. 마음이음 성인 자가체크 결과를 확인해 보세요. (점수: ${score}점)`,
       imageKey: "/manus-storage/og-result-adult-high-1200x630_dd505b47.png",
     };
   } else {
     return {
-      title: "주의 수준 (적극 권장) — 마음이음 성인 자가진단 결과",
-      description: `전문기관 상담을 적극 권장합니다. 마음이음 성인 자가진단 결과를 확인해 보세요. (점수: ${score}점)`,
+      title: "주의 수준 (적극 권장) — 마음이음 성인 자가체크 결과",
+      description: `전문기관 상담을 적극 권장합니다. 마음이음 성인 자가체크 결과를 확인해 보세요. (점수: ${score}점)`,
       imageKey: "/manus-storage/og-result-adult-high-1200x630_dd505b47.png",
     };
   }
@@ -82,9 +82,9 @@ function getChildMeta(score: number): OGMeta {
 
 // 기본 OG 메타 (결과 파라미터 없을 때)
 const DEFAULT_META: OGMeta = {
-  title: "경계선 지능 자가진단 | 마음이음 — 무료 온라인 선별검사",
+  title: "경계선 지능 자가체크 | 마음이음 — 무료 온라인 선별검사",
   description:
-    "경계선 지능(IQ 71~84) 자가진단 및 아동 선별검사. 5~10분으로 간편하게 확인하세요. 무료, 개인정보 저장 없음.",
+    "경계선 지능(IQ 71~84) 자가체크 및 아동 선별검사. 5~10분으로 간편하게 확인하세요. 무료, 개인정보 저장 없음.",
   imageKey: "/manus-storage/og-thumbnail-v2-1200x630_a2d31454.png",
 };
 

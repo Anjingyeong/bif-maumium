@@ -108,7 +108,7 @@ function errorResponse(
 }
 
 function getAllowedOrigins(env: Env): string[] {
-  return (env.FRONTEND_ORIGIN || "")
+  return (env.FRONTEND_ORIGIN || "https://maumium.pages.dev")
     .split(",")
     .map(origin => origin.trim())
     .filter(Boolean);
