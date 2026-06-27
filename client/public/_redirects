@@ -1,1 +1,7 @@
+/.git/* /404.html 404
+/.env /404.html 404
+/__webpack_hmr /404.html 404
+/_next/webpack-hmr /404.html 404
+/debug /404.html 404
+
 /* /index.html 200

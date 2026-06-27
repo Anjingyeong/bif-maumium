@@ -4,8 +4,7 @@ compatibility_date = "2026-05-18"
 workers_dev = true
 
 [vars]
-# Set this to the deployed Cloudflare Pages origin.
-FRONTEND_ORIGIN = "https://maumium.kr"
+FRONTEND_ORIGIN = "https://maumium.pages.dev"
 
 [[d1_databases]]
 binding = "DB"

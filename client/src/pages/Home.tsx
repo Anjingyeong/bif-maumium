@@ -543,10 +543,12 @@ export default function Home() {
             <p className="text-xs text-muted-foreground text-center">
               본 서비스는 진단 도구가 아니라 선별용 자가체크입니다. 정확한 평가는 전문기관을 통해 받으시기 바랍니다.
             </p>
-            <div className="flex gap-4 text-xs text-muted-foreground">
+            <div className="flex flex-wrap justify-center gap-4 text-xs text-muted-foreground">
               <Link href="/info" className="hover:text-foreground transition-colors">경계선 지능이란?</Link>
               <Link href="/blog" className="hover:text-foreground transition-colors">정보 센터</Link>
               <Link href="/privacy" className="hover:text-foreground transition-colors">개인정보처리방침</Link>
+              <span>이용약관</span>
+              <a href="mailto:maumim.service@gmail.com" className="hover:text-foreground transition-colors">문의: maumim.service@gmail.com</a>
             </div>
           </div>
         </div>
