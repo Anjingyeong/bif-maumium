@@ -1,4 +1,4 @@
-﻿/**
+/**
  * QuestionCard Component
  * Design: Calm & Trustworthy - 신뢰감 있는 상담 서비스 스타일
  * Improvements:
@@ -69,9 +69,16 @@ export default function QuestionCard({
         </div>
 
         {/* Question text */}
-        <p className="text-base md:text-lg font-medium text-foreground leading-relaxed mb-7">
+        <p className="text-base md:text-lg font-medium text-foreground leading-relaxed mb-3">
           {question.text}
         </p>
+
+        {/* Description/helpText */}
+        {question.description && (
+          <p className="text-xs md:text-sm text-muted-foreground leading-relaxed mb-7 bg-secondary/30 p-4 rounded-xl border border-border/40">
+            {question.description}
+          </p>
+        )}
 
         {/* Answer options */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
