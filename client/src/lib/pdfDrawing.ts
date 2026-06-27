@@ -18,9 +18,11 @@ export function canvasText(
 ): number {
   const { size = 10, bold = false, color = "#28283c", align = "left", maxWidth, measureOnly = false } = opts;
   const scale = 3;
+  const FONT_SCALE = 0.35; // Scale factor to convert pixels to mm for professional A4 print size
   const fontSize = size * scale;
   const fontStyle = bold ? "bold" : "normal";
   const fontFamily = "'Pretendard', 'Noto Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', Arial, sans-serif";
+  
   const measureCanvas = document.createElement("canvas");
   const measureCtx = measureCanvas.getContext("2d");
 
@@ -28,8 +30,10 @@ export function canvasText(
 
   measureCtx.font = `${fontStyle} ${fontSize}px ${fontFamily}`;
 
-  const lines = wrapCanvasText(text, maxWidth, measureCtx, scale);
-  const lineHeight = size * 1.5;
+  // Convert maxWidth from mm to pixels at target scale
+  const maxWidthPx = maxWidth ? maxWidth / FONT_SCALE : undefined;
+  const lines = wrapCanvasText(text, maxWidthPx, measureCtx, scale);
+  const lineHeight = size * 1.5 * FONT_SCALE;
 
   if (measureOnly) return lines.length * lineHeight;
 
@@ -50,9 +54,11 @@ export function canvasText(
     ctx.fillText(line, 2, 2);
 
     const imgData = canvas.toDataURL("image/png");
-    const imgH = size * 1.4;
-    const lineY = y - size * 0.85 + lineIdx * lineHeight;
-    doc.addImage(imgData, "PNG", getAlignedX(x, textWidth, align), lineY, textWidth, imgH);
+    const imgH = size * 1.4 * FONT_SCALE;
+    const imgW = textWidth * FONT_SCALE;
+    const lineY = y - (size * 0.85 * FONT_SCALE) + lineIdx * lineHeight;
+    
+    doc.addImage(imgData, "PNG", getAlignedX(x, imgW, align), lineY, imgW, imgH);
   });
 
   return lines.length * lineHeight;
@@ -113,22 +119,25 @@ function wrapCanvasText(
 ): string[] {
   if (!maxWidth) return [text];
 
+  const paragraphs = text.split("\n");
   const lines: string[] = [];
-  let currentLine = "";
 
-  for (let i = 0; i < text.length; i += 1) {
-    const char = text[i];
-    const testLine = currentLine + char;
-    const testWidth = measureCtx.measureText(testLine).width / scale;
-    if (testWidth > maxWidth && currentLine) {
-      lines.push(currentLine);
-      currentLine = char;
-    } else {
-      currentLine = testLine;
+  paragraphs.forEach((p) => {
+    let currentLine = "";
+    for (let i = 0; i < p.length; i += 1) {
+      const char = p[i];
+      const testLine = currentLine + char;
+      const testWidth = measureCtx.measureText(testLine).width / scale;
+      if (testWidth > maxWidth && currentLine) {
+        lines.push(currentLine);
+        currentLine = char;
+      } else {
+        currentLine = testLine;
+      }
     }
-  }
+    if (currentLine) lines.push(currentLine);
+  });
 
-  if (currentLine) lines.push(currentLine);
   return lines;
 }
 
