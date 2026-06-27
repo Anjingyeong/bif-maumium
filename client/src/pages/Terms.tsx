@@ -1,12 +1,14 @@
 import { Link } from "wouter";
 import { ArrowLeft, FileText, Mail, ShieldCheck } from "lucide-react";
+import { SERVICE_COPY } from "@/constants/serviceCopy";
+import { LEGAL_COPY } from "@/constants/legalCopy";
 
-const CONTACT_EMAIL = "maumium.service@gmail.com";
+const CONTACT_EMAIL = SERVICE_COPY.CONTACT_EMAIL;
 
 const terms = [
   {
     title: "서비스 성격",
-    body: "maumium(마음이음)은 경계선 지능 가능성, 느린학습자 특성, 학습·인지·적응 어려움을 살펴보는 선별용 자가체크 서비스입니다. 본 서비스는 의료적 진단, 확정 판정, 장애 판정, IQ 판정을 제공하지 않습니다.",
+    body: `${SERVICE_COPY.SERVICE_DESC} 본 서비스는 의료적 진단, 확정 판정, 장애 판정, IQ 판정을 제공하지 않습니다.`,
   },
   {
     title: "비상업적 안내",
@@ -14,7 +16,7 @@ const terms = [
   },
   {
     title: "개인정보와 결과 저장",
-    body: "검사는 저장 동의 없이도 이용할 수 있습니다. 결과 저장에 동의한 경우에만 익명 닉네임, 선택 입력 이메일, 검사 유형, 응답과 점수, 위험도 수준, 결과 식별자, 제출 시각이 저장될 수 있습니다.",
+    body: LEGAL_COPY.PRIVACY_DISCLAIMER,
   },
   {
     title: "이용자 책임",
@@ -67,7 +69,7 @@ export default function Terms() {
             서비스 이용, 개인정보, 협업 관련 문의는 아래 이메일로 연락해 주세요.
           </p>
           <a href={`mailto:${CONTACT_EMAIL}`} className="inline-flex mt-3 text-sm font-semibold text-primary hover:underline">
-            문의: {CONTACT_EMAIL}
+            {SERVICE_COPY.CONTACT_EMAIL_LABEL}
           </a>
         </section>
       </main>

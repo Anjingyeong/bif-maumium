@@ -1,8 +1,10 @@
-﻿import { useEffect } from "react";
+import { useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { ArrowRight, Brain, CheckCircle2 } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Button } from "@/components/ui/button";
+import { LEGAL_COPY } from "@/constants/legalCopy";
+import { SERVICE_COPY } from "@/constants/serviceCopy";
 
 const META_DESCRIPTION =
   "느린학습자와 경계선 지능 특성을 간단한 문항으로 확인해보는 온라인 자가체크 테스트입니다. 결과는 참고용이며 전문 진단을 대체하지 않습니다.";
@@ -15,7 +17,7 @@ const PAGES = {
     keywords: ["느린학습자 테스트", "느린학습자 자가체크", "느린학습자 체크리스트"],
   },
   "/borderline-iq-test": {
-    title: "경계선 지능 자가체크 테스트 | 마음이음",
+    title: `경계선 지능 자가체크 테스트 | ${SERVICE_COPY.SERVICE_NAME_KO}`,
     h1: "경계선 지능 자가체크 테스트",
     lead: "경계선 지능 가능성과 관련된 학습·인지·적응기능 어려움을 온라인 문항으로 점검해볼 수 있습니다.",
     keywords: ["경계선 지능 테스트", "경계선 지능 자가체크", "경계선 지능 체크리스트"],
@@ -75,13 +77,13 @@ export default function KeywordLanding() {
           <div className="max-w-3xl mx-auto">
             <div className="flex items-center gap-2 text-primary mb-5">
               <Brain className="w-5 h-5" />
-              <span className="text-sm font-medium">마음이음 참고용 자가체크</span>
+              <span className="text-sm font-medium">{SERVICE_COPY.SERVICE_NAME_KO} 참고용 자가체크</span>
             </div>
             <h1 className="text-3xl md:text-5xl font-serif font-bold text-foreground leading-tight mb-5">
               {page.h1}
             </h1>
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-6">
-              {page.lead} 결과는 참고용이며 전문가 상담이나 표준화 검사를 대체하지 않습니다.
+              {page.lead} {LEGAL_COPY.PRE_TEST_DISCLAIMER}
             </p>
             <div className="flex flex-wrap gap-2 mb-8">
               {page.keywords.map(keyword => (
@@ -99,9 +101,8 @@ export default function KeywordLanding() {
               </h2>
               <ul className="space-y-3">
                 {[
-                  "본 테스트는 선별용 자가체크이며 진단이나 판정을 위한 도구가 아닙니다.",
+                  LEGAL_COPY.PRE_TEST_DISCLAIMER,
                   "응답은 최근 6개월~1년의 실제 생활 경험을 기준으로 선택해 주세요.",
-                  "정확한 평가는 표준화 검사와 전문가 면담을 통해 확인해야 합니다.",
                 ].map(item => (
                   <li key={item} className="flex gap-2 text-sm text-muted-foreground leading-relaxed">
                     <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />

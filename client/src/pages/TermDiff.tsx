@@ -1,4 +1,4 @@
-﻿/**
+/**
  * TermDiff Page - 경계선 지능 vs 경계성 인격장애 차이점 설명
  * Design: Warm Guidance - clear, non-stigmatizing educational content
  * /term-diff 경로
@@ -7,6 +7,7 @@ import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { ArrowLeft, Brain, Heart, AlertCircle, CheckCircle2, XCircle, HelpCircle, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LEGAL_COPY } from "@/constants/legalCopy";
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
@@ -260,7 +261,7 @@ export default function TermDiff() {
       <footer className="py-8 border-t border-border/50 mt-8">
         <div className="container">
           <p className="text-xs text-muted-foreground text-center">
-            본 서비스는 진단 도구가 아니라 선별용 자가체크입니다. 정확한 평가는 반드시 전문기관을 통해 받으시기 바랍니다.
+            {LEGAL_COPY.PRE_TEST_DISCLAIMER}
           </p>
         </div>
       </footer>

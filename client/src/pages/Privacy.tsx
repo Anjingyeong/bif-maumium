@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Privacy Policy Page - 개인정보처리방침
  * 마음이음 서비스의 개인정보 수집/이용/보관 정책 안내
  */
@@ -6,20 +6,22 @@ import { useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Shield, ArrowLeft, Mail, Lock, Trash2, Eye, AlertCircle, Database, Ban } from "lucide-react";
+import { SERVICE_COPY } from "@/constants/serviceCopy";
+import { LEGAL_COPY } from "@/constants/legalCopy";
 
 const LAST_UPDATED = "2026년 6월 27일";
-const SERVICE_NAME = "마음이음";
-const SERVICE_NAME_EN = "maumium";
-const CONTACT_EMAIL = "maumium.service@gmail.com";
+const SERVICE_NAME = SERVICE_COPY.SERVICE_NAME_KO;
+const SERVICE_NAME_EN = SERVICE_COPY.SERVICE_NAME_EN;
+const CONTACT_EMAIL = SERVICE_COPY.CONTACT_EMAIL;
 
 const sections = [
   {
     id: "overview",
     title: "1. 개요",
     icon: <Shield className="w-5 h-5" />,
-    content: `${SERVICE_NAME_EN} / ${SERVICE_NAME}(이하 "서비스")는 경계선 지능 가능성, 느린학습자 특성, 학습·인지·적응 어려움을 살펴보는 선별용 자가체크 웹 서비스입니다. 본 방침은 서비스 이용 과정에서 수집되는 정보의 처리 방법을 안내합니다.
+    content: `${SERVICE_COPY.SERVICE_DESC} 본 방침은 서비스 이용 과정에서 수집되는 정보의 처리 방법을 안내합니다.
 
-본 서비스는 진단, 확정 판정, 장애 판정, IQ 판정을 제공하지 않습니다. 개인정보와 검사 결과는 최소수집 원칙에 따라 처리하며, 결과 저장은 사용자가 명시적으로 동의한 경우에만 이루어집니다.`,
+본 서비스는 의료적 진단, 확정 판정, 장애 판정, IQ 판정을 제공하지 않습니다. 개인정보와 검사 결과는 최소수집 원칙에 따라 처리하며, 결과 저장은 사용자가 명시적으로 동의한 경우에만 이루어집니다.`,
   },
   {
     id: "collect",

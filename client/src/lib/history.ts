@@ -16,36 +16,56 @@ export interface TestRecord {
 }
 
 const HISTORY_KEY = 'bif_test_history';
-const CONSENT_KEY = 'bif_consent_given';
-const DATA_ALLOW_KEY = 'bif_allow_data';
 const MAX_RECORDS = 20;
+
+// New Keys
+const ANALYTICS_CONSENT_KEY = 'maumium_analytics_consent';
+const TEST_NOTICE_CONFIRMED_KEY = 'maumium_test_notice_confirmed_session';
+const ANONYMOUS_RESULT_CONSENT_KEY = 'maumium_anonymous_result_consent';
+
+// Old Keys for Migration
+const OLD_CONSENT_KEY = 'bif_consent_given';
+const OLD_DATA_ALLOW_KEY = 'bif_allow_data';
 
 // ── 동의 관련 ──────────────────────────────────────────────────
 export function getConsentGiven(): boolean {
-  return localStorage.getItem(CONSENT_KEY) === 'true';
+  return sessionStorage.getItem(TEST_NOTICE_CONFIRMED_KEY) === 'true';
 }
 
 export function setConsentGiven(allowData: boolean): void {
-  localStorage.setItem(CONSENT_KEY, 'true');
-  localStorage.setItem(DATA_ALLOW_KEY, allowData ? 'true' : 'false');
+  sessionStorage.setItem(TEST_NOTICE_CONFIRMED_KEY, 'true');
+  localStorage.setItem(ANONYMOUS_RESULT_CONSENT_KEY, allowData ? 'true' : 'false');
 }
 
 /**
- * sessionStorage에 남아있는 이전 동의 기록을 localStorage로 마이그레이션
- * 앱 초기화 시 한 번 호출
+ * 기존 동의 기록을 새로운 키로 마이그레이션
  */
 export function migrateSessionConsent(): void {
-  if (localStorage.getItem(CONSENT_KEY)) return; // 이미 localStorage에 있으면 스킵
-  const sessionConsent = sessionStorage.getItem('bif_consent_given');
-  if (sessionConsent === 'true') {
-    const sessionData = sessionStorage.getItem('bif_allow_data');
-    localStorage.setItem(CONSENT_KEY, 'true');
-    localStorage.setItem(DATA_ALLOW_KEY, sessionData ?? 'false');
+  // Migrate anonymous result consent
+  if (localStorage.getItem(ANONYMOUS_RESULT_CONSENT_KEY) === null) {
+    const oldAllow = localStorage.getItem(OLD_DATA_ALLOW_KEY);
+    if (oldAllow !== null) {
+      localStorage.setItem(ANONYMOUS_RESULT_CONSENT_KEY, oldAllow);
+    }
+  }
+  
+  // Migrate notice consent from old localStorage if available in session
+  if (sessionStorage.getItem(TEST_NOTICE_CONFIRMED_KEY) === null) {
+    const oldNotice = localStorage.getItem(OLD_CONSENT_KEY);
+    if (oldNotice === 'true') {
+      sessionStorage.setItem(TEST_NOTICE_CONFIRMED_KEY, 'true');
+    }
   }
 }
 
 export function getAllowData(): boolean {
-  return localStorage.getItem(DATA_ALLOW_KEY) === 'true';
+  if (localStorage.getItem(ANONYMOUS_RESULT_CONSENT_KEY) === null) {
+    const oldAllow = localStorage.getItem(OLD_DATA_ALLOW_KEY);
+    if (oldAllow !== null) {
+      localStorage.setItem(ANONYMOUS_RESULT_CONSENT_KEY, oldAllow);
+    }
+  }
+  return localStorage.getItem(ANONYMOUS_RESULT_CONSENT_KEY) !== 'false';
 }
 
 // ── 검사 이력 관련 ─────────────────────────────────────────────

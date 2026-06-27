@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Info Page - About Borderline Intellectual Functioning
  * Design: Warm Guidance - Editorial layout with clear information hierarchy
  */
@@ -6,6 +6,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Brain, ArrowLeft, ArrowRight, BookOpen, Users, GraduationCap, HeartHandshake, AlertCircle } from "lucide-react";
+import { LEGAL_COPY } from "@/constants/legalCopy";
 
 export default function Info() {
   return (
@@ -264,7 +265,7 @@ export default function Info() {
       <footer className="py-8 border-t border-border/50 mt-12">
         <div className="container">
           <p className="text-xs text-muted-foreground text-center">
-            본 서비스는 진단 도구가 아니라 선별용 자가체크입니다. 정확한 평가는 반드시 전문기관을 통해 받으시기 바랍니다.
+            {LEGAL_COPY.PRE_TEST_DISCLAIMER}
           </p>
         </div>
       </footer>

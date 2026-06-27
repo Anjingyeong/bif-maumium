@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Home Page - Landing page for BIF Screening
  * Design: Warm Guidance - Editorial + Wellness
  * Deep Navy + Warm Sand + Soft Coral palette
@@ -10,56 +10,34 @@ import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { Brain, Heart, BookOpen, ArrowRight, Shield, Users, ClipboardCheck, Newspaper, Handshake, Mail } from "lucide-react";
 import NavBar from "@/components/NavBar";
-import ConsentModal from "@/components/ConsentModal";
 import EmailNotifyWidget from "@/components/EmailNotifyWidget";
 import StartTestModal from "@/components/StartTestModal";
-import { getConsentGiven, setConsentGiven } from "@/lib/history";
+import { SERVICE_COPY } from "@/constants/serviceCopy";
+import { LEGAL_COPY } from "@/constants/legalCopy";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/hero-bg-G22PuoZQMHzrhaaPXVfouj.webp";
 const CHILD_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/child-section-2q9N99eJL9sDbwdufTEuCS.webp";
 const ADULT_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/adult-section-Las3h5McrYzSYMVrCZmJEN.webp";
-const PARTNERSHIP_EMAIL = "maumium.service@gmail.com";
+const PARTNERSHIP_EMAIL = SERVICE_COPY.CONTACT_EMAIL;
 
 export default function Home() {
   const [, navigate] = useLocation();
-  const [consentOpen, setConsentOpen] = useState(false);
   const [startModalOpen, setStartModalOpen] = useState(false);
-  const [pendingTestType, setPendingTestType] = useState<"adult" | "child">("adult");
 
   const getTestPath = (type: "adult" | "child") =>
     `/test/${type}?run=${Date.now().toString(36)}`;
 
-  const openConsent = (type: "adult" | "child", forceNotice = false) => {
-    setPendingTestType(type);
-    // 이미 동의한 경우 모달 건너뜀 (localStorage에 기록됨)
-    if (!forceNotice && getConsentGiven()) {
-      navigate(getTestPath(type));
-    } else {
-      setConsentOpen(true);
-    }
+  const openConsent = (type: "adult" | "child") => {
+    navigate(getTestPath(type));
   };
 
   const handleStartSelection = (type: "adult" | "child") => {
     setStartModalOpen(false);
-    openConsent(type, true);
-  };
-
-  const handleConsentAccept = (allowDataCollection: boolean) => {
-    setConsentOpen(false);
-    // localStorage에 저장 - 브라우저를 닫아도 기억됨
-    setConsentGiven(allowDataCollection);
-    navigate(getTestPath(pendingTestType));
+    navigate(getTestPath(type));
   };
 
   return (
     <div className="min-h-screen">
-      {/* Consent Modal */}
-      <ConsentModal
-        open={consentOpen}
-        testType={pendingTestType}
-        onAccept={handleConsentAccept}
-        onClose={() => setConsentOpen(false)}
-      />
       <StartTestModal
         open={startModalOpen}
         onClose={() => setStartModalOpen(false)}
@@ -541,14 +519,14 @@ export default function Home() {
               <span className="font-serif font-semibold text-foreground">마음이음</span>
             </div>
             <p className="text-xs text-muted-foreground text-center">
-              본 서비스는 진단 도구가 아니라 선별용 자가체크입니다. 정확한 평가는 전문기관을 통해 받으시기 바랍니다.
+              {LEGAL_COPY.PRE_TEST_DISCLAIMER}
             </p>
             <div className="flex flex-wrap justify-center gap-4 text-xs text-muted-foreground">
               <Link href="/info" className="hover:text-foreground transition-colors">경계선 지능이란?</Link>
               <Link href="/blog" className="hover:text-foreground transition-colors">정보 센터</Link>
               <Link href="/privacy" className="hover:text-foreground transition-colors">개인정보처리방침</Link>
               <Link href="/terms" className="hover:text-foreground transition-colors">이용약관</Link>
-              <a href="mailto:maumium.service@gmail.com" className="hover:text-foreground transition-colors">문의: maumium.service@gmail.com</a>
+              <a href={`mailto:${SERVICE_COPY.CONTACT_EMAIL}`} className="hover:text-foreground transition-colors">{SERVICE_COPY.CONTACT_EMAIL_LABEL}</a>
             </div>
           </div>
         </div>

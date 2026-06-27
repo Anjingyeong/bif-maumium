@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Result Page - Score analysis and recommendations
  * Design: Calm & Trustworthy - supportive, non-judgmental framing
  * Features: localStorage 이력 저장, 이전 결과 비교, PDF 다운로드
@@ -39,6 +39,8 @@ import {
 import { shouldShowSupportResources } from "@/lib/riskLevels";
 import { buildInterpretationReport } from "@/lib/reportInterpretation";
 import { ResultInterpretationSection } from "@/components/ResultInterpretationSection";
+import { LEGAL_COPY } from "@/constants/legalCopy";
+import { SERVICE_COPY } from "@/constants/serviceCopy";
 
 export default function Result() {
   const [isPdfLoading, setIsPdfLoading] = useState(false);
@@ -305,8 +307,7 @@ export default function Result() {
               <div>
                 <p className="text-sm font-semibold text-foreground">서버 결과 저장</p>
                 <p className="text-xs text-muted-foreground leading-relaxed mt-1">
-                  저장 항목은 닉네임, 응답, 영역별 점수, 총점, 해석 단계, 동의 여부,
-                  제출 시각입니다. 실명, 전화번호, 이메일, 주민등록번호는 수집하지 않습니다.
+                  {LEGAL_COPY.PRIVACY_DISCLAIMER}
                 </p>
               </div>
               {isRemoteSaving && (
@@ -500,9 +501,7 @@ export default function Result() {
           className="bg-secondary/30 rounded-xl p-5 mb-8 border border-border/40"
         >
           <p className="text-xs text-muted-foreground leading-relaxed text-center">
-            <strong>주의:</strong> 본 결과는 진단 도구가 아니라 선별 목적의 참고 자료입니다.
-            정확한 평가는 표준화 지능검사와 적응행동검사, 면담을 포함해 전문기관에서 받으시기 바랍니다.
-            점수가 높더라도 주의력, 정서, 수면, 학습 문제 등 다른 요인을 함께 확인해야 합니다.
+            <strong>주의:</strong> {LEGAL_COPY.RESULT_DISCLAIMER}
           </p>
         </motion.div>
 

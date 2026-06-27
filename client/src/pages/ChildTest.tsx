@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Child Screening Test Page (for parents)
  * Design: Warm Guidance - softer tone for parents
  * Improvements:
@@ -19,6 +19,8 @@ import { Heart, ArrowLeft, ArrowRight, CheckCircle2, Shield } from "lucide-react
 import { Link } from "wouter";
 import { childQuestions, AnswerValue } from "@/lib/questions";
 import QuestionCard from "@/components/QuestionCard";
+import ConsentModal from "@/components/ConsentModal";
+import { LEGAL_COPY } from "@/constants/legalCopy";
 
 export default function ChildTest() {
   const [location, setLocation] = useLocation();
@@ -28,6 +30,9 @@ export default function ChildTest() {
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [saveConsent, setSaveConsent] = useState(false);
+  const [showConsent, setShowConsent] = useState(() => {
+    return sessionStorage.getItem('maumium_test_notice_confirmed_session') !== 'true';
+  });
   const autoAdvanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const questions = childQuestions.questions;
@@ -46,12 +51,26 @@ export default function ChildTest() {
     setDirection(1);
     setNickname("");
     setEmail("");
-    setSaveConsent(false);
+    const anonymousConsent = localStorage.getItem('maumium_anonymous_result_consent') !== 'false';
+    setSaveConsent(anonymousConsent);
+    sessionStorage.removeItem('maumium_test_notice_confirmed_session');
   }, []);
 
   useEffect(() => {
     resetTest();
+    setShowConsent(sessionStorage.getItem('maumium_test_notice_confirmed_session') !== 'true');
   }, [location, resetTest]);
+
+  const handleConsentAccept = (allowDataCollection: boolean) => {
+    sessionStorage.setItem('maumium_test_notice_confirmed_session', 'true');
+    localStorage.setItem('maumium_anonymous_result_consent', allowDataCollection ? 'true' : 'false');
+    setSaveConsent(allowDataCollection);
+    setShowConsent(false);
+  };
+
+  const handleConsentClose = () => {
+    setLocation('/');
+  };
 
   const goTo = useCallback((index: number) => {
     const dir = index > currentIndex ? 1 : -1;
@@ -97,6 +116,12 @@ export default function ChildTest() {
 
   return (
     <div className="min-h-screen bg-background">
+      <ConsentModal
+        open={showConsent}
+        testType="child"
+        onAccept={handleConsentAccept}
+        onClose={handleConsentClose}
+      />
       {/* Sticky Header */}
       <header className="sticky top-0 z-40 bg-card/95 backdrop-blur-md border-b border-border/60 shadow-sm">
         <div className="container flex items-center justify-between h-14">
@@ -174,9 +199,7 @@ export default function ChildTest() {
                     결과 저장 선택
                   </h2>
                   <p className="text-xs text-muted-foreground leading-relaxed mt-1">
-                    저장에 동의하면 닉네임과 검사 결과가 서버에 보관됩니다. 실명,
-                    전화번호, 주민등록번호 등 식별 가능한 정보는
-                    입력하지 마세요. 본 검사는 진단 도구가 아닌 선별용 자가체크입니다.
+                    {LEGAL_COPY.PRIVACY_DISCLAIMER}
                   </p>
                 </div>
 

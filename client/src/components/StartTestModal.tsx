@@ -1,7 +1,9 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Brain, CheckCircle2, Heart, Shield, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LEGAL_COPY } from "@/constants/legalCopy";
+import { SERVICE_COPY } from "@/constants/serviceCopy";
 
 type TestType = "adult" | "child";
 
@@ -97,9 +99,8 @@ export default function StartTestModal({ open, onClose, onStart }: StartTestModa
                   <p className="text-sm font-semibold text-foreground mb-2">확인해 주세요</p>
                   <ul className="space-y-2.5">
                     {[
-                      "본 검사는 진단 도구가 아니라 학습·인지·적응기능 어려움 가능성을 살펴보는 선별용 자가체크입니다.",
-                      "결과만으로 경계선 지능 여부를 확정할 수 없습니다.",
-                      "정확한 평가는 표준화 지능검사, 적응행동검사, 전문가 면담이 필요합니다.",
+                      SERVICE_COPY.SERVICE_DESC,
+                      LEGAL_COPY.PRE_TEST_DISCLAIMER,
                       "응답은 최근 6개월~1년의 실제 생활 경험을 기준으로 선택해 주세요.",
                       "불안, 우울, ADHD, 수면 부족, 스트레스 등도 결과에 영향을 줄 수 있습니다.",
                     ].map((item) => (

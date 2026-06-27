@@ -1,11 +1,13 @@
-﻿/**
+/**
  * ConsentModal - 검사 시작 전 면책 동의 및 데이터 수집 동의 모달
  * Design: Warm Guidance - clear, non-threatening consent flow
  */
-import { useState, type MouseEvent } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Shield, AlertTriangle, CheckCircle2, ChevronRight, X } from "lucide-react";
+import { LEGAL_COPY } from "@/constants/legalCopy";
+import { SERVICE_COPY } from "@/constants/serviceCopy";
 
 interface ConsentModalProps {
   open: boolean;
@@ -19,10 +21,19 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
   const [allowData, setAllowData] = useState(true);
   const [disclaimerChecked, setDisclaimerChecked] = useState(false);
 
+  // Initialize state when modal opens
+  useEffect(() => {
+    if (open) {
+      setStep(1);
+      setDisclaimerChecked(false);
+      setAllowData(localStorage.getItem('maumium_anonymous_result_consent') !== 'false');
+    }
+  }, [open]);
+
   const handleReset = () => {
     setStep(1);
     setDisclaimerChecked(false);
-    setAllowData(true);
+    setAllowData(localStorage.getItem('maumium_anonymous_result_consent') !== 'false');
   };
 
   const handleClose = () => {
@@ -34,13 +45,6 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
     onAccept(allowData);
     handleReset();
   };
-
-  const handleAllowDataToggle = (event: MouseEvent<HTMLElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setAllowData(v => !v);
-  };
-
 
   return (
     <AnimatePresence>
@@ -123,8 +127,7 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
                           진단 도구가 아닙니다
                         </p>
                         <p className="text-xs text-amber-700 leading-relaxed">
-                          본 검사는 학습·인지·적응기능 어려움과 경계선 지능 가능성을 <strong>선별</strong>하는 참고 자료입니다.
-                          정확한 평가는 표준화 지능검사(K-WAIS/K-WISC), 적응행동검사, 면담을 통해 받으시기 바랍니다.
+                          {LEGAL_COPY.PRE_TEST_DISCLAIMER}
                         </p>
                       </div>
                     </div>
@@ -181,8 +184,7 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
                           익명 데이터 수집 동의 (선택)
                         </p>
                         <p className="text-xs text-muted-foreground leading-relaxed">
-                          서비스 개선을 위해 <strong>익명의 응답 데이터</strong>를 수집합니다.
-                          개인 식별 정보는 일절 수집하지 않으며, 수집된 데이터는 검사 신뢰도 향상 연구에만 활용됩니다.
+                          {LEGAL_COPY.PRIVACY_DISCLAIMER}
                         </p>
                       </div>
                     </div>
@@ -202,12 +204,17 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
                     </ul>
 
                     {/* Toggle */}
-                    <div className="flex items-center justify-between p-3 rounded-xl border border-border bg-secondary/30 mb-4 cursor-pointer" onClick={handleAllowDataToggle}>
+                    <div
+                      className="flex items-center justify-between p-3 rounded-xl border border-border bg-secondary/30 mb-4 cursor-pointer"
+                      onClick={() => setAllowData(v => !v)}
+                    >
                       <span className="text-xs text-foreground font-medium">익명 데이터 수집에 동의합니다</span>
                       <button
                         type="button"
-                        onPointerDown={event => event.stopPropagation()}
-                        onClick={handleAllowDataToggle}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setAllowData(v => !v);
+                        }}
                         className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                           allowData ? "bg-primary" : "bg-input"
                         }`}
