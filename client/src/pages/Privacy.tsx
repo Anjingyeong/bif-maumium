@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { Shield, ArrowLeft, Mail, Lock, Trash2, Eye, AlertCircle, Database, Ban } from "lucide-react";
 import { SERVICE_COPY } from "@/constants/serviceCopy";
 import { LEGAL_COPY } from "@/constants/legalCopy";
+import Footer from "@/components/Footer";
 
 const LAST_UPDATED = "2026년 6월 27일";
 const SERVICE_NAME = SERVICE_COPY.SERVICE_NAME_KO;
@@ -251,22 +252,7 @@ export default function Privacy() {
       </main>
 
       {/* 푸터에 개인정보처리방침 링크 */}
-      <footer className="border-t border-border/50 py-6 mt-8">
-        <div className="container text-center text-xs text-muted-foreground">
-          <p>© 2026 {SERVICE_NAME}. 본 서비스는 진단 도구가 아니라 선별용 자가체크입니다.</p>
-          <p className="mt-1">
-            <Link href="/privacy" onClick={scrollToTop} className="hover:text-foreground transition-colors underline underline-offset-2">
-              개인정보처리방침
-            </Link>
-            <span className="mx-2">·</span>
-            <Link href="/terms" className="hover:text-foreground transition-colors underline underline-offset-2">
-              이용약관
-            </Link>
-            <span className="mx-2">·</span>
-            문의: {CONTACT_EMAIL}
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

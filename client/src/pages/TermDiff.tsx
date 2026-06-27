@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Brain, Heart, AlertCircle, CheckCircle2, XCircle, HelpCircle, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LEGAL_COPY } from "@/constants/legalCopy";
+import Footer from "@/components/Footer";
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
@@ -258,13 +259,7 @@ export default function TermDiff() {
         </motion.div>
       </main>
 
-      <footer className="py-8 border-t border-border/50 mt-8">
-        <div className="container">
-          <p className="text-xs text-muted-foreground text-center">
-            {LEGAL_COPY.PRE_TEST_DISCLAIMER}
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

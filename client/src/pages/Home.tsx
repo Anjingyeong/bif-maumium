@@ -12,6 +12,7 @@ import { Brain, Heart, BookOpen, ArrowRight, Shield, Users, ClipboardCheck, News
 import NavBar from "@/components/NavBar";
 import EmailNotifyWidget from "@/components/EmailNotifyWidget";
 import StartTestModal from "@/components/StartTestModal";
+import Footer from "@/components/Footer";
 import { SERVICE_COPY } from "@/constants/serviceCopy";
 import { LEGAL_COPY } from "@/constants/legalCopy";
 
@@ -511,26 +512,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-10 border-t border-border/50 bg-secondary/20">
-        <div className="container">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <Brain className="w-5 h-5 text-primary" />
-              <span className="font-serif font-semibold text-foreground">마음이음</span>
-            </div>
-            <p className="text-xs text-muted-foreground text-center">
-              {LEGAL_COPY.PRE_TEST_DISCLAIMER}
-            </p>
-            <div className="flex flex-wrap justify-center gap-4 text-xs text-muted-foreground">
-              <Link href="/info" className="hover:text-foreground transition-colors">경계선 지능이란?</Link>
-              <Link href="/blog" className="hover:text-foreground transition-colors">정보 센터</Link>
-              <Link href="/privacy" className="hover:text-foreground transition-colors">개인정보처리방침</Link>
-              <Link href="/terms" className="hover:text-foreground transition-colors">이용약관</Link>
-              <a href={`mailto:${SERVICE_COPY.CONTACT_EMAIL}`} className="hover:text-foreground transition-colors">{SERVICE_COPY.CONTACT_EMAIL_LABEL}</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

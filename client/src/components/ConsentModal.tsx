@@ -208,7 +208,7 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
                       className="flex items-center justify-between p-3 rounded-xl border border-border bg-secondary/30 mb-4 cursor-pointer"
                       onClick={() => setAllowData(v => !v)}
                     >
-                      <span className="text-xs text-foreground font-medium">익명 데이터 수집에 동의합니다</span>
+                      <span className="text-xs text-foreground font-medium">개인정보 수집·이용 및 익명 통계 활용에 동의합니다</span>
                       <button
                         type="button"
                         onClick={(e) => {

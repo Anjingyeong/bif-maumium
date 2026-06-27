@@ -32,6 +32,7 @@ import { Button } from "@/components/ui/button";
 import { getHistory, clearHistory, formatDate, TestRecord } from "@/lib/history";
 import { getRiskBadgeColor, getRiskBadgeLabel } from "@/lib/riskLevels";
 import { LEGAL_COPY } from "@/constants/legalCopy";
+import Footer from "@/components/Footer";
 
 const TYPE_LABEL: Record<string, string> = {
   adult: "성인 자가체크",
@@ -391,13 +392,7 @@ export default function History() {
         )}
       </main>
 
-      <footer className="py-8 border-t border-border/50 mt-12">
-        <div className="container">
-          <p className="text-xs text-muted-foreground text-center">
-            {LEGAL_COPY.PRE_TEST_DISCLAIMER}
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

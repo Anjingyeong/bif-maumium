@@ -214,7 +214,7 @@ export default function ChildTest() {
                     htmlFor="child-save-consent"
                     className="text-xs leading-relaxed text-foreground"
                   >
-                    익명 닉네임과 검사 결과 저장에 동의합니다.
+                    개인정보 수집·이용 및 익명 통계 활용에 동의합니다.
                   </Label>
                 </div>
 

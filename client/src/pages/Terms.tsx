@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { ArrowLeft, FileText, Mail, ShieldCheck } from "lucide-react";
 import { SERVICE_COPY } from "@/constants/serviceCopy";
 import { LEGAL_COPY } from "@/constants/legalCopy";
+import Footer from "@/components/Footer";
 
 const CONTACT_EMAIL = SERVICE_COPY.CONTACT_EMAIL;
 
@@ -73,6 +74,7 @@ export default function Terms() {
           </a>
         </section>
       </main>
+      <Footer />
     </div>
   );
 }

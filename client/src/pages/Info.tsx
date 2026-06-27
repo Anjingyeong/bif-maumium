@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Brain, ArrowLeft, ArrowRight, BookOpen, Users, GraduationCap, HeartHandshake, AlertCircle } from "lucide-react";
 import { LEGAL_COPY } from "@/constants/legalCopy";
+import Footer from "@/components/Footer";
 
 export default function Info() {
   return (
@@ -261,14 +262,7 @@ export default function Info() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="py-8 border-t border-border/50 mt-12">
-        <div className="container">
-          <p className="text-xs text-muted-foreground text-center">
-            {LEGAL_COPY.PRE_TEST_DISCLAIMER}
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

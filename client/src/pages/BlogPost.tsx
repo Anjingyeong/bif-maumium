@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Blog Post Detail Page - SEO-optimized article page
  * Design: Warm Guidance - clean editorial reading experience
  */
@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Clock, Tag, ArrowRight, Brain, Heart } from "lucide-react";
 import { blogPosts } from "@/lib/blogData";
 import { Streamdown } from "streamdown";
+import Footer from "@/components/Footer";
 
 export default function BlogPost() {
   const params = useParams<{ slug: string }>();
@@ -165,6 +166,7 @@ export default function BlogPost() {
           </div>
         )}
       </main>
+      <Footer />
     </div>
   );
 }

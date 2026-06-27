@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Blog Page - SEO-targeted content hub
  * Design: Warm Guidance - editorial layout
  * Keywords: 경계선 지능 테스트, 경계선 지능 증상, 아이 지능 검사
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { ArrowLeft, BookOpen, Clock, ArrowRight, Brain } from "lucide-react";
 import { blogPosts, blogCategories } from "@/lib/blogData";
+import Footer from "@/components/Footer";
 
 export default function Blog() {
   const [activeCategory, setActiveCategory] = useState("전체");
@@ -134,6 +135,7 @@ export default function Blog() {
           </div>
         </motion.div>
       </main>
+      <Footer />
     </div>
   );
 }

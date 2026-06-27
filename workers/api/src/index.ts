@@ -122,7 +122,7 @@ function buildCorsHeaders(request: Request, env: Env): HeadersInit {
   if (allowedOrigins.includes(origin)) {
     return {
       "Access-Control-Allow-Origin": origin,
-      "Access-Control-Allow-Methods": "GET,POST,DELETE,OPTIONS",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type, Authorization",
       Vary: "Origin",
     };
