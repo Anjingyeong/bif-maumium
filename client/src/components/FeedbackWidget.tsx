@@ -75,7 +75,7 @@ export default function FeedbackWidget({ testType, resultLevel }: FeedbackWidget
         animate={{ opacity: 1, scale: 1 }}
         className="flex flex-col items-center gap-3 py-6"
       >
-        <CheckCircle2 className="w-10 h-10 text-green-500" />
+        <CheckCircle2 className="w-10 h-10 text-primary" />
         <p className="text-sm font-medium text-foreground">소중한 의견 감사합니다!</p>
         <p className="text-xs text-muted-foreground text-center">
           피드백은 서비스 개선에 활용됩니다.
@@ -97,7 +97,7 @@ export default function FeedbackWidget({ testType, resultLevel }: FeedbackWidget
           onClick={() => handleRating("helpful")}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all duration-200 ${
             rating === "helpful"
-              ? "bg-green-50 border-green-300 text-green-700"
+              ? "bg-primary/5 border-primary/30 text-primary"
               : "bg-secondary/50 border-border text-muted-foreground hover:bg-secondary hover:text-foreground"
           }`}
         >
@@ -108,7 +108,7 @@ export default function FeedbackWidget({ testType, resultLevel }: FeedbackWidget
           onClick={() => handleRating("not_helpful")}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all duration-200 ${
             rating === "not_helpful"
-              ? "bg-red-50 border-red-300 text-red-700"
+              ? "bg-primary/5 border-primary/30 text-primary"
               : "bg-secondary/50 border-border text-muted-foreground hover:bg-secondary hover:text-foreground"
           }`}
         >

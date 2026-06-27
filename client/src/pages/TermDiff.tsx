@@ -1,4 +1,4 @@
-/**
+﻿/**
  * TermDiff Page - 경계선 지능 vs 경계성 인격장애 차이점 설명
  * Design: Warm Guidance - clear, non-stigmatizing educational content
  * /term-diff 경로
@@ -33,7 +33,7 @@ export default function TermDiff() {
 
         {/* 타이틀 */}
         <motion.div {...fadeUp(0)} className="mb-10">
-          <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-4">
+          <div className="inline-flex items-center gap-2 bg-primary/5 border border-primary/20 text-primary text-xs font-semibold px-3 py-1.5 rounded-xl mb-4">
             <AlertCircle className="w-3.5 h-3.5" />
             많이 혼동되는 용어
           </div>
@@ -51,25 +51,25 @@ export default function TermDiff() {
         {/* 핵심 요약 카드 2개 */}
         <motion.div {...fadeUp(0.1)} className="grid md:grid-cols-2 gap-4 mb-10">
           {/* BIF 카드 */}
-          <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6">
+          <div className="bg-card border border-border/60 rounded-xl p-6">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center">
-                <Brain className="w-5 h-5 text-white" />
+              <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
+                <Brain className="w-5 h-5 text-primary-foreground" />
               </div>
               <div>
-                <p className="text-[10px] font-semibold text-blue-500 uppercase tracking-wide">BIF</p>
-                <p className="text-sm font-bold text-blue-900">경계선 지능</p>
+                <p className="text-[10px] font-semibold text-primary uppercase tracking-wide">BIF</p>
+                <p className="text-sm font-bold text-foreground">경계선 지능</p>
               </div>
             </div>
-            <p className="text-xs text-blue-800 leading-relaxed mb-3">
+            <p className="text-xs text-muted-foreground leading-relaxed mb-3">
               <strong>Borderline Intellectual Functioning</strong><br />
               지능지수(IQ) <strong>71~84</strong> 범위의 인지 능력 수준을 가리키는 말입니다.
               지적장애(IQ ≤70)보다는 높지만 평균(IQ 85~115)에는 미치지 못하는 영역입니다.
             </p>
             <div className="space-y-1.5">
               {["발달·교육 분야 용어", "인지 능력(지능)과 관련", "진단명이 아닌 기능 수준 묘사", "약 700만 명 해당 추산 (한국)"].map(t => (
-                <div key={t} className="flex items-center gap-2 text-xs text-blue-700">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                <div key={t} className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />
                   {t}
                 </div>
               ))}
@@ -77,25 +77,25 @@ export default function TermDiff() {
           </div>
 
           {/* BPD 카드 */}
-          <div className="bg-rose-50 border border-rose-200 rounded-2xl p-6">
+          <div className="bg-card border border-border/60 rounded-xl p-6">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-9 h-9 rounded-xl bg-rose-500 flex items-center justify-center">
-                <Heart className="w-5 h-5 text-white" />
+              <div className="w-9 h-9 rounded-xl bg-secondary flex items-center justify-center">
+                <Heart className="w-5 h-5 text-muted-foreground" />
               </div>
               <div>
-                <p className="text-[10px] font-semibold text-rose-400 uppercase tracking-wide">BPD</p>
-                <p className="text-sm font-bold text-rose-900">경계성 인격장애</p>
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">BPD</p>
+                <p className="text-sm font-bold text-foreground">경계성 인격장애</p>
               </div>
             </div>
-            <p className="text-xs text-rose-800 leading-relaxed mb-3">
+            <p className="text-xs text-muted-foreground leading-relaxed mb-3">
               <strong>Borderline Personality Disorder</strong><br />
               감정 조절의 어려움, 불안정한 대인관계, 충동성 등을 특징으로 하는
               <strong> 정신건강 진단명</strong>입니다. 지능과는 무관합니다.
             </p>
             <div className="space-y-1.5">
               {["정신건강 임상 분야 진단명", "감정·행동·대인관계와 관련", "DSM-5 공식 진단 기준 존재", "지능 수준과 직접적 관련 없음"].map(t => (
-                <div key={t} className="flex items-center gap-2 text-xs text-rose-700">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                <div key={t} className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
                   {t}
                 </div>
               ))}
@@ -105,7 +105,7 @@ export default function TermDiff() {
 
         {/* 상세 비교표 */}
         <motion.div {...fadeUp(0.2)} className="mb-10">
-          <div className="bg-card rounded-2xl border border-border/50 overflow-hidden">
+          <div className="bg-card rounded-xl border border-border/50 overflow-hidden">
             <div className="px-6 py-4 border-b border-border/50 bg-secondary/30">
               <h2 className="text-base font-serif font-bold text-foreground">한눈에 보는 비교</h2>
             </div>
@@ -114,8 +114,8 @@ export default function TermDiff() {
                 <thead>
                   <tr className="border-b border-border/50">
                     <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground w-1/4">구분</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-blue-600 w-3/8">경계선 지능 (BIF)</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-rose-500 w-3/8">경계성 인격장애 (BPD)</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-primary w-3/8">경계선 지능 (BIF)</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground w-3/8">경계성 인격장애 (BPD)</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/30">
@@ -142,34 +142,34 @@ export default function TermDiff() {
 
         {/* "경계선 지능" vs "경계성 지능" 표기 차이 */}
         <motion.div {...fadeUp(0.3)} className="mb-10">
-          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6">
+          <div className="bg-card border border-border/60 rounded-xl p-6">
             <div className="flex items-start gap-3">
-              <HelpCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+              <HelpCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
               <div>
-                <h2 className="text-base font-serif font-bold text-amber-900 mb-2">
+                <h2 className="text-base font-serif font-bold text-foreground mb-2">
                   "경계선 지능"과 "경계성 지능"은 같은 말인가요?
                 </h2>
-                <p className="text-sm text-amber-800 leading-relaxed mb-3">
+                <p className="text-sm text-muted-foreground leading-relaxed mb-3">
                   결론부터 말하면, <strong>같은 개념을 가리키는 두 가지 표현</strong>입니다.
                   영문 'Borderline Intellectual Functioning'을 번역할 때 사람에 따라
                   <strong> "경계선"</strong> 또는 <strong>"경계성"</strong>으로 다르게 표기하기 때문입니다.
                 </p>
                 <div className="space-y-2">
                   <div className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                    <p className="text-xs text-amber-800">
+                    <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <p className="text-xs text-muted-foreground">
                       <strong>경계선 지능</strong> — 학술 논문, 정부 정책 문서, 복지 분야에서 주로 사용하는 공식 표현입니다.
                     </p>
                   </div>
                   <div className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                    <p className="text-xs text-amber-800">
+                    <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <p className="text-xs text-muted-foreground">
                       <strong>경계성 지능</strong> — 일반 대중이 검색할 때 자주 사용하는 표현으로, 같은 개념을 가리킵니다.
                     </p>
                   </div>
                   <div className="flex items-start gap-2">
-                    <XCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
-                    <p className="text-xs text-amber-800">
+                    <XCircle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
+                    <p className="text-xs text-muted-foreground">
                       <strong>경계성 인격장애(BPD)</strong>와는 완전히 다른 개념입니다. 혼동하지 않도록 주의하세요.
                     </p>
                   </div>
@@ -207,10 +207,10 @@ export default function TermDiff() {
             ].map(({ q, a, type }) => (
               <div key={q} className="bg-card rounded-xl border border-border/50 p-5">
                 <div className="flex items-start gap-3">
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${type === "no" ? "bg-rose-100" : "bg-blue-100"}`}>
+                  <div className={`w-6 h-6 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${type === "no" ? "bg-destructive/10" : "bg-primary/10"}`}>
                     {type === "no"
-                      ? <XCircle className="w-4 h-4 text-rose-500" />
-                      : <HelpCircle className="w-4 h-4 text-blue-500" />}
+                      ? <XCircle className="w-4 h-4 text-destructive" />
+                      : <HelpCircle className="w-4 h-4 text-primary" />}
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-foreground mb-1.5">Q. {q}</p>
@@ -224,7 +224,7 @@ export default function TermDiff() {
 
         {/* 정리 메시지 */}
         <motion.div {...fadeUp(0.5)} className="mb-10">
-          <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 text-center">
+          <div className="bg-primary/5 border border-primary/20 rounded-xl p-6 text-center">
             <Brain className="w-8 h-8 text-primary mx-auto mb-3" />
             <h3 className="text-base font-serif font-bold text-foreground mb-2">핵심 정리</h3>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">

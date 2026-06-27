@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Home Page - Landing page for BIF Screening
  * Design: Warm Guidance - Editorial + Wellness
  * Deep Navy + Warm Sand + Soft Coral palette
@@ -190,7 +190,7 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="group bg-card rounded-2xl border border-border/50 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer"
+              className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-sm transition-all duration-300 cursor-pointer"
               onClick={() => openConsent("adult")}
             >
               <div className="h-44 overflow-hidden">
@@ -224,7 +224,7 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="group bg-card rounded-2xl border border-border/50 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer"
+              className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-sm transition-all duration-300 cursor-pointer"
               onClick={() => openConsent("child")}
             >
               <div className="h-44 overflow-hidden">
@@ -236,8 +236,8 @@ export default function Home() {
               </div>
               <div className="p-6">
                 <div className="flex items-center gap-2 mb-3">
-                  <Heart className="w-5 h-5 text-rose-500" />
-                  <span className="text-xs font-medium text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full">학부모용</span>
+                  <Heart className="w-5 h-5 text-primary" />
+                  <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full">학부모용</span>
                 </div>
                 <h3 className="text-lg font-serif font-bold text-foreground mb-2">아동 선별검사</h3>
                 <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
@@ -288,7 +288,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.1 }}
-                className="flex flex-col items-start p-6 rounded-2xl bg-card border border-border/60 shadow-sm"
+                className="flex flex-col items-start p-6 rounded-xl bg-card border border-border/60 shadow-sm"
               >
                 <div className="w-10 h-10 rounded-xl bg-primary/8 border border-primary/15 flex items-center justify-center mb-4">
                   {item.icon}
@@ -336,14 +336,14 @@ export default function Home() {
               className="grid grid-cols-2 gap-4"
             >
               {[
-                { label: "지적장애", iq: "IQ 70 이하", color: "bg-red-50 border-red-200 text-red-700" },
-                { label: "경계선 지능", iq: "IQ 71~84", color: "bg-amber-50 border-amber-200 text-amber-700", highlight: true },
-                { label: "평균 지능", iq: "IQ 85~115", color: "bg-green-50 border-green-200 text-green-700" },
-                { label: "우수 지능", iq: "IQ 116 이상", color: "bg-blue-50 border-blue-200 text-blue-700" },
+                { label: "지적장애", iq: "IQ 70 이하", color: "bg-secondary/50 border-border text-muted-foreground" },
+                { label: "경계선 지능", iq: "IQ 71~84", color: "bg-primary/5 border-primary/20 text-primary", highlight: true },
+                { label: "평균 지능", iq: "IQ 85~115", color: "bg-secondary/50 border-border text-muted-foreground" },
+                { label: "우수 지능", iq: "IQ 116 이상", color: "bg-secondary/50 border-border text-muted-foreground" },
               ].map((item) => (
                 <div
                   key={item.label}
-                  className={`p-4 rounded-xl border ${item.color} ${item.highlight ? "ring-2 ring-amber-300" : ""}`}
+                  className={`p-4 rounded-xl border ${item.color} ${item.highlight ? "ring-2 ring-primary/20" : ""}`}
                 >
                   <p className="text-xs font-medium mb-1">{item.label}</p>
                   <p className="text-lg font-serif font-bold">{item.iq}</p>
@@ -365,9 +365,9 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="flex flex-col md:flex-row items-start md:items-center gap-5 bg-white/75 border border-amber-200/70 rounded-2xl px-5 sm:px-6 py-5 overflow-hidden"
+            className="flex flex-col md:flex-row items-start md:items-center gap-5 bg-card border border-border/60 rounded-xl px-5 sm:px-6 py-5 overflow-hidden"
           >
-            <div className="text-xl shrink-0 opacity-80">⚠️</div>
+            <BookOpen className="w-5 h-5 text-primary shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-foreground mb-1">
                 &ldquo;경계선 지능&rdquo;과 &ldquo;경계성 지능&rdquo;, 헷갈리시나요?
@@ -380,7 +380,7 @@ export default function Home() {
               </p>
             </div>
             <Link href="/term-diff" className="w-full md:w-auto shrink-0">
-              <Button variant="outline" size="sm" className="w-full md:w-auto gap-1.5 border-amber-200 text-amber-700 hover:bg-amber-50/70 whitespace-nowrap">
+              <Button variant="outline" size="sm" className="w-full md:w-auto gap-1.5 border-primary/20 text-primary hover:bg-primary/5 whitespace-nowrap">
                 자세히 알아보기 <ArrowRight className="w-3.5 h-3.5" />
               </Button>
             </Link>
@@ -460,7 +460,7 @@ export default function Home() {
             </div>
             <div className="grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(280px,0.9fr)] items-stretch">
               <EmailNotifyWidget />
-              <div className="bg-card border border-border/60 rounded-2xl p-6 md:p-8 flex flex-col">
+              <div className="bg-card border border-border/60 rounded-xl p-6 md:p-8 flex flex-col">
                 <div className="flex items-start gap-4 mb-5">
                   <div className="w-11 h-11 rounded-xl bg-accent/20 flex items-center justify-center flex-shrink-0">
                     <Handshake className="w-5 h-5 text-accent-foreground" />
@@ -476,7 +476,7 @@ export default function Home() {
                   <p className="text-xs font-medium text-muted-foreground mb-1">협업/제휴 문의</p>
                   <a
                     href={`mailto:${PARTNERSHIP_EMAIL}?subject=${encodeURIComponent("마음이음 협업/제휴 문의")}`}
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 rounded-md"
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 rounded-xl"
                   >
                     <Mail className="w-4 h-4" />
                     {PARTNERSHIP_EMAIL}

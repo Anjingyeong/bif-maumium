@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ConsentModal - 검사 시작 전 면책 동의 및 데이터 수집 동의 모달
  * Design: Warm Guidance - clear, non-threatening consent flow
  */
@@ -67,14 +67,14 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
             className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
           >
             <div
-              className="bg-card rounded-2xl border border-border shadow-2xl w-full max-w-md pointer-events-auto overflow-hidden flex flex-col"
+              className="bg-card rounded-xl border border-border shadow-sm w-full max-w-md pointer-events-auto overflow-hidden flex flex-col"
               style={{ maxHeight: "calc(100dvh - 2rem)" }}
               onClick={e => e.stopPropagation()}
             >
               {/* Header */}
               <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-border/50">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
                     <Shield className="w-4 h-4 text-primary" />
                   </div>
                   <div>
@@ -215,7 +215,7 @@ export default function ConsentModal({ open, testType, onAccept, onClose }: Cons
                         aria-label="익명 데이터 수집 동의"
                       >
                         <span
-                          className={`pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform ${
+                          className={`pointer-events-none block h-5 w-5 rounded-full bg-background shadow-sm ring-0 transition-transform ${
                             allowData ? "translate-x-5" : "translate-x-0"
                           }`}
                         />

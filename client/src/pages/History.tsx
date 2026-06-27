@@ -1,4 +1,4 @@
-/**
+﻿/**
  * History Page - 검사 이력 및 점수 추이
  * Design: Warm Guidance - Editorial layout with data visualization
  * recharts LineChart + AreaChart for score trend
@@ -66,7 +66,7 @@ function ScoreBadge({ level }: { level: string }) {
 function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-card border border-border rounded-xl shadow-lg px-4 py-3 text-xs">
+    <div className="bg-card border border-border rounded-xl shadow-sm px-4 py-3 text-xs">
       <p className="font-semibold text-foreground mb-1">{label}</p>
       {payload.map((p: any) => (
         <p key={p.dataKey} style={{ color: p.color }}>
@@ -237,7 +237,7 @@ export default function History() {
                     transition={{ duration: 0.5, delay: 0.1 }}
                     className="mb-8"
                   >
-                    <div className="bg-card rounded-2xl border border-border/50 p-6">
+                    <div className="bg-card rounded-xl border border-border/50 p-6">
                       <div className="flex items-center justify-between mb-4">
                         <h2 className="text-base font-serif font-bold text-foreground flex items-center gap-2">
                           <TrendingUp className="w-4 h-4 text-primary" />
@@ -248,7 +248,7 @@ export default function History() {
                             {trend.direction === "up" ? (
                               <><TrendingUp className="w-3.5 h-3.5 text-amber-500" /><span className="text-amber-600">+{trend.diff}%p 상승</span></>
                             ) : trend.direction === "down" ? (
-                              <><TrendingDown className="w-3.5 h-3.5 text-green-500" /><span className="text-green-600">-{trend.diff}%p 하락</span></>
+                              <><TrendingDown className="w-3.5 h-3.5 text-muted-foreground" /><span className="text-muted-foreground">-{trend.diff}%p 하락</span></>
                             ) : (
                               <><Minus className="w-3.5 h-3.5 text-muted-foreground" /><span className="text-muted-foreground">변화 없음</span></>
                             )}
@@ -270,7 +270,7 @@ export default function History() {
                           <XAxis dataKey="name" tick={{ fontSize: 11 }} />
                           <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} unit="%" />
                           <Tooltip content={<CustomTooltip />} />
-                          <ReferenceLine y={50} stroke="#f97316" strokeDasharray="4 4" strokeWidth={1.5} label={{ value: "주의", position: "right", fontSize: 10, fill: "#f97316" }} />
+                          <ReferenceLine y={50} stroke="#d97706" strokeDasharray="4 4" strokeWidth={1.5} label={{ value: "주의", position: "right", fontSize: 10, fill: "#d97706" }} />
                           <Area
                             type="monotone"
                             dataKey="pct"
@@ -295,7 +295,7 @@ export default function History() {
                     transition={{ duration: 0.5, delay: 0.2 }}
                     className="mb-8"
                   >
-                    <div className="bg-card rounded-2xl border border-border/50 p-6">
+                    <div className="bg-card rounded-xl border border-border/50 p-6">
                       <h2 className="text-base font-serif font-bold text-foreground mb-4 flex items-center gap-2">
                         <BarChart2 className="w-4 h-4 text-primary" />
                         영역별 평균 (최근 {Math.min(filtered.length, 5)}회)
@@ -315,12 +315,12 @@ export default function History() {
                                 className="h-full rounded-full"
                                 style={{
                                   background: avg >= 60
-                                    ? "#ef4444"
+                                    ? "#dc2626"
                                     : avg >= 40
-                                    ? "#f97316"
+                                    ? "#d97706"
                                     : avg >= 25
-                                    ? "#eab308"
-                                    : "#22c55e",
+                                    ? "#d97706"
+                                    : "#64748b",
                                 }}
                               />
                             </div>

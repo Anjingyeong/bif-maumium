@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Result Page - Score analysis and recommendations
  * Design: Calm & Trustworthy - supportive, non-judgmental framing
  * Features: localStorage 이력 저장, 이전 결과 비교, PDF 다운로드
@@ -219,7 +219,7 @@ export default function Result() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-card rounded-2xl border border-border/60 shadow-sm overflow-hidden mb-8"
+          className="bg-card rounded-xl border border-border/60 shadow-sm overflow-hidden mb-8"
         >
           {/* Level color stripe at top */}
           <div className="h-1.5" style={{ backgroundColor: result.color }} />
@@ -269,7 +269,7 @@ export default function Result() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="flex flex-col sm:flex-row items-center gap-3 bg-card border border-border/60 rounded-2xl p-5 mb-8 no-print shadow-sm"
+          className="flex flex-col sm:flex-row items-center gap-3 bg-card border border-border/60 rounded-xl p-5 mb-8 no-print shadow-sm"
         >
           <div className="flex items-center gap-3 flex-1">
             <div className="w-10 h-10 rounded-xl bg-primary/8 border border-primary/15 flex items-center justify-center shrink-0">
@@ -299,7 +299,7 @@ export default function Result() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.12 }}
-            className="bg-card border border-border/50 rounded-2xl p-5 mb-8 no-print"
+            className="bg-card border border-border/50 rounded-xl p-5 mb-8 no-print"
           >
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -334,7 +334,7 @@ export default function Result() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            className="bg-card rounded-2xl border border-border/60 shadow-sm p-6 mb-8"
+            className="bg-card rounded-xl border border-border/60 shadow-sm p-6 mb-8"
           >
             <div className="flex items-center gap-2 mb-4">
               <History className="w-4 h-4 text-primary" />
@@ -358,8 +358,8 @@ export default function Result() {
                 )}
                 {scoreDiff.direction === "down" && (
                   <>
-                    <TrendingDown className="w-5 h-5 text-emerald-600 mb-1" />
-                    <p className="text-xl font-bold text-emerald-600">-{scoreDiff.diff}</p>
+                    <TrendingDown className="w-5 h-5 text-muted-foreground mb-1" />
+                    <p className="text-xl font-bold text-muted-foreground">-{scoreDiff.diff}</p>
                     <p className="text-xs text-muted-foreground">점 하락</p>
                   </>
                 )}
@@ -392,7 +392,7 @@ export default function Result() {
                       <span className="text-xs text-muted-foreground">
                         {catScore}/{max}
                         {prevCatScore && (
-                          <span className={`ml-2 font-medium ${catScore > prevCatScore.score ? "text-amber-600" : catScore < prevCatScore.score ? "text-emerald-600" : "text-muted-foreground"}`}>
+                          <span className={`ml-2 font-medium ${catScore > prevCatScore.score ? "text-amber-600" : catScore < prevCatScore.score ? "text-muted-foreground" : "text-muted-foreground"}`}>
                             {catScore > prevCatScore.score ? `+${catScore - prevCatScore.score}` : catScore < prevCatScore.score ? `${catScore - prevCatScore.score}` : "±0"}
                           </span>
                         )}
@@ -407,7 +407,7 @@ export default function Result() {
                       )}
                       <motion.div
                         className="absolute top-0 left-0 h-full rounded-full"
-                        style={{ backgroundColor: catPct > 60 ? result.color : "oklch(0.55 0.10 240)" }}
+                        style={{ backgroundColor: catPct > 60 ? result.color : "var(--primary)" }}
                         initial={{ width: 0 }}
                         animate={{ width: `${catPct}%` }}
                         transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
@@ -442,7 +442,7 @@ export default function Result() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="bg-card rounded-2xl border border-border/60 shadow-sm p-6 md:p-8 mb-8"
+            className="bg-card rounded-xl border border-border/60 shadow-sm p-6 md:p-8 mb-8"
           >
             <div className="mb-4">
               <h2 className="text-base font-serif font-bold text-foreground mb-1">도움받을 수 있는 곳</h2>
@@ -453,7 +453,7 @@ export default function Result() {
             <div className="space-y-2.5">
               {supportResources.map((resource, i) => (
                 <div key={i} className="flex items-start gap-3 p-3.5 rounded-xl bg-secondary/30 border border-border/40 hover:bg-secondary/50 transition-colors">
-                  <div className="w-8 h-8 rounded-lg bg-primary/8 border border-primary/15 flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="w-8 h-8 rounded-xl bg-primary/8 border border-primary/15 flex items-center justify-center shrink-0 mt-0.5">
                     {resource.phone ? <Phone className="w-4 h-4 text-primary" /> : <ExternalLink className="w-4 h-4 text-primary" />}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -477,7 +477,7 @@ export default function Result() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.75 }}
-          className="bg-card rounded-2xl border border-border/60 shadow-sm px-6 mb-6"
+          className="bg-card rounded-xl border border-border/60 shadow-sm px-6 mb-6"
         >
           <FeedbackWidget testType={type} resultLevel={result.level} />
         </motion.div>
@@ -529,7 +529,7 @@ export default function Result() {
             onClick={handleCopyLink}
             className={`w-full sm:w-auto min-h-[44px] gap-2 transition-all ${
               isCopied
-                ? "border-emerald-500 text-emerald-700 bg-emerald-50"
+                ? "border-primary/30 text-primary bg-primary/5"
                 : "border-border text-foreground hover:bg-secondary"
             }`}
           >

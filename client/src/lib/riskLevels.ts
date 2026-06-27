@@ -31,10 +31,10 @@ const RISK_LEVELS: Readonly<Record<RiskLevelKey, RiskLevelDisplay>> = {
       adult: `총점이 낮음 단계에 해당합니다. 현재 응답만으로는 학습·인지·적응기능 어려움 가능성이 낮아 보입니다. ${SCREENING_DISCLAIMER}`,
       child: `보호자 해석: 총점이 낮음 단계에 해당합니다. 현재 응답만으로는 자녀의 학습·인지·적응기능 어려움 가능성이 낮아 보입니다. ${SCREENING_DISCLAIMER}`,
     },
-    pdfColor: "#4caf82",
-    badgeColor: "#22c55e",
-    chartColor: "#22c55e",
-    resultColor: "oklch(0.65 0.15 145)",
+    pdfColor: "#64748b",
+    badgeColor: "#64748b",
+    chartColor: "#64748b",
+    resultColor: "#64748b",
     showSupportResources: false,
   },
   caution: {
@@ -45,10 +45,10 @@ const RISK_LEVELS: Readonly<Record<RiskLevelKey, RiskLevelDisplay>> = {
       adult: `총점이 주의 단계에 해당합니다. 일부 영역에서 어려움이 나타나며, 피로·스트레스·수면·주의력·정서 상태에 따라 일시적으로 높게 나타날 수도 있습니다. ${SCREENING_DISCLAIMER}`,
       child: `보호자 해석: 총점이 주의 단계에 해당합니다. 일부 영역에서 어려움이 나타나며 수면, 정서, 주의집중, 학습 환경, 과제 난이도에 따라 응답이 높아질 수 있습니다. ${SCREENING_DISCLAIMER}`,
     },
-    pdfColor: "#d4a017",
-    badgeColor: "#eab308",
-    chartColor: "#eab308",
-    resultColor: "oklch(0.7 0.12 85)",
+    pdfColor: "#d97706",
+    badgeColor: "#d97706",
+    chartColor: "#d97706",
+    resultColor: "#d97706",
     showSupportResources: false,
   },
   consult: {
@@ -59,24 +59,24 @@ const RISK_LEVELS: Readonly<Record<RiskLevelKey, RiskLevelDisplay>> = {
       adult: `총점이 상담 권장 단계에 해당합니다. 여러 영역에서 어려움이 관찰되어 현재 기능 수준을 더 자세히 살펴볼 필요가 있습니다. ${SCREENING_DISCLAIMER}`,
       child: `보호자 해석: 총점이 상담 권장 단계에 해당합니다. 여러 영역에서 어려움이 관찰되어 자녀의 학습·인지·적응기능을 더 자세히 살펴볼 필요가 있습니다. ${SCREENING_DISCLAIMER}`,
     },
-    pdfColor: "#c83232",
-    badgeColor: "#ef4444",
-    chartColor: "#ef4444",
-    resultColor: "oklch(0.55 0.2 25)",
+    pdfColor: "#dc2626",
+    badgeColor: "#dc2626",
+    chartColor: "#dc2626",
+    resultColor: "#dc2626",
     showSupportResources: true,
   },
 } as const;
 
 const LEGACY_RISK_LEVELS: Readonly<Record<string, LegacyRiskLevelDisplay>> = {
-  normal: { badgeLabel: "일상생활 잘 유지 중", pdfColor: "#4caf82", badgeColor: "#22c55e" },
-  mild: { badgeLabel: "가벼운 어려움 있음", pdfColor: "#d4a017", badgeColor: "#eab308" },
-  moderate: { badgeLabel: "전문가 상담 권장", pdfColor: "#e07030", badgeColor: "#f97316" },
-  high: { badgeLabel: "전문가 상담 적극 권장", pdfColor: "#c83232", badgeColor: "#ef4444" },
+  normal: { badgeLabel: "일상생활 잘 유지 중", pdfColor: "#64748b", badgeColor: "#64748b" },
+  mild: { badgeLabel: "가벼운 어려움 있음", pdfColor: "#d97706", badgeColor: "#d97706" },
+  moderate: { badgeLabel: "전문가 상담 권장", pdfColor: "#dc2626", badgeColor: "#dc2626" },
+  high: { badgeLabel: "전문가 상담 적극 권장", pdfColor: "#dc2626", badgeColor: "#dc2626" },
 } as const;
 
 const UNKNOWN_RISK_LEVEL: LegacyRiskLevelDisplay = {
   badgeLabel: "알 수 없음",
-  pdfColor: "#5070c8",
+  pdfColor: "#64748b",
   badgeColor: "#94a3b8",
 };
 

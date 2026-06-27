@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
 import { ArrowLeft, Bell, AlertCircle, Loader2, Download, Mail, Lock } from "lucide-react";
@@ -109,7 +109,7 @@ export default function AdminSubscriptions() {
   if (!isAuthorized) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-        <div className="w-full max-w-md bg-card border border-border/60 rounded-2xl shadow-xl p-6 md:p-8">
+        <div className="w-full max-w-md bg-card border border-border/60 rounded-xl shadow-sm p-6 md:p-8">
           <div className="flex flex-col items-center text-center mb-6">
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
               <Lock className="w-6 h-6 text-primary" />
@@ -184,8 +184,8 @@ export default function AdminSubscriptions() {
           <p className="text-sm text-muted-foreground mt-1">사용자가 오픈/업데이트 알림 수신을 위해 신청한 이메일 주소 목록입니다.</p>
 
           {/* 알림 발송 연동 준비 중 배너 */}
-          <div className="mt-4 p-4 rounded-xl border border-blue-500/20 bg-blue-500/5 text-blue-900 dark:text-blue-200 text-xs flex gap-2.5 items-start">
-            <AlertCircle className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+          <div className="mt-4 p-4 rounded-xl border border-primary/20 bg-primary/5 text-foreground text-xs flex gap-2.5 items-start">
+            <AlertCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
             <div>
               <p className="font-semibold text-sm">📧 알림 이메일 자동 발송 시스템 설계/준비 중</p>
               <p className="mt-1 leading-relaxed text-muted-foreground">
@@ -197,7 +197,7 @@ export default function AdminSubscriptions() {
         </div>
 
         {/* Subscriptions Table / Cards */}
-        <section className="bg-card border border-border/60 rounded-2xl shadow-sm overflow-hidden">
+        <section className="bg-card border border-border/60 rounded-xl shadow-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <h2 className="text-sm font-semibold text-foreground">신청자 목록</h2>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { AlertCircle, ArrowRight, Bell, CheckCircle2, Loader2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -40,7 +40,7 @@ function SuccessState({ email }: { email: string }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/25">
+      <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-sm shadow-primary/25">
         <CheckCircle2 className="w-8 h-8 text-primary-foreground" />
       </div>
 
@@ -84,7 +84,7 @@ export default function EmailNotifyWidget() {
     : showError || submitError
     ? "border-destructive focus-visible:ring-destructive/30"
     : showSuccess
-    ? "border-emerald-500 focus-visible:ring-emerald-500/30"
+    ? "border-primary focus-visible:ring-primary/30"
     : "border-border/60";
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -118,7 +118,7 @@ export default function EmailNotifyWidget() {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 rounded-2xl p-6 md:p-8 overflow-hidden"
+      className="bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 rounded-xl p-6 md:p-8 overflow-hidden"
     >
       <AnimatePresence mode="wait">
         {isDone ? (
@@ -155,7 +155,7 @@ export default function EmailNotifyWidget() {
               {["오픈 소식", "주요 업데이트", "오픈/업데이트 안내"].map((text) => (
                 <div
                   key={text}
-                  className="flex items-center gap-2 bg-background/60 rounded-lg px-3 py-2 text-xs text-muted-foreground"
+                  className="flex items-center gap-2 bg-background/60 rounded-xl px-3 py-2 text-xs text-muted-foreground"
                 >
                   <CheckCircle2 className="w-3.5 h-3.5 text-primary/70" />
                   <span>{text}</span>
@@ -204,7 +204,7 @@ export default function EmailNotifyWidget() {
                         exit={{ opacity: 0, scale: 0.5 }}
                         className="absolute right-3 top-1/2 -translate-y-1/2"
                       >
-                        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                        <CheckCircle2 className="w-4 h-4 text-primary" />
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -235,7 +235,7 @@ export default function EmailNotifyWidget() {
                     exit={{ opacity: 0, y: -4, height: 0 }}
                     transition={{ duration: 0.2 }}
                     className={`flex items-center gap-1.5 text-xs px-1 ${
-                      showError || submitError ? "text-destructive" : "text-emerald-600"
+                      showError || submitError ? "text-destructive" : "text-primary"
                     }`}
                   >
                     {showError || submitError ? (

@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Brain, CheckCircle2, Heart, Shield, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -68,7 +68,7 @@ export default function StartTestModal({ open, onClose, onStart }: StartTestModa
             className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
           >
             <div
-              className="bg-card rounded-2xl border border-border shadow-2xl w-full max-w-2xl pointer-events-auto overflow-hidden flex flex-col"
+              className="bg-card rounded-xl border border-border shadow-sm w-full max-w-2xl pointer-events-auto overflow-hidden flex flex-col"
               style={{ maxHeight: "calc(100dvh - 2rem)" }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -129,9 +129,7 @@ export default function StartTestModal({ open, onClose, onStart }: StartTestModa
                         }`}
                       >
                         <div className="flex items-start gap-3">
-                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                            option.type === "adult" ? "bg-primary/10 text-primary" : "bg-rose-50 text-rose-500"
-                          }`}>
+                          <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-primary/10 text-primary">
                             <Icon className="w-5 h-5" />
                           </div>
                           <div>

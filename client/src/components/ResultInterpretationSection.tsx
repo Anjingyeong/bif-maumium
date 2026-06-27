@@ -1,4 +1,4 @@
-import { ClipboardCheck, Compass, ListChecks } from "lucide-react";
+﻿import { ClipboardCheck, Compass, ListChecks } from "lucide-react";
 import type { InterpretationReport } from "@/lib/reportInterpretation";
 
 interface ResultInterpretationSectionProps {
@@ -7,14 +7,14 @@ interface ResultInterpretationSectionProps {
 }
 
 const trendStyles = {
-  low: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  low: "bg-secondary text-muted-foreground border-border",
   middle: "bg-amber-50 text-amber-700 border-amber-200",
-  high: "bg-rose-50 text-rose-700 border-rose-200",
+  high: "bg-destructive/5 text-destructive border-destructive/20",
 } as const;
 
 export function ResultInterpretationSection({ report, accentColor }: ResultInterpretationSectionProps) {
   return (
-    <section className="bg-card rounded-2xl border border-border/60 shadow-sm p-6 md:p-8 mb-8">
+    <section className="bg-card rounded-xl border border-border/60 shadow-sm p-6 md:p-8 mb-8">
       <div className="flex items-start gap-3 mb-5">
         <div className="w-10 h-10 rounded-xl bg-primary/8 border border-primary/15 flex items-center justify-center shrink-0">
           <ClipboardCheck className="w-5 h-5 text-primary" />
@@ -59,7 +59,7 @@ export function ResultInterpretationSection({ report, accentColor }: ResultInter
               <div className="h-2 bg-secondary rounded-full overflow-hidden mb-3">
                 <div
                   className="h-full rounded-full"
-                  style={{ width: `${item.percentage}%`, backgroundColor: item.trend === "high" ? accentColor : "oklch(0.55 0.10 240)" }}
+                  style={{ width: `${item.percentage}%`, backgroundColor: item.trend === "high" ? accentColor : "var(--muted-foreground)" }}
                 />
               </div>
               <p className="text-xs text-foreground/80 leading-relaxed mb-2">{item.interpretation}</p>

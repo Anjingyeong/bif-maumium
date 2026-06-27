@@ -1,4 +1,4 @@
-/**
+﻿/**
  * QuestionCard Component
  * Design: Calm & Trustworthy - 신뢰감 있는 상담 서비스 스타일
  * Improvements:
@@ -38,7 +38,7 @@ export default function QuestionCard({
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: direction * -40 }}
       transition={{ duration: 0.28, ease: "easeOut" }}
-      className="bg-card rounded-2xl border border-border/60 shadow-sm overflow-hidden"
+      className="bg-card rounded-xl border border-border/60 shadow-sm overflow-hidden"
     >
       {/* Progress bar inside card */}
       <div className="h-1 bg-border/30">

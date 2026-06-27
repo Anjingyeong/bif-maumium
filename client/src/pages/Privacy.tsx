@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Privacy Policy Page - 개인정보처리방침
  * 마음이음 서비스의 개인정보 수집/이용/보관 정책 안내
  */
@@ -208,7 +208,7 @@ export default function Privacy() {
               className="scroll-mt-20"
             >
               <div className="flex items-center gap-2.5 mb-3">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
                   {section.icon}
                 </div>
                 <h2 className="text-base font-semibold text-foreground">{section.title}</h2>

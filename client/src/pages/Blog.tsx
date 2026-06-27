@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Blog Page - SEO-targeted content hub
  * Design: Warm Guidance - editorial layout
  * Keywords: 경계선 지능 테스트, 경계선 지능 증상, 아이 지능 검사
@@ -78,7 +78,7 @@ export default function Blog() {
               transition={{ duration: 0.4, delay: i * 0.08 }}
             >
               <Link href={`/blog/${post.slug}`}>
-                <div className="group bg-card rounded-2xl border border-border/50 p-6 hover:shadow-md transition-all duration-300 h-full flex flex-col">
+                <div className="group bg-card rounded-xl border border-border/50 p-6 hover:shadow-md transition-all duration-300 h-full flex flex-col">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded-full">
                       {post.category}
@@ -113,7 +113,7 @@ export default function Blog() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mt-14 bg-primary/5 border border-primary/20 rounded-2xl p-8 flex flex-col md:flex-row items-center gap-6"
+          className="mt-14 bg-primary/5 border border-primary/20 rounded-xl p-8 flex flex-col md:flex-row items-center gap-6"
         >
           <Brain className="w-12 h-12 text-primary shrink-0" />
           <div className="flex-1 text-center md:text-left">

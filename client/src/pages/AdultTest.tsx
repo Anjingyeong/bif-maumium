@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Adult Self-Assessment Test Page
  * Design: Warm Guidance - enhanced UX
  * Improvements:
@@ -159,7 +159,7 @@ export default function AdultTest() {
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-6 rounded-2xl border border-border/60 bg-card p-5 shadow-sm"
+            className="mt-6 rounded-xl border border-border/60 bg-card p-5 shadow-sm"
           >
             <div className="flex items-start gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary/8 border border-primary/15 flex items-center justify-center shrink-0">

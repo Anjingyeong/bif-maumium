@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+﻿import { useMemo, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
 import { ArrowLeft, BarChart3, Users, AlertCircle, Loader2, Lock } from "lucide-react";
@@ -111,7 +111,7 @@ export default function AdminResults() {
   if (!isAuthorized) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-        <div className="w-full max-w-md bg-card border border-border/60 rounded-2xl shadow-xl p-6 md:p-8">
+        <div className="w-full max-w-md bg-card border border-border/60 rounded-xl shadow-sm p-6 md:p-8">
           <div className="flex flex-col items-center text-center mb-6">
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
               <Lock className="w-6 h-6 text-primary" />
@@ -189,9 +189,9 @@ export default function AdminResults() {
         {/* 통계 카드 4개 */}
         <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
           {/* 전체 */}
-          <div className="rounded-2xl border border-border/60 bg-card shadow-sm p-5">
+          <div className="rounded-xl border border-border/60 bg-card shadow-sm p-5">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-primary/8 border border-primary/15 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-xl bg-primary/8 border border-primary/15 flex items-center justify-center">
                 <Users className="w-4 h-4 text-primary" />
               </div>
               <p className="text-xs font-medium text-muted-foreground">전체 응답</p>
@@ -206,10 +206,10 @@ export default function AdminResults() {
             const Icon = STAT_ICONS[level];
             const pct = stats.total > 0 ? Math.round((stats.counts[level] / stats.total) * 100) : 0;
             return (
-              <div key={level} className="rounded-2xl border border-border/60 bg-card shadow-sm p-5">
+              <div key={level} className="rounded-xl border border-border/60 bg-card shadow-sm p-5">
                 <div className="flex items-center gap-2 mb-3">
                   <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center"
+                    className="w-8 h-8 rounded-xl flex items-center justify-center"
                     style={{ backgroundColor: `${color}15`, border: `1px solid ${color}25` }}
                   >
                     <Icon className="w-4 h-4" style={{ color }} />
@@ -226,7 +226,7 @@ export default function AdminResults() {
         </section>
 
         {/* 응답 목록 테이블 */}
-        <section className="bg-card border border-border/60 rounded-2xl shadow-sm overflow-hidden">
+        <section className="bg-card border border-border/60 rounded-xl shadow-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <h2 className="text-sm font-semibold text-foreground">응답 목록</h2>
@@ -260,7 +260,7 @@ export default function AdminResults() {
                       className="text-xs px-3 py-1.5 rounded-full transition-colors whitespace-nowrap border"
                       style={isSelected ? {
                         backgroundColor: color,
-                        color: "#fff",
+                        color: "var(--primary-foreground)",
                         borderColor: color,
                       } : {
                         backgroundColor: "transparent",
@@ -307,7 +307,7 @@ export default function AdminResults() {
                       )}
                     </td>
                     <td className="px-5 py-3">
-                      <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded-md">
+                      <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded-xl">
                         {result.testType === "adult" ? "성인" : "아동"}
                       </span>
                     </td>

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Blog Post Detail Page - SEO-optimized article page
  * Design: Warm Guidance - clean editorial reading experience
  */
@@ -122,7 +122,7 @@ export default function BlogPost() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="bg-primary/5 border border-primary/20 rounded-2xl p-6 mb-10"
+          className="bg-primary/5 border border-primary/20 rounded-xl p-6 mb-10"
         >
           <div className="flex items-center gap-2 mb-3">
             <Heart className="w-5 h-5 text-primary" />

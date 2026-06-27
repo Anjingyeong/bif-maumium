@@ -1,11 +1,11 @@
-/**
+﻿/**
  * Info Page - About Borderline Intellectual Functioning
  * Design: Warm Guidance - Editorial layout with clear information hierarchy
  */
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Brain, ArrowLeft, ArrowRight, BookOpen, Users, GraduationCap, HeartHandshake } from "lucide-react";
+import { Brain, ArrowLeft, ArrowRight, BookOpen, Users, GraduationCap, HeartHandshake, AlertCircle } from "lucide-react";
 
 export default function Info() {
   return (
@@ -50,7 +50,7 @@ export default function Info() {
           transition={{ duration: 0.6 }}
           className="mb-12"
         >
-          <div className="bg-card rounded-2xl border border-border/50 p-6 md:p-8">
+          <div className="bg-card rounded-xl border border-border/50 p-6 md:p-8">
             <h2 className="text-xl font-serif font-bold text-foreground mb-4 flex items-center gap-2">
               <Brain className="w-5 h-5 text-primary" />
               정의와 기준
@@ -72,10 +72,10 @@ export default function Info() {
             <div className="mt-6 p-4 bg-secondary/50 rounded-xl">
               <p className="text-xs font-medium text-muted-foreground mb-3">지능지수 분포</p>
               <div className="relative h-8 rounded-full overflow-hidden bg-border">
-                <div className="absolute inset-y-0 left-0 w-[14%] bg-red-200/60" />
-                <div className="absolute inset-y-0 left-[14%] w-[14%] bg-amber-200/60" />
-                <div className="absolute inset-y-0 left-[28%] w-[44%] bg-green-200/60" />
-                <div className="absolute inset-y-0 left-[72%] w-[28%] bg-blue-200/60" />
+                <div className="absolute inset-y-0 left-0 w-[14%] bg-muted-foreground/20" />
+                <div className="absolute inset-y-0 left-[14%] w-[14%] bg-primary/35" />
+                <div className="absolute inset-y-0 left-[28%] w-[44%] bg-muted-foreground/12" />
+                <div className="absolute inset-y-0 left-[72%] w-[28%] bg-muted-foreground/20" />
                 {/* Labels */}
                 <div className="absolute inset-0 flex items-center">
                   <span className="absolute left-[7%] -translate-x-1/2 text-[10px] font-medium text-foreground/70">~70</span>
@@ -102,14 +102,14 @@ export default function Info() {
           transition={{ duration: 0.6 }}
           className="mb-12"
         >
-          <div className="bg-amber-50 border border-amber-200/70 rounded-2xl p-6 md:p-8">
+          <div className="bg-card border border-border/60 rounded-xl p-6 md:p-8">
             <h2 className="text-xl font-serif font-bold text-foreground mb-1 flex items-center gap-2">
-              <span className="text-amber-500 text-lg">⚠</span>
+              <AlertCircle className="w-5 h-5 text-primary" />
               "경계선 지능" vs "경계성 지능" — 같은 말인가요?
             </h2>
-            <p className="text-xs text-amber-700 mb-5">많이 혼동하시는 용어입니다. 둘은 전혀 다른 개념입니다.</p>
+            <p className="text-xs text-muted-foreground mb-5">많이 혼동하시는 용어입니다. 둘은 전혀 다른 개념입니다.</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-white/80 rounded-xl p-5 border border-amber-100">
+              <div className="bg-secondary/30 rounded-xl p-5 border border-border/60">
                 <p className="text-sm font-bold text-primary mb-2">경계선 지능 (境界線 知能)</p>
                 <p className="text-xs text-muted-foreground leading-relaxed mb-3">
                   <strong className="text-foreground">인지 능력(IQ)</strong>에 관한 개념입니다.<br />
@@ -117,11 +117,11 @@ export default function Info() {
                   학습·적응·실행기능 등에서 어려움을 겪을 수 있으며,
                   <strong className="text-foreground"> 발달·교육 분야</strong>에서 주로 사용하는 용어입니다.
                 </p>
-                <div className="text-[11px] bg-primary/8 text-primary rounded-lg px-3 py-2 font-medium">
+                <div className="text-[11px] bg-primary/10 text-primary rounded-xl px-3 py-2 font-medium">
                   영문: Borderline Intellectual Functioning (BIF)
                 </div>
               </div>
-              <div className="bg-white/80 rounded-xl p-5 border border-amber-100">
+              <div className="bg-secondary/30 rounded-xl p-5 border border-border/60">
                 <p className="text-sm font-bold text-foreground mb-2">경계성 인격장애 (境界性 人格障碍)</p>
                 <p className="text-xs text-muted-foreground leading-relaxed mb-3">
                   <strong className="text-foreground">성격·정서 조절</strong>에 관한 개념입니다.<br />
@@ -129,16 +129,16 @@ export default function Info() {
                   지능과는 무관합니다.
                   <strong className="text-foreground"> 정신건강 임상 분야</strong>에서 사용하는 진단명입니다.
                 </p>
-                <div className="text-[11px] bg-secondary text-muted-foreground rounded-lg px-3 py-2 font-medium">
+                <div className="text-[11px] bg-secondary text-muted-foreground rounded-xl px-3 py-2 font-medium">
                   영문: Borderline Personality Disorder (BPD)
                 </div>
               </div>
             </div>
-            <p className="text-xs text-amber-700 mt-4 text-center">
+            <p className="text-xs text-muted-foreground mt-4 text-center">
               본 사이트의 검사는 <strong>경계선 지능(BIF)</strong>을 선별하는 도구입니다. 경계성 인격장애(BPD)와는 관련이 없습니다.
             </p>
             <div className="mt-4 text-center">
-              <a href="/term-diff" className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 border border-amber-300 rounded-full px-4 py-2 hover:bg-amber-100 transition-colors">
+              <a href="/term-diff" className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary border border-primary/25 rounded-xl px-4 py-2 hover:bg-primary/10 transition-colors">
                 두 용어 상세 비교 보기 →
               </a>
             </div>
@@ -153,7 +153,7 @@ export default function Info() {
           transition={{ duration: 0.6 }}
           className="mb-12"
         >
-          <div className="bg-card rounded-2xl border border-border/50 p-6 md:p-8">
+          <div className="bg-card rounded-xl border border-border/50 p-6 md:p-8">
             <h2 className="text-xl font-serif font-bold text-foreground mb-4 flex items-center gap-2">
               <Users className="w-5 h-5 text-primary" />
               주요 특성
@@ -184,7 +184,7 @@ export default function Info() {
           transition={{ duration: 0.6 }}
           className="mb-12"
         >
-          <div className="bg-card rounded-2xl border border-border/50 p-6 md:p-8">
+          <div className="bg-card rounded-xl border border-border/50 p-6 md:p-8">
             <h2 className="text-xl font-serif font-bold text-foreground mb-4 flex items-center gap-2">
               <HeartHandshake className="w-5 h-5 text-primary" />
               지원과 도움
@@ -220,7 +220,7 @@ export default function Info() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="bg-primary/5 border border-primary/20 rounded-2xl p-6 md:p-8 mb-8"
+          className="bg-primary/5 border border-primary/20 rounded-xl p-6 md:p-8 mb-8"
         >
           <h3 className="text-lg font-serif font-bold text-foreground mb-3">
             꼭 기억해주세요

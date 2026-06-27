@@ -1,4 +1,4 @@
-/**
+﻿/**
  * NavBar - 반응형 네비게이션 바
  * - 데스크톱: 가로 메뉴
  * - 모바일: 햄버거 버튼 → 슬라이드 다운 드로어
@@ -54,7 +54,7 @@ export default function NavBar({ onStartTest }: NavBarProps) {
                 key={link.href}
                 href={link.href}
                 aria-current={location === link.href ? "page" : undefined}
-                className={`text-sm font-medium transition-colors flex items-center gap-1 rounded-md px-1.5 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 ${
+                className={`text-sm font-medium transition-colors flex items-center gap-1 rounded-xl px-1.5 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 ${
                   location === link.href
                     ? "text-foreground"
                     : "text-foreground/70 hover:text-foreground"
@@ -75,7 +75,7 @@ export default function NavBar({ onStartTest }: NavBarProps) {
 
           {/* 모바일 햄버거 버튼 */}
           <button
-            className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-secondary transition-colors"
+            className="md:hidden flex items-center justify-center w-10 h-10 rounded-xl hover:bg-secondary transition-colors"
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
           >
@@ -112,7 +112,7 @@ export default function NavBar({ onStartTest }: NavBarProps) {
             {/* 드로어 패널 */}
             <motion.div
               key="drawer"
-              className="fixed top-16 left-0 right-0 z-40 bg-card border-b border-border shadow-xl md:hidden"
+              className="fixed top-16 left-0 right-0 z-40 bg-card border-b border-border shadow-sm md:hidden"
               initial={{ opacity: 0, y: -12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
@@ -128,7 +128,7 @@ export default function NavBar({ onStartTest }: NavBarProps) {
                   >
                     <Link
                       href={link.href}
-                      className={`flex items-center gap-2 px-3 py-3 rounded-lg text-sm font-medium transition-colors ${
+                      className={`flex items-center gap-2 px-3 py-3 rounded-xl text-sm font-medium transition-colors ${
                         location === link.href
                           ? "bg-primary/10 text-primary"
                           : "text-foreground hover:bg-secondary"

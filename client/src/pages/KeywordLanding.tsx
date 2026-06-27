@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+﻿import { useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { ArrowRight, Brain, CheckCircle2 } from "lucide-react";
 import NavBar from "@/components/NavBar";
@@ -93,7 +93,7 @@ export default function KeywordLanding() {
                 </span>
               ))}
             </div>
-            <div className="rounded-2xl border border-border bg-card p-5 md:p-6 mb-8">
+            <div className="rounded-xl border border-border bg-card p-5 md:p-6 mb-8">
               <h2 className="text-lg font-serif font-bold text-foreground mb-4">
                 시작 전 확인해 주세요
               </h2>
