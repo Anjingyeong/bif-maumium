@@ -3,14 +3,14 @@
 ## Project
 
 - `bif-screening` is a Vite/React self-check site for borderline intellectual functioning screening.
-- The app keeps the existing warm guidance UI, wouter routing, result page, local history, PDF export, and informational pages.
+- The app keeps the existing warm guidance UI, wouter routing, result page, PDF export, and informational pages.
 - The checklist is a screening self-check only. It is not a diagnosis tool and does not copy standardized test questions.
 
 ## Frontend Flow
 
 - Adult and child tests live in `client/src/pages/AdultTest.tsx` and `client/src/pages/ChildTest.tsx`.
 - Questions and result thresholds live in `client/src/lib/questions.ts`.
-- Result rendering and local history saving live in `client/src/pages/Result.tsx`.
+- Result rendering lives in `client/src/pages/Result.tsx`; browser-local result history is not persisted.
 - Before result submission, users can opt in to server result storage.
 - If storage is enabled, the user must enter an anonymous nickname and confirm consent.
 - The UI warns users not to enter direct identifiers such as real names, phone numbers, email addresses, or resident registration numbers.
@@ -92,7 +92,7 @@ More detail is in `docs/deployment-env.md`.
 - Top navigation links use higher contrast, clearer active state, and focus-visible rings.
 - The yellow terminology notice is visually calmer so the main hero message remains primary.
 - Main and final CTA pairs are balanced with filled adult/child buttons using primary and accent tones.
-- The email interest widget accurately reflects the current implementation: emails are saved only in this browser's localStorage and are not sent to a server.
+- The email interest widget sends open/update interest requests to `/api/subscriptions` and does not persist the email address in browser storage.
 
 ## 2026-05-18 Icon Asset Notes
 
@@ -103,7 +103,7 @@ More detail is in `docs/deployment-env.md`.
 
 - The homepage email area now clearly describes open/update interest storage instead of mixing it with partnership inquiries.
 - Partnership/contact inquiries are separated into a mailto-based card using `maumium.service@gmail.com`.
-- The email widget copy matches the current implementation: emails are stored only in this browser's localStorage and are not sent to a server or DB.
+- The email widget copy matches the current implementation: emails are sent to the subscription API and are not persisted in browser localStorage.
 
 ## 2026-05-18 Test Start & Privacy Navigation Notes
 
