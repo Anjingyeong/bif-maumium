@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /result
+Disallow: /history
 
 Sitemap: https://maumium.pages.dev/sitemap.xml

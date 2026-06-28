@@ -17,6 +17,7 @@ const NAV_LINKS = [
   { href: "/info",    label: "경계선 지능이란?" },
   { href: "/term-diff", label: "용어 차이" },
   { href: "/blog",    label: "정보 센터" },
+  { href: "/faq", label: "FAQ" },
   { href: "/history", label: "내 기록", icon: <HistoryIcon className="w-3.5 h-3.5" /> },
 ];
 

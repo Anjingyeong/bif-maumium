@@ -10,6 +10,8 @@ import { ArrowLeft, Clock, Tag, ArrowRight, Brain, Heart } from "lucide-react";
 import { blogPosts } from "@/lib/blogData";
 import { Streamdown } from "streamdown";
 import Footer from "@/components/Footer";
+import { usePageSeo, canonicalUrl, SITE_NAME, SITE_URL } from "@/lib/seo";
+import { JsonLd } from "@/components/JsonLd";
 
 export default function BlogPost() {
   const params = useParams<{ slug: string }>();
@@ -17,6 +19,41 @@ export default function BlogPost() {
     () => blogPosts.find(p => p.slug === params.slug),
     [params.slug]
   );
+
+  usePageSeo({
+    title: post ? `${post.title} | 마음이음` : "글을 찾을 수 없습니다 | 마음이음",
+    description: post ? post.description : "요청하신 경계선 지능 정보 센터 게시글을 찾을 수 없습니다.",
+    path: post ? `/blog/${post.slug}` : "/blog",
+    noindex: !post,
+  });
+
+  const articleJsonLd = useMemo(() => {
+    if (!post) return null;
+    return {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": post.title,
+      "description": post.description,
+      "datePublished": post.publishedAt,
+      "author": {
+        "@type": "Organization",
+        "name": SITE_NAME,
+        "url": SITE_URL,
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": SITE_NAME,
+        "logo": {
+          "@type": "ImageObject",
+          "url": `${SITE_URL}/icons/maumium-icon-512.png`,
+        },
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": canonicalUrl(`/blog/${post.slug}`),
+      },
+    };
+  }, [post]);
 
   const relatedPosts = useMemo(
     () => blogPosts.filter(p => p.id !== post?.id).slice(0, 2),
@@ -40,6 +77,7 @@ export default function BlogPost() {
 
   return (
     <div className="min-h-screen bg-background">
+      {articleJsonLd && <JsonLd data={articleJsonLd} />}
       {/* Header */}
       <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-md border-b border-border/50">
         <div className="container flex items-center justify-between h-14">

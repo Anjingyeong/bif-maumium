@@ -15,6 +15,7 @@ import StartTestModal from "@/components/StartTestModal";
 import Footer from "@/components/Footer";
 import { SERVICE_COPY } from "@/constants/serviceCopy";
 import { LEGAL_COPY } from "@/constants/legalCopy";
+import { usePageSeo, HOME_DESCRIPTION } from "@/lib/seo";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/hero-bg-G22PuoZQMHzrhaaPXVfouj.webp";
 const CHILD_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHeQEzjYKHfh7CdssTj54/child-section-2q9N99eJL9sDbwdufTEuCS.webp";
@@ -22,6 +23,12 @@ const ADULT_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648097828/6VHe
 const PARTNERSHIP_EMAIL = SERVICE_COPY.CONTACT_EMAIL;
 
 export default function Home() {
+  usePageSeo({
+    title: "느린학습자·경계선 지능 자가체크 테스트 | 마음이음",
+    description: HOME_DESCRIPTION,
+    path: "/",
+  });
+
   const [, navigate] = useLocation();
   const [startModalOpen, setStartModalOpen] = useState(false);
 

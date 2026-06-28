@@ -9,6 +9,7 @@ import { ArrowLeft, Brain, Heart, AlertCircle, CheckCircle2, XCircle, HelpCircle
 import { Button } from "@/components/ui/button";
 import { LEGAL_COPY } from "@/constants/legalCopy";
 import Footer from "@/components/Footer";
+import { usePageSeo } from "@/lib/seo";
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
@@ -17,6 +18,11 @@ const fadeUp = (delay = 0) => ({
 });
 
 export default function TermDiff() {
+  usePageSeo({
+    title: "경계선 지능 vs 경계성 인격장애 차이점 | 마음이음",
+    description: "혼동하기 쉬운 경계선 지능(BIF)과 경계성 인격장애(BPD)의 정의, 원인, 증상 및 결정적인 차이점을 안내합니다.",
+    path: "/term-diff",
+  });
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}

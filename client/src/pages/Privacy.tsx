@@ -9,6 +9,7 @@ import { Shield, ArrowLeft, Mail, Lock, Trash2, Eye, AlertCircle, Database, Ban 
 import { SERVICE_COPY } from "@/constants/serviceCopy";
 import { LEGAL_COPY } from "@/constants/legalCopy";
 import Footer from "@/components/Footer";
+import { usePageSeo } from "@/lib/seo";
 
 const LAST_UPDATED = "2026년 6월 27일";
 const SERVICE_NAME = SERVICE_COPY.SERVICE_NAME_KO;
@@ -129,6 +130,13 @@ const sections = [
 ];
 
 export default function Privacy() {
+  usePageSeo({
+    title: "개인정보처리방침 | 마음이음",
+    description: "마음이음 서비스의 개인정보 수집, 이용, 보관 정책에 관한 안내입니다.",
+    path: "/privacy",
+    noindex: true,
+  });
+
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, []);

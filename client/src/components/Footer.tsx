@@ -29,6 +29,9 @@ export default function Footer() {
             <Link href="/blog" className="hover:text-foreground transition-colors">
               정보 센터
             </Link>
+            <Link href="/faq" className="hover:text-foreground transition-colors">
+              FAQ
+            </Link>
             <Link href="/privacy" className="hover:text-foreground transition-colors font-medium text-foreground underline decoration-primary/40 underline-offset-4">
               개인정보처리방침
             </Link>

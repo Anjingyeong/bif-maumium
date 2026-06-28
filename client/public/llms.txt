@@ -1,0 +1,13 @@
+# 마음이음
+
+마음이음은 느린학습자와 경계선 지능 가능성을 참고용 온라인 문항으로 점검하는 한국어 웹 서비스입니다. 결과는 진단이 아니며, 필요 시 정신건강의학과, 발달센터, 상담기관의 표준화 검사와 전문가 상담을 안내합니다.
+
+## 주요 URL
+
+- https://maumium.pages.dev/ - 서비스 홈
+- https://maumium.pages.dev/test/adult - 성인 자가체크
+- https://maumium.pages.dev/test/child - 보호자용 아동 체크
+- https://maumium.pages.dev/info - 경계선 지능 설명
+- https://maumium.pages.dev/term-diff - 경계선 지능과 경계성 인격장애 용어 차이
+- https://maumium.pages.dev/blog - 정보 센터
+- https://maumium.pages.dev/faq - 자주 묻는 질문

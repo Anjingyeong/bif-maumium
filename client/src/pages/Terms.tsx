@@ -3,6 +3,7 @@ import { ArrowLeft, FileText, Mail, ShieldCheck } from "lucide-react";
 import { SERVICE_COPY } from "@/constants/serviceCopy";
 import { LEGAL_COPY } from "@/constants/legalCopy";
 import Footer from "@/components/Footer";
+import { usePageSeo } from "@/lib/seo";
 
 const CONTACT_EMAIL = SERVICE_COPY.CONTACT_EMAIL;
 
@@ -23,9 +24,16 @@ const terms = [
     title: "이용자 책임",
     body: "사용자는 실명, 전화번호, 주민등록번호 등 직접 식별 가능한 정보를 닉네임이나 문의 내용에 입력하지 않아야 합니다. 결과 해석이 필요하거나 어려움이 지속되면 전문기관의 평가와 상담을 권장합니다.",
   },
-] as const;
+ ] as const;
 
 export default function Terms() {
+  usePageSeo({
+    title: "이용약관 | 마음이음",
+    description: "마음이음 서비스 이용약관 및 서비스 제공 범위에 관한 안내입니다.",
+    path: "/terms",
+    noindex: true,
+  });
+
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-border/50">

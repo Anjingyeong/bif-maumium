@@ -8,8 +8,14 @@ import { motion } from "framer-motion";
 import { Brain, ArrowLeft, ArrowRight, BookOpen, Users, GraduationCap, HeartHandshake, AlertCircle } from "lucide-react";
 import { LEGAL_COPY } from "@/constants/legalCopy";
 import Footer from "@/components/Footer";
+import { usePageSeo } from "@/lib/seo";
 
 export default function Info() {
+  usePageSeo({
+    title: "경계선 지능이란 무엇인가요? | 마음이음",
+    description: "지적장애와 평균 지능 사이에 위치하는 인지 능력 수준인 경계선 지능(BIF)의 정의와 주요 증상을 설명합니다.",
+    path: "/info",
+  });
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}

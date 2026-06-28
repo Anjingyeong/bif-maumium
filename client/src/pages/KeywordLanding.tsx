@@ -1,73 +1,59 @@
-import { useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { ArrowRight, Brain, CheckCircle2 } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Button } from "@/components/ui/button";
 import { LEGAL_COPY } from "@/constants/legalCopy";
 import { SERVICE_COPY } from "@/constants/serviceCopy";
+import { usePageSeo } from "@/lib/seo";
 
-const META_DESCRIPTION =
-  "느린학습자와 경계선 지능 특성을 간단한 문항으로 확인해보는 온라인 자가체크 테스트입니다. 결과는 참고용이며 전문 진단을 대체하지 않습니다.";
+type LandingPage = {
+  readonly title: string;
+  readonly h1: string;
+  readonly lead: string;
+  readonly description: string;
+  readonly keywords: readonly string[];
+};
 
-const PAGES = {
+const PAGES: Record<string, LandingPage> = {
   "/slow-learner-test": {
     title: "느린학습자 테스트 | 자가체크 체크리스트",
     h1: "느린학습자 테스트",
     lead: "느린학습자 특성과 일상 속 학습·인지·적응 어려움을 간단한 문항으로 살펴보는 참고용 자가체크 페이지입니다.",
+    description: "느린학습자 특성과 학습·적응 어려움을 자가체크로 살펴보세요.",
     keywords: ["느린학습자 테스트", "느린학습자 자가체크", "느린학습자 체크리스트"],
   },
   "/borderline-iq-test": {
     title: `경계선 지능 자가체크 테스트 | ${SERVICE_COPY.SERVICE_NAME_KO}`,
     h1: "경계선 지능 자가체크 테스트",
     lead: "경계선 지능 가능성과 관련된 학습·인지·적응기능 어려움을 온라인 문항으로 점검해볼 수 있습니다.",
+    description: "경계선 지능 가능성과 적응기능 어려움을 온라인 문항으로 점검하세요.",
     keywords: ["경계선 지능 테스트", "경계선 지능 자가체크", "경계선 지능 체크리스트"],
   },
   "/slow-learner-checklist": {
     title: "느린학습자 체크리스트 | 특징과 자가체크",
     h1: "느린학습자 체크리스트",
     lead: "최근 생활 경험을 기준으로 느린학습자 특성과 지원이 필요한 영역을 차분히 확인해보는 체크리스트입니다.",
+    description: "느린학습자 특징과 지원이 필요한 영역을 체크리스트로 확인하세요.",
     keywords: ["느린학습자 체크리스트", "느린학습자 테스트", "느린학습자 자가체크"],
   },
   "/slow-learner-vs-borderline-iq": {
     title: "느린학습자와 경계선 지능 차이",
     h1: "느린학습자와 경계선 지능 차이",
     lead: "느린학습자와 경계선 지능이라는 표현이 어떤 맥락에서 쓰이는지, 참고용 자가체크 전 알아두면 좋은 차이를 정리했습니다.",
+    description: "느린학습자와 경계선 지능 표현의 차이를 쉽게 정리했습니다.",
     keywords: ["느린학습자", "경계선 지능", "경계선 지능 자가체크"],
   },
-} as const;
-
-function setMeta(name: string, content: string) {
-  let tag = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
-  if (!tag) {
-    tag = document.createElement("meta");
-    tag.name = name;
-    document.head.appendChild(tag);
-  }
-  tag.content = content;
-}
-
-function setProperty(property: string, content: string) {
-  let tag = document.querySelector<HTMLMetaElement>(`meta[property="${property}"]`);
-  if (!tag) {
-    tag = document.createElement("meta");
-    tag.setAttribute("property", property);
-    document.head.appendChild(tag);
-  }
-  tag.content = content;
-}
+};
 
 export default function KeywordLanding() {
   const [location, navigate] = useLocation();
-  const page = PAGES[location as keyof typeof PAGES] ?? PAGES["/slow-learner-test"];
+  const page = PAGES[location] ?? PAGES["/slow-learner-test"];
 
-  useEffect(() => {
-    document.title = page.title;
-    setMeta("description", META_DESCRIPTION);
-    setProperty("og:title", page.title);
-    setProperty("og:description", META_DESCRIPTION);
-    setMeta("twitter:title", page.title);
-    setMeta("twitter:description", META_DESCRIPTION);
-  }, [page]);
+  usePageSeo({
+    title: page.title,
+    description: page.description,
+    path: location === "/" ? "/" : `/${location.replace(/^\/+/, "")}`,
+  });
 
   return (
     <div className="min-h-screen bg-background">

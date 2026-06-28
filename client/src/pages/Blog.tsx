@@ -10,8 +10,14 @@ import { motion } from "framer-motion";
 import { ArrowLeft, BookOpen, Clock, ArrowRight, Brain } from "lucide-react";
 import { blogPosts, blogCategories } from "@/lib/blogData";
 import Footer from "@/components/Footer";
+import { usePageSeo } from "@/lib/seo";
 
 export default function Blog() {
+  usePageSeo({
+    title: "경계선 지능 정보 센터 | 마음이음",
+    description: "경계선 지능(BIF) 자가체크, 증상 정보, 부모 가이드, 지원 제도 등 신뢰할 수 있는 정보를 제공합니다.",
+    path: "/blog",
+  });
   const [activeCategory, setActiveCategory] = useState("전체");
 
   const filtered = activeCategory === "전체"

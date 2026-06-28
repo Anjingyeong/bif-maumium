@@ -18,6 +18,7 @@ import Terms from "./pages/Terms";
 import KeywordLanding from "./pages/KeywordLanding";
 import AdminResults from "./pages/AdminResults";
 import AdminSubscriptions from "./pages/AdminSubscriptions";
+import Faq from "./pages/Faq";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -34,6 +35,7 @@ function Router() {
       <Route path="/term-diff" component={TermDiff} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/terms" component={Terms} />
+      <Route path="/faq" component={Faq} />
       <Route path="/admin/results" component={AdminResults} />
       <Route path="/admin/subscriptions" component={AdminSubscriptions} />
       <Route path="/slow-learner-test" component={KeywordLanding} />
