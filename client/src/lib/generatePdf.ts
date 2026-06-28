@@ -1,4 +1,4 @@
-﻿import jsPDF from "jspdf";
+import jsPDF from "jspdf";
 import {
   ResultLevel,
   QuestionSet,
@@ -38,7 +38,7 @@ export async function generateResultPdf(params: GeneratePdfParams): Promise<Blob
   const contentW = pageW - margin * 2;
 
   if ("fonts" in document) {
-    await Promise.allSettled([
+    const fontLoadPromise = Promise.allSettled([
       document.fonts.ready,
       document.fonts.load('400 16px "Pretendard"', "한글"),
       document.fonts.load('700 16px "Pretendard"', "한글"),
@@ -47,6 +47,8 @@ export async function generateResultPdf(params: GeneratePdfParams): Promise<Blob
       document.fonts.load('400 16px "Malgun Gothic"', "한글"),
       document.fonts.load('700 16px "Malgun Gothic"', "한글"),
     ]);
+    const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 1500));
+    await Promise.race([fontLoadPromise, timeoutPromise]);
   }
 
   rect(doc, 0, 0, pageW, 48, "#2f7d5c");

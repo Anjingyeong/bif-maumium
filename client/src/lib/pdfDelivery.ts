@@ -1,5 +1,10 @@
 export type PdfDeliveryStrategy = "share" | "open" | "download";
-export type PdfDeliveryResult = "shared" | "opened" | "downloaded";
+export type PdfDeliveryResult = {
+  strategy: PdfDeliveryStrategy;
+  success: boolean;
+  blobUrl?: string;
+  error?: string;
+};
 
 type StrategyInput = {
   userAgent: string;
@@ -25,50 +30,64 @@ export function choosePdfDeliveryStrategy({
 }
 
 function canSharePdfFile(file: File): boolean {
-  return Boolean(
-    "share" in navigator &&
-      "canShare" in navigator &&
-      navigator.canShare({ files: [file] })
-  );
-}
-
-function openPdfBlobUrl(blobUrl: string): void {
-  const opened = window.open(blobUrl, "_blank", "noopener,noreferrer");
-  if (!opened) {
-    window.location.assign(blobUrl);
+  try {
+    return Boolean(
+      "share" in navigator &&
+        "canShare" in navigator &&
+        navigator.canShare({ files: [file] })
+    );
+  } catch {
+    return false;
   }
-}
-
-function downloadPdfBlobUrl(blobUrl: string, filename: string): void {
-  const anchor = document.createElement("a");
-  anchor.href = blobUrl;
-  anchor.download = filename;
-  anchor.rel = "noopener";
-  document.body.appendChild(anchor);
-  anchor.click();
-  anchor.remove();
 }
 
 export async function deliverPdfBlob(blob: Blob, filename: string): Promise<PdfDeliveryResult> {
   const file = new File([blob], filename, { type: "application/pdf" });
-  const strategy = choosePdfDeliveryStrategy({
+  let strategy = choosePdfDeliveryStrategy({
     userAgent: navigator.userAgent,
     canShareFiles: canSharePdfFile(file),
   });
 
-  if (strategy === "share") {
-    await navigator.share({ files: [file], title: filename });
-    return "shared";
-  }
-
   const blobUrl = window.URL.createObjectURL(blob);
-  window.setTimeout(() => window.URL.revokeObjectURL(blobUrl), 60_000);
+  // Revoke resources after 3 minutes to give the user enough time
+  window.setTimeout(() => window.URL.revokeObjectURL(blobUrl), 180_000);
+
+  if (strategy === "share") {
+    try {
+      await navigator.share({ files: [file], title: filename });
+      return { strategy: "share", success: true };
+    } catch (shareErr: any) {
+      console.warn("[PDF Delivery] navigator.share failed, falling back to open/download", shareErr);
+      strategy = IOS_RE.test(navigator.userAgent) ? "open" : "download";
+    }
+  }
 
   if (strategy === "open") {
-    openPdfBlobUrl(blobUrl);
-    return "opened";
+    try {
+      const opened = window.open(blobUrl, "_blank", "noopener,noreferrer");
+      if (opened) {
+        return { strategy: "open", success: true };
+      } else {
+        console.warn("[PDF Delivery] window.open returned null (pop-up blocked)");
+        return { strategy: "open", success: false, blobUrl };
+      }
+    } catch (openErr: any) {
+      console.warn("[PDF Delivery] window.open threw error", openErr);
+      return { strategy: "open", success: false, blobUrl, error: openErr?.message || String(openErr) };
+    }
   }
 
-  downloadPdfBlobUrl(blobUrl, filename);
-  return "downloaded";
+  try {
+    const anchor = document.createElement("a");
+    anchor.href = blobUrl;
+    anchor.download = filename;
+    anchor.rel = "noopener";
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    return { strategy: "download", success: true };
+  } catch (dlErr: any) {
+    console.error("[PDF Delivery] anchor download failed", dlErr);
+    return { strategy: "download", success: false, blobUrl, error: dlErr?.message || String(dlErr) };
+  }
 }

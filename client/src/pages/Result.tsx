@@ -45,6 +45,7 @@ import { SERVICE_COPY } from "@/constants/serviceCopy";
 
 export default function Result() {
   const [isPdfLoading, setIsPdfLoading] = useState(false);
+  const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
   const [prevRecord, setPrevRecord] = useState<TestRecord | null>(null);
   const [remoteResult, setRemoteResult] = useState<SavedResultSummary | null>(null);
   const [isRemoteSaving, setIsRemoteSaving] = useState(false);
@@ -150,19 +151,46 @@ export default function Result() {
 
   const handleDownloadPdf = async () => {
     setIsPdfLoading(true);
+    setPdfBlobUrl(null);
+
+    const userAgent = navigator.userAgent;
+    const isIOS = /\b(iPad|iPhone|iPod)\b/i.test(userAgent);
+    const isMobile = /mobile|android|iphone|ipad|ipod/i.test(userAgent);
+
     try {
       const pdfBlob = await generateResultPdf({ type, score, maxScore, result, answers, questionSet });
       const todayShort = new Date().toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" }).replace(/\. /g, "-").replace(".", "");
       const filename = `마음이음_${type === "adult" ? "성인자가체크" : "아동선별검사"}_${todayShort}.pdf`;
       const deliveryResult = await deliverPdfBlob(pdfBlob, filename);
-      toast.success(
-        deliveryResult === "opened"
-          ? "PDF 리포트를 새 창에서 열었습니다. 공유 또는 저장 버튼으로 보관해 주세요."
-          : "PDF 리포트가 저장 또는 공유되었습니다."
+      
+      if (deliveryResult.success) {
+        if (deliveryResult.strategy === "open") {
+          toast.success("PDF 리포트를 새 창에서 열었습니다. 공유 또는 저장 버튼으로 보관해 주세요.");
+        } else if (deliveryResult.strategy === "share") {
+          toast.success("PDF 리포트 공유 창을 열었습니다.");
+        } else {
+          toast.success("PDF 리포트 다운로드가 완료되었습니다.");
+        }
+      } else {
+        if (deliveryResult.blobUrl) {
+          setPdfBlobUrl(deliveryResult.blobUrl);
+          toast.warning("팝업 차단 등으로 인해 PDF가 자동으로 열리지 않았습니다. 아래 'PDF 새 창에서 열기' 버튼을 눌러주세요.");
+        } else {
+          throw new Error(deliveryResult.error || "Delivery failed without blobUrl");
+        }
+      }
+    } catch (err: any) {
+      console.error("[PDF] generation failed", {
+        name: err?.name,
+        message: err?.message,
+        stack: err?.stack,
+        userAgent,
+        isIOS,
+        isMobile,
+      });
+      toast.error(
+        "PDF 생성에 실패했습니다. 화면을 새로고침한 뒤 다시 시도해 주세요. 모바일 Safari에서는 파일이 새 탭으로 열릴 수 있습니다."
       );
-    } catch (err) {
-      console.error(err);
-      toast.error("PDF 생성 중 오류가 발생했습니다. 다시 시도해주세요.");
     } finally {
       setIsPdfLoading(false);
     }
@@ -279,6 +307,23 @@ export default function Result() {
             )}
           </Button>
         </motion.div>
+
+        {/* PDF 팝업 차단 수동 열기 안내 */}
+        {pdfBlobUrl && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-amber-50/80 border border-amber-200/80 rounded-xl p-5 mb-8 no-print shadow-sm text-amber-800"
+          >
+            <p className="text-sm font-semibold mb-1">⚠️ PDF 팝업이 차단되었습니다</p>
+            <p className="text-xs mb-3">브라우저의 팝업 차단 기능으로 인해 PDF 리포트가 자동으로 열리지 못했습니다. 아래 버튼을 클릭하여 새 창에서 직접 열어주세요.</p>
+            <a href={pdfBlobUrl} target="_blank" rel="noopener noreferrer" className="inline-block">
+              <Button size="sm" className="bg-amber-600 hover:bg-amber-700 text-white font-medium text-xs">
+                PDF 새 창에서 열기
+              </Button>
+            </a>
+          </motion.div>
+        )}
 
         {/* 서버 저장 상태 */}
         {(saveConsent || remoteResult || remoteSaveError) && (

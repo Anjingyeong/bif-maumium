@@ -9,6 +9,37 @@ interface CanvasTextOptions {
   readonly measureOnly?: boolean;
 }
 
+// Shared Canvas elements to avoid garbage collection pressure and WebKit memory limits
+let sharedMeasureCanvas: HTMLCanvasElement | null = null;
+let sharedMeasureCtx: CanvasRenderingContext2D | null = null;
+
+let sharedRenderCanvas: HTMLCanvasElement | null = null;
+let sharedRenderCtx: CanvasRenderingContext2D | null = null;
+
+function getSharedMeasureCtx(): CanvasRenderingContext2D | null {
+  if (!sharedMeasureCanvas) {
+    sharedMeasureCanvas = document.createElement("canvas");
+  }
+  if (!sharedMeasureCtx) {
+    sharedMeasureCtx = sharedMeasureCanvas.getContext("2d");
+  }
+  return sharedMeasureCtx;
+}
+
+function getSharedRenderCanvas(w: number, h: number): [HTMLCanvasElement, CanvasRenderingContext2D] | [null, null] {
+  if (!sharedRenderCanvas) {
+    sharedRenderCanvas = document.createElement("canvas");
+  }
+  if (!sharedRenderCtx) {
+    sharedRenderCtx = sharedRenderCanvas.getContext("2d");
+  }
+  if (!sharedRenderCtx) return [null, null];
+  
+  sharedRenderCanvas.width = w;
+  sharedRenderCanvas.height = h;
+  return [sharedRenderCanvas, sharedRenderCtx];
+}
+
 export function canvasText(
   doc: jsPDF,
   text: string,
@@ -23,9 +54,7 @@ export function canvasText(
   const fontStyle = bold ? "bold" : "normal";
   const fontFamily = "'Pretendard', 'Noto Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', Arial, sans-serif";
   
-  const measureCanvas = document.createElement("canvas");
-  const measureCtx = measureCanvas.getContext("2d");
-
+  const measureCtx = getSharedMeasureCtx();
   if (!measureCtx) return 0;
 
   measureCtx.font = `${fontStyle} ${fontSize}px ${fontFamily}`;
@@ -41,12 +70,9 @@ export function canvasText(
     const textWidth = measureCtx.measureText(line).width / scale;
     const canvasW = Math.ceil(textWidth * scale) + 4;
     const canvasH = Math.ceil(fontSize * 1.4);
-    const canvas = document.createElement("canvas");
-    canvas.width = canvasW;
-    canvas.height = canvasH;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    
+    const [canvas, ctx] = getSharedRenderCanvas(canvasW, canvasH);
+    if (!canvas || !ctx) return;
 
     ctx.font = `${fontStyle} ${fontSize}px ${fontFamily}`;
     ctx.fillStyle = color;
