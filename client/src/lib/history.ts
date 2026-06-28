@@ -1,9 +1,3 @@
-/**
- * 검사 이력 관리 유틸리티
- * localStorage를 사용하여 브라우저를 닫아도 이력이 유지됩니다.
- * 개인 식별 정보는 일절 저장하지 않습니다.
- */
-
 export interface TestRecord {
   id: string;
   type: 'adult' | 'child';
@@ -15,19 +9,16 @@ export interface TestRecord {
   categoryScores: Record<string, { score: number; max: number }>;
 }
 
-const HISTORY_KEY = 'bif_test_history';
-const MAX_RECORDS = 20;
-
-// New Keys
+const LEGACY_HISTORY_KEY = 'bif_test_history';
+const LEGACY_NOTIFY_EMAIL_KEY = 'bif_notify_email';
+const LEGACY_ADMIN_TOKEN_KEY = 'bif_admin_token';
+const LEGACY_FEEDBACK_KEY = 'bif_feedback';
 const ANALYTICS_CONSENT_KEY = 'maumium_analytics_consent';
 const TEST_NOTICE_CONFIRMED_KEY = 'maumium_test_notice_confirmed_session';
 const ANONYMOUS_RESULT_CONSENT_KEY = 'maumium_anonymous_result_consent';
-
-// Old Keys for Migration
 const OLD_CONSENT_KEY = 'bif_consent_given';
 const OLD_DATA_ALLOW_KEY = 'bif_allow_data';
 
-// ── 동의 관련 ──────────────────────────────────────────────────
 export function getConsentGiven(): boolean {
   return sessionStorage.getItem(TEST_NOTICE_CONFIRMED_KEY) === 'true';
 }
@@ -37,25 +28,22 @@ export function setConsentGiven(allowData: boolean): void {
   localStorage.setItem(ANONYMOUS_RESULT_CONSENT_KEY, allowData ? 'true' : 'false');
 }
 
-/**
- * 기존 동의 기록을 새로운 키로 마이그레이션
- */
 export function migrateSessionConsent(): void {
-  // Migrate anonymous result consent
   if (localStorage.getItem(ANONYMOUS_RESULT_CONSENT_KEY) === null) {
     const oldAllow = localStorage.getItem(OLD_DATA_ALLOW_KEY);
     if (oldAllow !== null) {
       localStorage.setItem(ANONYMOUS_RESULT_CONSENT_KEY, oldAllow);
     }
   }
-  
-  // Migrate notice consent from old localStorage if available in session
+
   if (sessionStorage.getItem(TEST_NOTICE_CONFIRMED_KEY) === null) {
     const oldNotice = localStorage.getItem(OLD_CONSENT_KEY);
     if (oldNotice === 'true') {
       sessionStorage.setItem(TEST_NOTICE_CONFIRMED_KEY, 'true');
     }
   }
+
+  cleanupSensitiveBrowserStorage();
 }
 
 export function getAllowData(): boolean {
@@ -68,39 +56,30 @@ export function getAllowData(): boolean {
   return localStorage.getItem(ANONYMOUS_RESULT_CONSENT_KEY) !== 'false';
 }
 
-// ── 검사 이력 관련 ─────────────────────────────────────────────
 export function getHistory(): TestRecord[] {
-  try {
-    const raw = localStorage.getItem(HISTORY_KEY);
-    return raw ? (JSON.parse(raw) as TestRecord[]) : [];
-  } catch {
-    return [];
-  }
+  cleanupSensitiveBrowserStorage();
+  return [];
 }
 
 export function saveTestRecord(record: Omit<TestRecord, 'id' | 'date'>): TestRecord {
-  const newRecord: TestRecord = {
+  cleanupSensitiveBrowserStorage();
+  return {
     ...record,
     id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
     date: new Date().toISOString(),
   };
-
-  const history = getHistory();
-  const updated = [newRecord, ...history].slice(0, MAX_RECORDS);
-  localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
-  return newRecord;
 }
 
 export function getLastRecord(type: 'adult' | 'child'): TestRecord | null {
-  const history = getHistory();
-  return history.find(r => r.type === type) ?? null;
+  void type;
+  cleanupSensitiveBrowserStorage();
+  return null;
 }
 
 export function clearHistory(): void {
-  localStorage.removeItem(HISTORY_KEY);
+  cleanupSensitiveBrowserStorage();
 }
 
-// ── 점수 변화 계산 ─────────────────────────────────────────────
 export function getScoreDiff(
   current: number,
   previous: number | null
@@ -116,4 +95,22 @@ export function getScoreDiff(
 export function formatDate(isoString: string): string {
   const d = new Date(isoString);
   return `${d.getFullYear()}. ${d.getMonth() + 1}. ${d.getDate()}.`;
+}
+
+export function cleanupSensitiveBrowserStorage(): void {
+  localStorage.removeItem(LEGACY_HISTORY_KEY);
+  localStorage.removeItem(LEGACY_NOTIFY_EMAIL_KEY);
+  localStorage.removeItem(LEGACY_ADMIN_TOKEN_KEY);
+  localStorage.removeItem(LEGACY_FEEDBACK_KEY);
+  localStorage.removeItem(OLD_CONSENT_KEY);
+  localStorage.removeItem(OLD_DATA_ALLOW_KEY);
+
+  for (let index = localStorage.length - 1; index >= 0; index -= 1) {
+    const key = localStorage.key(index);
+    if (!key) continue;
+    if (key === ANALYTICS_CONSENT_KEY || key === ANONYMOUS_RESULT_CONSENT_KEY) continue;
+    if (key.startsWith("maumium_")) {
+      localStorage.removeItem(key);
+    }
+  }
 }

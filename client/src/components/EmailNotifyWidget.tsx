@@ -5,8 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { subscribeEmail } from "@/lib/subscriptionApi";
 
-const STORAGE_KEY = "bif_notify_email";
-
 type ValidationState = "idle" | "typing" | "valid" | "invalid";
 
 interface ValidationResult {
@@ -25,11 +23,6 @@ function validateEmail(email: string): ValidationResult {
   }
 
   return { state: "valid", message: "신청 가능한 이메일 주소입니다." };
-}
-
-function getStoredEmail() {
-  if (typeof window === "undefined") return "";
-  return window.localStorage.getItem(STORAGE_KEY) || "";
 }
 
 function SuccessState({ email }: { email: string }) {
@@ -71,8 +64,8 @@ export default function EmailNotifyWidget() {
   const [email, setEmail] = useState("");
   const [touched, setTouched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [registeredEmail, setRegisteredEmail] = useState(getStoredEmail);
-  const [isDone, setIsDone] = useState(() => !!getStoredEmail());
+  const [registeredEmail, setRegisteredEmail] = useState("");
+  const [isDone, setIsDone] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const validation = validateEmail(email);
@@ -100,7 +93,6 @@ export default function EmailNotifyWidget() {
     const result = await subscribeEmail(trimmedEmail);
 
     if (result.ok) {
-      window.localStorage.setItem(STORAGE_KEY, trimmedEmail);
       setRegisteredEmail(trimmedEmail);
       setIsDone(true);
     } else {

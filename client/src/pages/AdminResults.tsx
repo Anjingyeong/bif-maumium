@@ -30,6 +30,7 @@ interface AdminResultsResponse {
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/+$/, "");
 const STAT_LEVELS: readonly RiskLevelKey[] = ["low", "caution", "consult"];
+const ADMIN_TOKEN_KEY = "bif_admin_token";
 
 const STAT_ICONS: Record<RiskLevelKey, typeof BarChart3> = {
   low: BarChart3,
@@ -44,7 +45,7 @@ function formatDateTime(value: string): string {
 }
 
 export default function AdminResults() {
-  const [adminToken, setAdminToken] = useState(() => localStorage.getItem("bif_admin_token") || "");
+  const [adminToken, setAdminToken] = useState(() => sessionStorage.getItem(ADMIN_TOKEN_KEY) || "");
   const [results, setResults] = useState<readonly AdminResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -52,7 +53,6 @@ export default function AdminResults() {
   const [location] = useLocation();
   const [isAuthorized, setIsAuthorized] = useState(false);
 
-  // Load results automatically if token is already present in localStorage
   useEffect(() => {
     if (adminToken.trim()) {
       loadResults();
@@ -97,7 +97,7 @@ export default function AdminResults() {
         return;
       }
 
-      localStorage.setItem("bif_admin_token", token);
+      sessionStorage.setItem(ADMIN_TOKEN_KEY, token);
       setResults(body.results ?? []);
       setIsAuthorized(true);
     } catch (error) {

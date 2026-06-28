@@ -1,7 +1,7 @@
 /**
  * Result Page - Score analysis and recommendations
  * Design: Calm & Trustworthy - supportive, non-judgmental framing
- * Features: localStorage 이력 저장, 이전 결과 비교, PDF 다운로드
+ * Features: 이전 결과 비교, PDF 다운로드
  */
 import { useMemo, useState, useEffect, useRef } from "react";
 import { Link } from "wouter";
@@ -22,6 +22,7 @@ import {
   AnswerValue,
 } from "@/lib/questions";
 import { generateResultPdf } from "@/lib/generatePdf";
+import { deliverPdfBlob } from "@/lib/pdfDelivery";
 import FeedbackWidget from "@/components/FeedbackWidget";
 import EmailNotifyWidget from "@/components/EmailNotifyWidget";
 import {
@@ -153,28 +154,12 @@ export default function Result() {
       const pdfBlob = await generateResultPdf({ type, score, maxScore, result, answers, questionSet });
       const todayShort = new Date().toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" }).replace(/\. /g, "-").replace(".", "");
       const filename = `마음이음_${type === "adult" ? "성인자가체크" : "아동선별검사"}_${todayShort}.pdf`;
-
-      // 모바일 공유 API (Safari/Chrome 등에서 팝업 차단 방지)
-      if (navigator.share && /mobile|android|iphone|ipad|ipod/i.test(navigator.userAgent)) {
-        const file = new File([pdfBlob], filename, { type: 'application/pdf' });
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({ files: [file] });
-          toast.success("PDF 리포트를 공유/저장했습니다.");
-          return;
-        }
-      }
-
-      // 일반 다운로드 폴백
-      const blobUrl = window.URL.createObjectURL(pdfBlob);
-      const a = document.createElement("a");
-      a.href = blobUrl;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(blobUrl);
-
-      toast.success("PDF 리포트가 다운로드되었습니다.");
+      const deliveryResult = await deliverPdfBlob(pdfBlob, filename);
+      toast.success(
+        deliveryResult === "opened"
+          ? "PDF 리포트를 새 창에서 열었습니다. 공유 또는 저장 버튼으로 보관해 주세요."
+          : "PDF 리포트가 저장 또는 공유되었습니다."
+      );
     } catch (err) {
       console.error(err);
       toast.error("PDF 생성 중 오류가 발생했습니다. 다시 시도해주세요.");

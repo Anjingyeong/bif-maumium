@@ -9,7 +9,6 @@ import { getLoginUrl } from "./const";
 import "./index.css";
 import { migrateSessionConsent } from "./lib/history";
 
-// sessionStorage 동의 기록을 localStorage로 마이그레이션 (한 번만 실행)
 migrateSessionConsent();
 
 const queryClient = new QueryClient();

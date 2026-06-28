@@ -15,6 +15,7 @@ interface AdminSubscriptionsResponse {
 }
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/+$/, "");
+const ADMIN_TOKEN_KEY = "bif_admin_token";
 
 function formatDateTime(value: string): string {
   const date = new Date(value);
@@ -23,14 +24,13 @@ function formatDateTime(value: string): string {
 }
 
 export default function AdminSubscriptions() {
-  const [adminToken, setAdminToken] = useState(() => localStorage.getItem("bif_admin_token") || "");
+  const [adminToken, setAdminToken] = useState(() => sessionStorage.getItem(ADMIN_TOKEN_KEY) || "");
   const [subscriptions, setSubscriptions] = useState<readonly Subscription[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [location] = useLocation();
   const [isAuthorized, setIsAuthorized] = useState(false);
 
-  // Load results automatically if token is already present in localStorage
   useEffect(() => {
     if (adminToken.trim()) {
       loadSubscriptions();
@@ -60,7 +60,7 @@ export default function AdminSubscriptions() {
         return;
       }
 
-      localStorage.setItem("bif_admin_token", token);
+      sessionStorage.setItem(ADMIN_TOKEN_KEY, token);
       setSubscriptions(body.subscriptions ?? []);
       setIsAuthorized(true);
     } catch (error) {

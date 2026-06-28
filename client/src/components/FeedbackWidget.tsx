@@ -1,7 +1,3 @@
-/**
- * FeedbackWidget - 결과 페이지 하단 피드백 수집 위젯
- * 사용자 만족도 및 결과 유용성을 수집해 서비스 개선에 활용
- */
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThumbsUp, ThumbsDown, MessageSquare, Send, CheckCircle2 } from "lucide-react";
@@ -9,30 +5,9 @@ import { Button } from "@/components/ui/button";
 
 type Rating = "helpful" | "not_helpful" | null;
 
-interface FeedbackData {
-  rating: Rating;
-  comment: string;
-  testType: "adult" | "child";
-  resultLevel: string;
-  timestamp: string;
-  allowData: boolean;
-}
-
 interface FeedbackWidgetProps {
   testType: "adult" | "child";
   resultLevel: string;
-}
-
-function saveFeedbackLocally(data: FeedbackData) {
-  try {
-    const existing = JSON.parse(localStorage.getItem("bif_feedback") || "[]");
-    existing.push(data);
-    // 최대 100개까지만 저장
-    if (existing.length > 100) existing.shift();
-    localStorage.setItem("bif_feedback", JSON.stringify(existing));
-  } catch {
-    // 저장 실패 시 무시
-  }
 }
 
 export default function FeedbackWidget({ testType, resultLevel }: FeedbackWidgetProps) {
@@ -41,8 +16,6 @@ export default function FeedbackWidget({ testType, resultLevel }: FeedbackWidget
   const [showComment, setShowComment] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const allowData = localStorage.getItem("bif_allow_data") === "true";
-
   const handleRating = (r: Rating) => {
     setRating(r);
     setShowComment(true);
@@ -50,21 +23,9 @@ export default function FeedbackWidget({ testType, resultLevel }: FeedbackWidget
 
   const handleSubmit = () => {
     if (!rating) return;
-
-    const feedbackData: FeedbackData = {
-      rating,
-      comment: comment.trim(),
-      testType,
-      resultLevel,
-      timestamp: new Date().toISOString(),
-      allowData,
-    };
-
-    // 데이터 수집 동의한 경우에만 로컬 저장 (추후 서버 전송 가능)
-    if (allowData) {
-      saveFeedbackLocally(feedbackData);
-    }
-
+    void testType;
+    void resultLevel;
+    void comment;
     setSubmitted(true);
   };
 
@@ -91,7 +52,6 @@ export default function FeedbackWidget({ testType, resultLevel }: FeedbackWidget
         <p className="text-sm font-medium text-foreground">이 결과가 도움이 되었나요?</p>
       </div>
 
-      {/* Rating Buttons */}
       <div className="flex gap-3 mb-4">
         <button
           onClick={() => handleRating("helpful")}
@@ -117,7 +77,6 @@ export default function FeedbackWidget({ testType, resultLevel }: FeedbackWidget
         </button>
       </div>
 
-      {/* Comment Box */}
       <AnimatePresence>
         {showComment && (
           <motion.div
@@ -151,11 +110,9 @@ export default function FeedbackWidget({ testType, resultLevel }: FeedbackWidget
                   제출
                 </Button>
               </div>
-              {!allowData && (
-                <p className="text-xs text-muted-foreground">
-                  * 데이터 수집 미동의 상태로, 피드백은 이 기기에만 저장됩니다.
-                </p>
-              )}
+              <p className="text-xs text-muted-foreground">
+                피드백 내용은 브라우저 저장소에 보관되지 않습니다.
+              </p>
             </div>
           </motion.div>
         )}
