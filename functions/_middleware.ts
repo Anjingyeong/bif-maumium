@@ -1,6 +1,19 @@
 import { getSeoMeta } from "../shared/seoMeta";
 
-export const onRequest: PagesFunction = async (context) => {
+type PagesAssets = {
+  readonly fetch: (request: Request) => Promise<Response>;
+};
+
+type PagesEnv = {
+  readonly ASSETS: PagesAssets;
+};
+
+const BYPASS_EXTENSIONS = [
+  ".js", ".css", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".ico",
+  ".woff", ".woff2", ".ttf", ".eot", ".json", ".xml", ".webmanifest", ".txt", ".pdf"
+] as const;
+
+export const onRequest: PagesFunction<PagesEnv> = async (context) => {
   const { request, next } = context;
   const url = new URL(request.url);
   const pathname = url.pathname;
@@ -11,11 +24,7 @@ export const onRequest: PagesFunction = async (context) => {
   }
 
   // 2. Bypass static assets and files based on extension
-  const bypassExtensions = [
-    ".js", ".css", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".ico",
-    ".woff", ".woff2", ".ttf", ".eot", ".json", ".xml", ".webmanifest", ".txt", ".pdf"
-  ];
-  if (bypassExtensions.some(ext => pathname.endsWith(ext))) {
+  if (BYPASS_EXTENSIONS.some(ext => pathname.endsWith(ext))) {
     return next();
   }
 
@@ -25,7 +34,15 @@ export const onRequest: PagesFunction = async (context) => {
   }
 
   // Get the original HTML response
-  const response = await next();
+  let response = await next();
+
+  if (response.status === 404 && shouldUseSpaFallback(pathname)) {
+    const indexUrl = new URL(request.url);
+    indexUrl.pathname = "/index.html";
+    indexUrl.search = "";
+    response = await context.env.ASSETS.fetch(new Request(indexUrl.toString(), request));
+  }
+
   const contentType = response.headers.get("content-type") || "";
 
   // 3. Only rewrite if the content type is text/html
@@ -89,6 +106,19 @@ export const onRequest: PagesFunction = async (context) => {
     })
     .transform(response);
 };
+
+export function shouldUseSpaFallback(pathname: string): boolean {
+  if (pathname === "/404.html") return false;
+  if (pathname === "/debug") return false;
+  if (pathname === "/__webpack_hmr") return false;
+  if (pathname === "/_next/webpack-hmr") return false;
+  if (pathname.startsWith("/.git/")) return false;
+  if (pathname.startsWith("/api/")) return false;
+  if (BYPASS_EXTENSIONS.some(ext => pathname.endsWith(ext))) return false;
+
+  const lastSegment = pathname.split("/").pop() || "";
+  return !lastSegment.includes(".");
+}
 
 function escapeHtml(text: string): string {
   return text
