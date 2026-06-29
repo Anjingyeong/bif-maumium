@@ -72,7 +72,6 @@ export default function Result() {
   const maxScore = questionSet.questions.length * 3;
   const result = getResultLevel(score, type);
   const categoryScores = getCategoryScores(answers, questionSet.questions);
-  const percentage = Math.round((score / maxScore) * 100);
   const interpretationReport = useMemo(
     () => buildInterpretationReport({ type, score, maxScore, result, categoryScores }),
     [type, score, maxScore, result, categoryScores]
@@ -239,26 +238,8 @@ export default function Result() {
           {/* Level color stripe at top */}
           <div className="h-1.5" style={{ backgroundColor: result.color }} />
           <div className="p-8 md:p-10 text-center">
-            {/* Score Circle */}
-            <div className="relative w-32 h-32 mx-auto mb-6">
-              <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" strokeWidth="5" className="text-secondary" />
-                <motion.circle
-                  cx="50" cy="50" r="42"
-                  fill="none"
-                  stroke={result.color}
-                  strokeWidth="5"
-                  strokeLinecap="round"
-                  strokeDasharray={`${2 * Math.PI * 42}`}
-                  initial={{ strokeDashoffset: 2 * Math.PI * 42 }}
-                  animate={{ strokeDashoffset: 2 * Math.PI * 42 * (1 - percentage / 100) }}
-                  transition={{ duration: 1.2, ease: "easeOut", delay: 0.3 }}
-                />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-3xl font-serif font-bold text-foreground">{score}</span>
-                <span className="text-xs text-muted-foreground">/ {maxScore}</span>
-              </div>
+            <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-primary/8 border border-primary/15 flex items-center justify-center">
+              {type === "adult" ? <Brain className="w-9 h-9 text-primary" /> : <Heart className="w-9 h-9 text-primary" />}
             </div>
 
             {/* Level badge */}
@@ -274,8 +255,11 @@ export default function Result() {
                 {type === "adult" ? "성인 자가체크" : "아동 선별검사"}
               </span>
             </div>
-            <h1 className="text-xl md:text-2xl font-serif font-bold text-foreground mb-3">{result.title}</h1>
+            <h1 className="text-xl md:text-2xl font-serif font-bold text-foreground mb-3">{interpretationReport.oneLineSummary}</h1>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-lg mx-auto">{result.description}</p>
+            <p className="text-xs text-muted-foreground/80 leading-relaxed max-w-lg mx-auto mt-3">
+              {interpretationReport.scoreText} · 결과 저장과 이전 기록 비교를 위한 참고값입니다.
+            </p>
           </div>
         </motion.div>
 

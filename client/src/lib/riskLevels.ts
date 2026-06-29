@@ -1,8 +1,10 @@
 export type TestType = "adult" | "child";
 export type RiskLevelKey = "low" | "caution" | "consult";
 
-export const SCREENING_DISCLAIMER = "본 결과는 진단이 아닌 참고용 선별 결과입니다. 주의력, 정서, 학습 문제 등 다른 요인이 함께 영향을 줄 수 있습니다. 정확한 평가는 임상심리사, 정신건강의학과, 특수교육 전문가 등이 실시하는 표준화 검사(지능검사, 적응행동검사)와 면담을 통해 이루어져야 합니다. 본 결과만으로 경계선 지능 여부를 판단하지 않습니다.";
-export const DIFFERENTIAL_GUIDANCE = "주의력 문제, 우울·불안, 수면부족, 스트레스, 학습장애, 환경 변화 등도 응답에 영향을 줄 수 있으므로 결과는 현재 상태를 살펴보는 참고 자료로만 활용해 주세요.";
+export const SCREENING_DISCLAIMER =
+  "이 결과는 표준화 검사나 진단을 대체하지 않는 선별용 참고자료입니다. 주의력, 정서, 학습 문제, 수면, 스트레스, 학습 환경 등 다른 요인도 함께 영향을 줄 수 있습니다.";
+export const DIFFERENTIAL_GUIDANCE =
+  "결과는 현재 상태를 살펴보는 참고자료로만 사용해 주세요. 어려움이 반복되거나 일상생활에 영향이 크다면 전문기관 상담이나 평가를 함께 고려해 볼 수 있습니다.";
 
 interface RiskLevelDisplay {
   readonly label: string;
@@ -24,12 +26,12 @@ interface LegacyRiskLevelDisplay {
 
 const RISK_LEVELS: Readonly<Record<RiskLevelKey, RiskLevelDisplay>> = {
   low: {
-    label: "낮음",
-    badgeLabel: "낮음",
-    resultTitle: "낮음 — 현재 응답상 어려움 가능성 낮음",
+    label: "현재 경향",
+    badgeLabel: "현재 경향",
+    resultTitle: "현재는 두드러진 어려움이 적게 나타났어요",
     descriptions: {
-      adult: `총점이 낮음 단계에 해당합니다. 현재 응답만으로는 학습·인지·적응기능 어려움 가능성이 낮아 보입니다. ${SCREENING_DISCLAIMER}`,
-      child: `보호자 해석: 총점이 낮음 단계에 해당합니다. 현재 응답만으로는 자녀의 학습·인지·적응기능 어려움 가능성이 낮아 보입니다. ${SCREENING_DISCLAIMER}`,
+      adult: `응답 내용에서는 현재 두드러진 어려움이 크게 나타나지 않았습니다. 생활 변화나 불편함이 반복되는 상황이 생기면 다시 살펴보세요. ${SCREENING_DISCLAIMER}`,
+      child: `보호자 응답에서는 현재 두드러진 어려움이 크게 관찰되지 않았습니다. 환경 변화가 있을 때 아이의 생활 장면을 함께 기록해 보세요. ${SCREENING_DISCLAIMER}`,
     },
     pdfColor: "#64748b",
     badgeColor: "#64748b",
@@ -38,12 +40,12 @@ const RISK_LEVELS: Readonly<Record<RiskLevelKey, RiskLevelDisplay>> = {
     showSupportResources: false,
   },
   caution: {
-    label: "주의",
-    badgeLabel: "주의",
-    resultTitle: "주의 — 일부 영역 점검 필요",
+    label: "관찰 필요",
+    badgeLabel: "관찰 필요",
+    resultTitle: "반복되는 어려움을 살펴볼 필요가 있어요",
     descriptions: {
-      adult: `총점이 주의 단계에 해당합니다. 일부 영역에서 어려움이 나타나며, 피로·스트레스·수면·주의력·정서 상태에 따라 일시적으로 높게 나타날 수도 있습니다. ${SCREENING_DISCLAIMER}`,
-      child: `보호자 해석: 총점이 주의 단계에 해당합니다. 일부 영역에서 어려움이 나타나며 수면, 정서, 주의집중, 학습 환경, 과제 난이도에 따라 응답이 높아질 수 있습니다. ${SCREENING_DISCLAIMER}`,
+      adult: `일부 영역에서 도움이 필요할 수 있는 응답이 나타났습니다. 비슷한 어려움이 반복되는 상황을 기록하고 생활 속 지원 전략을 하나씩 시도해 보세요. ${SCREENING_DISCLAIMER}`,
+      child: `보호자 응답에서 일부 영역의 지원 필요성이 관찰되었습니다. 어떤 상황에서 아이가 더 많은 안내를 필요로 하는지 기록해 보세요. ${SCREENING_DISCLAIMER}`,
     },
     pdfColor: "#d97706",
     badgeColor: "#d97706",
@@ -52,30 +54,30 @@ const RISK_LEVELS: Readonly<Record<RiskLevelKey, RiskLevelDisplay>> = {
     showSupportResources: false,
   },
   consult: {
-    label: "상담 권장",
-    badgeLabel: "상담 권장",
-    resultTitle: "상담 권장 — 전문 상담 또는 평가 고려",
+    label: "상담 고려",
+    badgeLabel: "상담 고려",
+    resultTitle: "전문기관 상담이나 평가를 고려해 볼 수 있어요",
     descriptions: {
-      adult: `총점이 상담 권장 단계에 해당합니다. 여러 영역에서 어려움이 관찰되어 현재 기능 수준을 더 자세히 살펴볼 필요가 있습니다. ${SCREENING_DISCLAIMER}`,
-      child: `보호자 해석: 총점이 상담 권장 단계에 해당합니다. 여러 영역에서 어려움이 관찰되어 자녀의 학습·인지·적응기능을 더 자세히 살펴볼 필요가 있습니다. ${SCREENING_DISCLAIMER}`,
+      adult: `여러 영역에서 도움이 필요할 수 있는 응답이 나타났습니다. 결과만으로 판단하지 말고, 일상에서 어려움이 반복된다면 전문기관 상담이나 평가를 함께 고려해 보세요. ${SCREENING_DISCLAIMER}`,
+      child: `보호자 응답에서 여러 영역의 지원 필요성이 관찰되었습니다. 아이가 일상에서 겪는 상황을 정리해 전문기관 상담이나 평가 때 함께 확인해 보세요. ${SCREENING_DISCLAIMER}`,
     },
-    pdfColor: "#dc2626",
-    badgeColor: "#dc2626",
-    chartColor: "#dc2626",
-    resultColor: "#dc2626",
+    pdfColor: "#2f7d5c",
+    badgeColor: "#2f7d5c",
+    chartColor: "#2f7d5c",
+    resultColor: "#2f7d5c",
     showSupportResources: true,
   },
 } as const;
 
 const LEGACY_RISK_LEVELS: Readonly<Record<string, LegacyRiskLevelDisplay>> = {
-  normal: { badgeLabel: "일상생활 잘 유지 중", pdfColor: "#64748b", badgeColor: "#64748b" },
-  mild: { badgeLabel: "가벼운 어려움 있음", pdfColor: "#d97706", badgeColor: "#d97706" },
-  moderate: { badgeLabel: "전문가 상담 권장", pdfColor: "#dc2626", badgeColor: "#dc2626" },
-  high: { badgeLabel: "전문가 상담 적극 권장", pdfColor: "#dc2626", badgeColor: "#dc2626" },
+  normal: { badgeLabel: "현재 경향", pdfColor: "#64748b", badgeColor: "#64748b" },
+  mild: { badgeLabel: "관찰 필요", pdfColor: "#d97706", badgeColor: "#d97706" },
+  moderate: { badgeLabel: "상담 고려", pdfColor: "#2f7d5c", badgeColor: "#2f7d5c" },
+  high: { badgeLabel: "상담 고려", pdfColor: "#2f7d5c", badgeColor: "#2f7d5c" },
 } as const;
 
 const UNKNOWN_RISK_LEVEL: LegacyRiskLevelDisplay = {
-  badgeLabel: "알 수 없음",
+  badgeLabel: "확인 필요",
   pdfColor: "#64748b",
   badgeColor: "#94a3b8",
 };
